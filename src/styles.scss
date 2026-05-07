@@ -1,0 +1,33 @@
+@use 'styles/tokens' as *;
+@use 'styles/components' as *;
+@use 'styles/utilities' as *;
+@use 'styles/auth' as *;
+
+html, body { height: 100%; }
+body { margin: 0; font-family: var(--kids-font-sans); color: var(--kids-ink); background: var(--kids-paper); }
+
+/* ──────────────────────────────────────────────────────────────────────
+   Global lucide-icon fix.
+
+   Without this, lucide-icon renders an inline element with an SVG sized
+   24×24 by default. When a parent sets `width/height` on the lucide-icon,
+   the host shrinks but the SVG keeps its intrinsic 24×24 — so it overflows
+   the host and appears off-centre inside circular badges.
+
+   Forcing the host to flex-center + the inner SVG to fill 100% guarantees
+   that the icon stays inside, and is exactly centred, every time.
+   ────────────────────────────────────────────────────────────────────── */
+lucide-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+lucide-icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

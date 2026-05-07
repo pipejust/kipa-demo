@@ -1,0 +1,388 @@
+/* ==========================================================================
+   Settings page — uses K!dS design system primitives (.k-input, .k-select,
+   .k-btn, .k-toggle, .k-tag, .k-alert, .k-divider). Only page-specific
+   layout / theme picker styles live here.
+   ========================================================================== */
+
+:host { display: block; }
+
+.account-page {
+  display: grid;
+  gap: 22px;
+  padding: 28px 36px 40px;
+  width: 100%;
+}
+
+.account-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--kids-slate);
+
+  a { color: var(--kids-slate); text-decoration: none; &:hover { color: var(--kids-navy); } }
+  span { color: var(--kids-navy); font-weight: 600; }
+  lucide-icon { width: 14px; height: 14px; color: var(--kids-muted); }
+}
+
+.settings-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-header__title {
+  font-family: var(--kids-font-display);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--kids-navy);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.settings-header__lead {
+  font-size: 0.95rem;
+  color: var(--kids-slate);
+  margin: 0;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────── */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 22px;
+  align-items: flex-start;
+}
+
+/* Vertical tabs */
+.settings-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--kids-paper);
+  border: 1px solid var(--kids-line);
+  border-radius: 16px;
+  padding: 8px;
+  position: sticky;
+  top: 92px;
+}
+
+.settings-tab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--kids-slate);
+  text-align: left;
+  transition: background 180ms ease, color 180ms ease;
+
+  lucide-icon { width: 18px; height: 18px; color: currentColor; }
+
+  &:hover { background: var(--kids-navy-50); color: var(--kids-navy); }
+
+  &--active,
+  &--active:hover {
+    background: var(--kids-navy);
+    color: #fff;
+    font-weight: 600;
+  }
+}
+
+.settings-content { display: grid; gap: 18px; }
+
+/* ── Section head ───────────────────────────────────────────────────── */
+.settings-section__head { margin-bottom: 18px; }
+
+.settings-section__title {
+  font-family: var(--kids-font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--kids-navy);
+  margin: 0 0 4px;
+}
+
+.settings-section__hint {
+  font-size: 0.85rem;
+  color: var(--kids-slate);
+  margin: 0;
+}
+
+/* ── Form layout ────────────────────────────────────────────────────── */
+.settings-form {
+  display: grid;
+  gap: 18px;
+}
+
+.settings-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.settings-form__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.settings-error { color: var(--kids-danger); font-weight: 500; }
+
+/* Password input with eye toggle */
+.settings-pwd {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.settings-pwd .k-input { flex: 1; padding-right: 52px; }
+
+.settings-pwd__toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--kids-muted);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+
+  lucide-icon { width: 18px; height: 18px; }
+
+  &:hover { background: var(--kids-navy-50); color: var(--kids-navy); }
+}
+
+/* ── Preferences group ─────────────────────────────────────────────── */
+.settings-group {
+  display: grid;
+  gap: 8px;
+  padding: 14px 0;
+
+  & + & { border-top: 1px solid var(--kids-line); }
+}
+
+.settings-group__title {
+  font-family: var(--kids-font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--kids-navy);
+  margin: 0 0 4px;
+}
+
+.settings-pref {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: background 150ms ease;
+
+  &:hover { background: var(--kids-surface); }
+
+  &__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+
+    strong {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--kids-navy);
+    }
+
+    small {
+      font-size: 0.75rem;
+      color: var(--kids-slate);
+    }
+  }
+}
+
+.settings-divider { margin: 18px 0; }
+
+.settings-sessions { display: grid; gap: 10px; }
+
+.settings-sessions__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 4px;
+
+  .settings-section__hint { margin-top: 2px; }
+}
+
+.settings-session {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--kids-line);
+  border-radius: 12px;
+
+  &--loading,
+  &--empty {
+    display: flex;
+    justify-content: center;
+    color: var(--kids-slate);
+    font-size: 0.85rem;
+    gap: 8px;
+    padding: 20px;
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--kids-navy-50);
+    color: var(--kids-navy);
+    display: grid;
+    place-items: center;
+
+    lucide-icon { width: 18px; height: 18px; }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__revoke {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--kids-slate);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+
+    lucide-icon { width: 16px; height: 16px; }
+
+    &:hover {
+      background: #FBEDED;
+      color: var(--kids-danger);
+      border-color: #F4C7C7;
+    }
+
+    &:disabled { opacity: 0.6; cursor: default; }
+  }
+
+  strong { font-size: 0.88rem; color: var(--kids-navy); font-weight: 600; }
+  small  { font-size: 0.74rem; color: var(--kids-slate); }
+}
+
+/* Loading state */
+.settings-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 56px 24px;
+  color: var(--kids-slate);
+  font-size: 0.9rem;
+
+  &__spinner {
+    width: 18px; height: 18px;
+    border: 2px solid var(--kids-navy-200);
+    border-top-color: var(--kids-navy);
+    border-radius: 50%;
+    animation: settings-spin 0.8s linear infinite;
+  }
+}
+
+/* Inline spinner inside buttons */
+.settings-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: settings-spin 0.8s linear infinite;
+
+  &--dark {
+    border-color: var(--kids-navy-200);
+    border-top-color: var(--kids-navy);
+  }
+}
+
+@keyframes settings-spin { to { transform: rotate(360deg); } }
+
+/* ── Theme picker ───────────────────────────────────────────────────── */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.theme-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 2px solid var(--kids-line);
+  border-radius: 14px;
+  background: var(--kids-paper);
+  cursor: pointer;
+  transition: border-color 180ms ease, transform 180ms ease;
+
+  &:hover { border-color: var(--kids-navy-200); transform: translateY(-2px); }
+  &--active { border-color: var(--kids-navy); }
+}
+
+.theme-option__preview {
+  height: 80px;
+  border-radius: 10px;
+  background: #F7F8FC;
+  border: 1px solid var(--kids-line);
+
+  &--light  { background: linear-gradient(135deg, #fff, #F7F8FC); }
+  &--dark   { background: linear-gradient(135deg, #1A1F2E, #2C334A); }
+  &--system { background: linear-gradient(135deg, #fff 0%, #fff 50%, #1A1F2E 50%, #1A1F2E 100%); }
+}
+
+.theme-option__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--kids-navy);
+
+  lucide-icon { width: 16px; height: 16px; }
+}
+
+.theme-option__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .settings-grid { grid-template-columns: 1fr; }
+  .settings-tabs { position: static; flex-direction: row; overflow-x: auto; padding: 6px; }
+  .settings-tab { white-space: nowrap; }
+}
+
+@media (max-width: 640px) {
+  .account-page { padding: 22px; }
+  .settings-form__row { grid-template-columns: 1fr; }
+  .theme-grid { grid-template-columns: 1fr; }
+}

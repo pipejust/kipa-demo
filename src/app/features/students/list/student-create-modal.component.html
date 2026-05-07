@@ -1,0 +1,146 @@
+<div class="modal-scrim" (click)="cancel()"></div>
+
+<div class="modal modal--students" role="dialog" aria-modal="true">
+  <header class="modal__head">
+    <div class="modal__head-title">
+      <span class="modal__head-icon"><lucide-icon [img]="UserPlusIcon" /></span>
+      <div>
+        <h2 class="modal__title">{{ 'students.create.title' | transloco }}</h2>
+        <p class="modal__subtitle">{{ 'students.create.lead' | transloco }}</p>
+      </div>
+    </div>
+    <button type="button" class="modal__close" (click)="cancel()" [attr.aria-label]="'common.close' | transloco">
+      <lucide-icon [img]="XIcon" />
+    </button>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="modal__body">
+
+    @if (errorMsg(); as msg) {
+      <div class="k-alert k-alert--danger">{{ msg }}</div>
+    }
+
+    <!-- ── Student data ─────────────────────────────────────────────── -->
+    <fieldset class="modal-section">
+      <legend class="modal-section__legend">{{ 'students.create.studentData' | transloco }}</legend>
+
+      <div class="modal__row">
+        <div class="k-field">
+          <label class="k-label" for="sc-nombre">{{ 'students.create.firstName' | transloco }} *</label>
+          <input id="sc-nombre" class="k-input" type="text" formControlName="nombre" required maxlength="100" />
+          @if (fieldError('nombre')) {
+            <p class="k-help students-create__error">{{ 'students.create.errors.firstNameRequired' | transloco }}</p>
+          }
+        </div>
+
+        <div class="k-field">
+          <label class="k-label" for="sc-apellidos">{{ 'students.create.lastName' | transloco }} *</label>
+          <input id="sc-apellidos" class="k-input" type="text" formControlName="apellidos" required maxlength="200" />
+          @if (fieldError('apellidos')) {
+            <p class="k-help students-create__error">{{ 'students.create.errors.lastNameRequired' | transloco }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="modal__row">
+        <div class="k-field">
+          <label class="k-label" for="sc-fecha">{{ 'students.create.birthDate' | transloco }}</label>
+          <input id="sc-fecha" class="k-input" type="date" formControlName="fecha_nacimiento" />
+        </div>
+
+        <div class="k-field">
+          <label class="k-label" for="sc-genero">{{ 'students.create.gender' | transloco }}</label>
+          <select id="sc-genero" class="k-select" formControlName="genero">
+            <option value="">—</option>
+            <option value="F">{{ 'students.create.female' | transloco }}</option>
+            <option value="M">{{ 'students.create.male' | transloco }}</option>
+            <option value="X">{{ 'students.create.other' | transloco }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal__row">
+        <div class="k-field">
+          <label class="k-label" for="sc-nivel">{{ 'students.create.level' | transloco }}</label>
+          <select id="sc-nivel" class="k-select" formControlName="nivel">
+            <option value="">{{ 'students.create.notAssigned' | transloco }}</option>
+            <option value="P0">P0 (0–1)</option>
+            <option value="P1">P1 (1–2)</option>
+            <option value="P2">P2 (2–3)</option>
+            <option value="P3">P3 (3–4)</option>
+            <option value="P4">P4 (4–5)</option>
+            <option value="P5">P5 (5–6)</option>
+          </select>
+        </div>
+
+        <div class="k-field">
+          <label class="k-label" for="sc-aula">{{ 'students.create.classroom' | transloco }}</label>
+          <input id="sc-aula" class="k-input" type="text" formControlName="aula" placeholder="A, B, Butterflies…" maxlength="50" />
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- ── Tutor (optional) ─────────────────────────────────────────── -->
+    <fieldset class="modal-section">
+      <legend class="modal-section__legend">
+        {{ 'students.create.tutorData' | transloco }}
+        <span class="modal-section__optional">{{ 'students.create.optional' | transloco }}</span>
+      </legend>
+      <p class="modal-section__hint">{{ 'students.create.tutorHint' | transloco }}</p>
+
+      <div class="modal__row">
+        <div class="k-field">
+          <label class="k-label" for="sc-tutor-nombre">{{ 'students.create.firstName' | transloco }}</label>
+          <input id="sc-tutor-nombre" class="k-input" type="text" formControlName="tutorNombre" maxlength="100" />
+        </div>
+
+        <div class="k-field">
+          <label class="k-label" for="sc-tutor-apellidos">{{ 'students.create.lastName' | transloco }}</label>
+          <input id="sc-tutor-apellidos" class="k-input" type="text" formControlName="tutorApellidos" maxlength="200" />
+        </div>
+      </div>
+
+      <div class="modal__row">
+        <div class="k-field">
+          <label class="k-label" for="sc-tutor-email">{{ 'students.create.email' | transloco }}</label>
+          <input id="sc-tutor-email" class="k-input" type="email" formControlName="tutorEmail" />
+          @if (fieldError('tutorEmail')) {
+            <p class="k-help students-create__error">{{ 'students.create.errors.invalidEmail' | transloco }}</p>
+          }
+        </div>
+
+        <div class="k-field">
+          <label class="k-label" for="sc-tutor-tel">{{ 'students.create.phone' | transloco }}</label>
+          <input id="sc-tutor-tel" class="k-input" type="tel" formControlName="tutorTelefono" placeholder="+376 ..." />
+        </div>
+      </div>
+
+      <div class="k-field">
+        <label class="k-label" for="sc-tutor-parentesco">{{ 'students.create.relationship' | transloco }}</label>
+        <select id="sc-tutor-parentesco" class="k-select" formControlName="tutorParentesco">
+          <option value="madre">{{ 'students.create.parent.madre' | transloco }}</option>
+          <option value="padre">{{ 'students.create.parent.padre' | transloco }}</option>
+          <option value="tutor_legal">{{ 'students.create.parent.tutor' | transloco }}</option>
+          <option value="abuela">{{ 'students.create.parent.abuela' | transloco }}</option>
+          <option value="abuelo">{{ 'students.create.parent.abuelo' | transloco }}</option>
+          <option value="otro">{{ 'students.create.parent.otro' | transloco }}</option>
+        </select>
+      </div>
+    </fieldset>
+
+    <footer class="modal__foot">
+      <button type="button" class="k-btn k-btn--ghost" (click)="cancel()" [disabled]="saving()">
+        {{ 'common.cancel' | transloco }}
+      </button>
+      <button type="submit" class="k-btn k-btn--primary" [disabled]="saving()">
+        @if (saving()) {
+          <span class="modal-spinner" aria-hidden="true"></span>
+          {{ 'common.saving' | transloco }}
+        } @else {
+          <lucide-icon [img]="SaveIcon" />
+          {{ 'students.create.submit' | transloco }}
+        }
+      </button>
+    </footer>
+  </form>
+</div>

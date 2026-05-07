@@ -1,0 +1,297 @@
+/* ==========================================================================
+   K!dS · Design System — Design Tokens
+   Kids International Preschool Andorra
+   ========================================================================== */
+
+:root {
+  /* ---------- Color: Brand ---------- */
+  --kids-navy:     #1F3A7A;  /* Primary — wordmark, text, structural */
+  --kids-navy-600: #2A4A94;
+  --kids-navy-400: #6A82B8;
+  --kids-navy-200: #C6D1E8;
+  --kids-navy-50:  #EEF2FB;
+
+  --kids-green:    #1F8E5A;  /* Secondary — the "dot" accent, success */
+  --kids-green-400:#5FB88A;
+  --kids-green-100:#D6EEE0;
+
+  /* ---------- Color: Playful accents (logo confetti) ---------- */
+  --kids-sky:      #4FB3E6;
+  --kids-sky-100:  #DCF1FB;
+  --kids-mustard:  #F3B337;
+  --kids-mustard-100:#FDECC5;
+  --kids-pink:     #E85A9B;
+  --kids-pink-100: #FBDAE8;
+  --kids-purple:   #8A4FB8;
+  --kids-purple-100:#E6D9F2;
+  --kids-coral:    #F0704D;
+  --kids-coral-100:#FCDCD0;
+
+  /* ---------- Color: Neutrals ---------- */
+  --kids-ink:      #17213A;  /* Darkest text */
+  --kids-slate:    #4C5773;  /* Secondary text */
+  --kids-muted:    #8490AB;  /* Tertiary / placeholder */
+  --kids-line:     #E3E7F0;  /* Borders, dividers */
+  --kids-surface:  #F7F8FC;  /* Subtle backgrounds */
+  --kids-cream:    #FDF8EE;  /* Warm background, cards */
+  --kids-paper:    #FFFFFF;
+
+  /* ---------- Color: Semantic ---------- */
+  --kids-success:  var(--kids-green);
+  --kids-warning:  var(--kids-mustard);
+  --kids-danger:   #D94A4A;
+  --kids-info:     var(--kids-sky);
+
+  /* ---------- Typography ----------
+     K!dS redesign: Poppins as the single primary typeface for all contexts. */
+  --kids-font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --kids-font-display: "Poppins", sans-serif;
+  --kids-font-ui: "Poppins", sans-serif;
+
+  /* Type scale (rem-based, 1rem = 16px) */
+  --kids-text-xs:   0.75rem;   /* 12 */
+  --kids-text-sm:   0.875rem;  /* 14 */
+  --kids-text-base: 1rem;      /* 16 */
+  --kids-text-md:   1.125rem;  /* 18 */
+  --kids-text-lg:   1.25rem;   /* 20 */
+  --kids-text-xl:   1.5rem;    /* 24 */
+  --kids-text-2xl:  2rem;      /* 32 */
+  --kids-text-3xl:  2.5rem;    /* 40 */
+  --kids-text-4xl:  3.25rem;   /* 52 */
+  --kids-text-5xl:  4.25rem;   /* 68 */
+
+  /* Weights */
+  --kids-w-regular: 400;
+  --kids-w-medium:  500;
+  --kids-w-semi:    600;
+  --kids-w-bold:    700;
+  --kids-w-black:   800;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --kids-space-1:  4px;
+  --kids-space-2:  8px;
+  --kids-space-3:  12px;
+  --kids-space-4:  16px;
+  --kids-space-5:  20px;
+  --kids-space-6:  24px;
+  --kids-space-8:  32px;
+  --kids-space-10: 40px;
+  --kids-space-12: 48px;
+  --kids-space-16: 64px;
+  --kids-space-20: 80px;
+  --kids-space-24: 96px;
+
+  /* ---------- Radius — generous & friendly ---------- */
+  --kids-radius-sm:   8px;
+  --kids-radius-md:   14px;
+  --kids-radius-lg:   20px;
+  --kids-radius-xl:   28px;
+  --kids-radius-2xl:  36px;
+  --kids-radius-pill: 999px;
+
+  /* ---------- Shadows — soft, never harsh ---------- */
+  --kids-shadow-sm: 0 1px 2px rgba(31, 58, 122, 0.06), 0 2px 6px rgba(31, 58, 122, 0.05);
+  --kids-shadow-md: 0 4px 12px rgba(31, 58, 122, 0.08), 0 2px 4px rgba(31, 58, 122, 0.04);
+  --kids-shadow-lg: 0 12px 32px rgba(31, 58, 122, 0.10), 0 4px 8px rgba(31, 58, 122, 0.05);
+  --kids-shadow-xl: 0 24px 60px rgba(31, 58, 122, 0.14), 0 8px 16px rgba(31, 58, 122, 0.06);
+  --kids-shadow-pop: 0 8px 0 var(--kids-navy-200);
+
+  /* ---------- Motion ---------- */
+  --kids-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --kids-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --kids-dur-fast: 120ms;
+  --kids-dur: 220ms;
+  --kids-dur-slow: 420ms;
+
+  color-scheme: light;
+}
+
+/* ==========================================================================
+   Dark theme — overrides applied when ThemeService writes
+   `<html data-theme="dark">`. Brand colours (navy, green, sky, mustard,
+   pink, purple, coral) intentionally keep their identity; only the surface
+   neutrals flip to dark equivalents.
+   ========================================================================== */
+:root[data-theme="dark"] {
+  /* Surfaces */
+  --kids-paper:    #1A1F2E;   /* Cards, modals */
+  --kids-surface:  #11151F;   /* Page background */
+  --kids-cream:    #221F2A;   /* Warm cards (notices, family promo) */
+  --kids-line:     #2A3042;   /* Borders, dividers */
+
+  /* Text */
+  --kids-ink:      #E8ECF5;
+  --kids-slate:    #A6B0C7;
+  --kids-muted:    #7C879F;
+
+  /* Brand-tinted neutrals — desaturated for dark backgrounds */
+  --kids-navy-50:  #1F2738;   /* hover/selected backgrounds */
+  --kids-navy-200: #3A4360;
+  --kids-navy-400: #6A82B8;
+  --kids-navy-600: #5B78C7;
+  --kids-navy:     #B7CCFF;   /* Headings + links read against dark surfaces */
+
+  /* Tinted backgrounds for status badges (kept low-saturation) */
+  --kids-green-100:   #1B3D2C;
+  --kids-mustard-100: #3D2F12;
+  --kids-pink-100:    #3D1F2D;
+  --kids-sky-100:     #122F40;
+  --kids-purple-100:  #2A1F3D;
+  --kids-coral-100:   #3D241B;
+
+  /* Slightly cooler shadows so they read on dark surfaces */
+  --kids-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40), 0 2px 6px rgba(0, 0, 0, 0.30);
+  --kids-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.28);
+  --kids-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55), 0 4px 8px rgba(0, 0, 0, 0.30);
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   Dark theme — surgical overrides for sections that paint a HARD-CODED
+   light gradient/colour as their background. These sections must keep their
+   warm/branded look in dark mode (the alternative is reinventing every hero
+   illustration), but the text inside them needs explicit readable colours
+   so we don't end up with "white-on-white".
+   ========================================================================== */
+:root[data-theme="dark"] {
+
+  /* — Login: institutional aside (light blue gradient + cute illustrations) — */
+  .login-aside,
+  .login-form-wrap {
+    background: var(--kids-paper);  /* dark page */
+  }
+  .login-aside {
+    background: linear-gradient(180deg, #1A2540 0%, #14223D 100%);
+  }
+  .login-aside__title { color: #FFFFFF; }
+  .login-aside__lead,
+  .login-aside__feature span:not(.feat-icon) { color: #B6C3DC; }
+  .login-aside__feature strong { color: #FFFFFF; }
+  .login-aside__chip { background: rgba(79, 179, 230, 0.20); color: #B7CCFF; }
+
+  /* The white form card on the right needs explicit text colours because its
+     own background is now dark. */
+  .login-card { background: var(--kids-paper); }
+  .login-card__title { color: #FFFFFF; }
+  .login-card__lead  { color: #A6B0C7; }
+
+  /* Footer + small links keep readable contrast on dark surface */
+  .login-footer,
+  .login-footer a,
+  .login-help__title { color: #A6B0C7; }
+  .login-help__divider { background: var(--kids-line); }
+
+  /* — Dashboard: hero greeting card with pastel blue→cream→mustard wash — */
+  .dash-hero {
+    background: linear-gradient(115deg, #1B2440 0%, #2A2230 65%, #3D2F12 100%);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .dash-hero__title { color: #FFFFFF; }
+  .dash-hero__lead,
+  .dash-hero__chip,
+  .dash-hero__chip-text strong { color: #E8ECF5; }
+  .dash-hero__chip-sep { color: #7C879F; }
+
+  /* — Help page: hero + cards — */
+  .help-hero {
+    background: linear-gradient(115deg, #1B2440 0%, #2D1F2D 70%, #3D2F12 100%);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .help-hero__title { color: #FFFFFF; }
+  .help-hero__lead  { color: #A6B0C7; }
+  .help-hero__eyebrow { background: var(--kids-paper); color: var(--kids-navy); }
+
+  /* — Profile header (gradient background with avatar + name) — */
+  .profile-header__bg {
+    background: linear-gradient(115deg, #1B2440 0%, #2D1F2D 60%, #3D2F12 100%);
+  }
+
+  /* — Sidebar family promo (mustard cream card) — */
+  .admin-sidebar__family-card {
+    background: linear-gradient(135deg, #2A2316 0%, #3D2F12 100%);
+    border-color: rgba(243, 179, 55, 0.20);
+  }
+  .admin-sidebar__family-title { color: #FFD78F; }
+  .admin-sidebar__family-text  { color: #C9B98A; }
+  .admin-sidebar__family-btn   {
+    background: var(--kids-paper);
+    color: var(--kids-navy);
+    border-color: var(--kids-navy-200);
+    &:hover { background: var(--kids-navy-50); }
+  }
+
+  /* — Profile dropdown popover header (light pastel gradient) — */
+  .popover__profile-head {
+    background: linear-gradient(135deg, #1F2738 0%, #2D1F2D 100%);
+  }
+  .popover__profile-name  { color: #FFFFFF; }
+  .popover__profile-email { color: #A6B0C7; }
+  .popover__profile-role  { background: var(--kids-paper); color: var(--kids-navy); }
+  .popover__avatar        { background: var(--kids-paper); color: var(--kids-navy); }
+
+  /* — Quick action cards: keep their solid brand colour, white text needs
+       no flip. But the inner ::before "icon pill" uses rgba(white, .22) which
+       reads fine on solid colour. Nothing to do. — */
+
+  /* — KPI sparkline grid lines on the dashboard pick up #E3E7F0 from tokens
+       which now resolves to dark; explicit override so the chart stays readable. — */
+  .finance-chart__svg g[stroke="#E3E7F0"] line { stroke: #2A3042; }
+
+  /* — Hard-coded white text on the navy buttons stays white (good). Hard-coded
+       slate / muted hex values inside hover/disabled states inherit fine. — */
+
+  /* — Settings tabs (vertical sticky nav): make sure the inactive ones read — */
+  .settings-tab            { color: #A6B0C7; }
+  .settings-tab:hover      { background: var(--kids-navy-50); color: #FFFFFF; }
+  .settings-tab--active,
+  .settings-tab--active:hover { background: var(--kids-navy); color: #FFFFFF; }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--kids-font-sans);
+  font-size: var(--kids-text-base);
+  color: var(--kids-ink);
+  background: var(--kids-paper);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 220ms ease, color 220ms ease;
+}
+
+/* ---------- Utility type classes for the poster ---------- */
+
+.k-display {
+  font-family: var(--kids-font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  color: var(--kids-navy);
+}
+
+.k-h1 { font-family: var(--kids-font-display); font-size: var(--kids-text-4xl); font-weight: 400; line-height: 1.1; letter-spacing: -0.015em; color: var(--kids-navy); margin: 0; }
+.k-h2 { font-family: var(--kids-font-display); font-size: var(--kids-text-3xl); font-weight: 400; line-height: 1.15; letter-spacing: -0.01em; color: var(--kids-navy); margin: 0; }
+.k-h3 { font-family: var(--kids-font-display); font-size: var(--kids-text-2xl); font-weight: 400; line-height: 1.25; color: var(--kids-navy); margin: 0; }
+.k-h4 { font-family: var(--kids-font-display); font-size: var(--kids-text-xl); font-weight: 400; line-height: 1.3; color: var(--kids-navy); margin: 0; }
+.k-body { font-size: var(--kids-text-base); line-height: 1.6; color: var(--kids-ink); margin: 0; }
+.k-lead { font-size: var(--kids-text-md); line-height: 1.55; color: var(--kids-slate); margin: 0; }
+.k-meta { font-size: var(--kids-text-sm); color: var(--kids-slate); margin: 0; }
+.k-eyebrow {
+  font-family: var(--kids-font-ui);
+  font-size: var(--kids-text-xs);
+  font-weight: var(--kids-w-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kids-green);
+}

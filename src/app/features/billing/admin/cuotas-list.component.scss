@@ -1,0 +1,91 @@
+// ── Cuotas List ───────────────────────────────────────────────────────────────
+
+.filters {
+  display: flex;
+  gap: var(--kids-space-3);
+  flex-wrap: wrap;
+}
+
+.totals-bar {
+  display: flex;
+  gap: var(--kids-space-3);
+  flex-wrap: wrap;
+}
+
+.totals-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--kids-space-3) var(--kids-space-4);
+  background: var(--kids-paper);
+  border: 1px solid var(--kids-line);
+  border-radius: var(--kids-radius-md);
+  min-width: 140px;
+
+  &__label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--kids-slate);
+    font-weight: var(--kids-w-semi);
+  }
+
+  &__value {
+    font-family: var(--kids-font-display);
+    font-size: var(--kids-text-lg);
+    font-weight: var(--kids-w-bold);
+    color: var(--kids-navy);
+  }
+
+  &--warn .totals-chip__value { color: #D97706; }
+  &--ok   .totals-chip__value { color: var(--kids-green); }
+}
+
+// Loading rows
+.loading-rows {
+  display: grid;
+  gap: var(--kids-space-2);
+}
+
+.loading-row-skeleton {
+  height: 52px;
+  border-radius: var(--kids-radius-md);
+  background: linear-gradient(90deg, var(--kids-line) 25%, var(--kids-cream) 50%, var(--kids-line) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// Empty state
+.k-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kids-space-4);
+  padding: var(--kids-space-8) var(--kids-space-4);
+  text-align: center;
+  color: var(--kids-slate);
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    opacity: 0.35;
+  }
+}
+
+// Table column helpers
+.td--concepto {
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.td--amount {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--kids-w-semi);
+}

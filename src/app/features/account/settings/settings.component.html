@@ -1,0 +1,389 @@
+<section class="account-page">
+
+  <nav class="account-breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/a/dashboard">{{ 'nav.home' | transloco }}</a>
+    <lucide-icon [img]="ChevronRightIcon" />
+    <span>{{ 'account.settings.title' | transloco }}</span>
+  </nav>
+
+  <header class="settings-header">
+    <h1 class="settings-header__title">{{ 'account.settings.title' | transloco }}</h1>
+    <p class="settings-header__lead">{{ 'account.settings.lead' | transloco }}</p>
+  </header>
+
+  <!-- Toast -->
+  @if (toast(); as t) {
+    @if (t.kind === 'success') {
+      <div class="k-alert k-alert--success" role="status">
+        <lucide-icon [img]="CheckIcon" />
+        {{ t.msg }}
+      </div>
+    } @else {
+      <div class="k-alert k-alert--danger" role="alert">{{ t.msg }}</div>
+    }
+  }
+
+  <div class="settings-grid">
+    <!-- Tabs (vertical) -->
+    <nav class="settings-tabs" aria-label="Tabs">
+      @for (tab of tabs; track tab.id) {
+        <button
+          type="button"
+          class="settings-tab"
+          [class.settings-tab--active]="activeTab() === tab.id"
+          (click)="setTab(tab.id)"
+        >
+          <lucide-icon [img]="tab.icon" />
+          <span>{{ ('account.settings.tabs.' + tab.id) | transloco }}</span>
+        </button>
+      }
+    </nav>
+
+    <!-- Content -->
+    <div class="settings-content">
+
+      @if (loadingPrefs()) {
+        <article class="kds-card kds-card--padded settings-loading">
+          <span class="settings-loading__spinner" aria-hidden="true"></span>
+          <span>{{ 'account.settings.loading' | transloco }}</span>
+        </article>
+      } @else {
+
+        <!-- ── GENERAL ── -->
+        @if (activeTab() === 'general') {
+          <article class="kds-card kds-card--padded">
+            <header class="settings-section__head">
+              <h2 class="settings-section__title">{{ 'account.settings.general.title' | transloco }}</h2>
+              <p class="settings-section__hint">{{ 'account.settings.general.hint' | transloco }}</p>
+            </header>
+
+            <form [formGroup]="generalForm" class="settings-form" (ngSubmit)="saveGeneral()">
+              <div class="settings-form__row">
+                <div class="k-field">
+                  <label class="k-label" for="set-lang">{{ 'account.settings.general.language' | transloco }}</label>
+                  <select id="set-lang" class="k-select" formControlName="language">
+                    <option value="ca">Català</option>
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                  </select>
+                </div>
+
+                <div class="k-field">
+                  <label class="k-label" for="set-tz">{{ 'account.settings.general.timezone' | transloco }}</label>
+                  <select id="set-tz" class="k-select" formControlName="timezone">
+                    <option value="Europe/Andorra">Europe/Andorra</option>
+                    <option value="Europe/Madrid">Europe/Madrid</option>
+                    <option value="Europe/Paris">Europe/Paris</option>
+                    <option value="UTC">UTC</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="settings-form__row">
+                <div class="k-field">
+                  <label class="k-label" for="set-date">{{ 'account.settings.general.dateFormat' | transloco }}</label>
+                  <select id="set-date" class="k-select" formControlName="date_format">
+                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                  </select>
+                </div>
+
+                <div class="k-field">
+                  <label class="k-label" for="set-week">{{ 'account.settings.general.weekStart' | transloco }}</label>
+                  <select id="set-week" class="k-select" formControlName="week_start">
+                    <option value="monday">{{ 'account.settings.general.monday' | transloco }}</option>
+                    <option value="sunday">{{ 'account.settings.general.sunday' | transloco }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <footer class="settings-form__foot">
+                <button type="submit" class="k-btn k-btn--primary" [disabled]="savingGeneral()">
+                  @if (savingGeneral()) {
+                    <span class="settings-spinner" aria-hidden="true"></span>
+                    {{ 'common.saving' | transloco }}
+                  } @else {
+                    <lucide-icon [img]="CheckIcon" />
+                    {{ 'common.save' | transloco }}
+                  }
+                </button>
+              </footer>
+            </form>
+          </article>
+        }
+
+        <!-- ── NOTIFICATIONS ── -->
+        @if (activeTab() === 'notifications') {
+          <article class="kds-card kds-card--padded">
+            <header class="settings-section__head">
+              <h2 class="settings-section__title">{{ 'account.settings.notif.title' | transloco }}</h2>
+              <p class="settings-section__hint">{{ 'account.settings.notif.hint' | transloco }}</p>
+            </header>
+
+            <form [formGroup]="notifForm" class="settings-form">
+
+              <div class="settings-group">
+                <h3 class="settings-group__title">{{ 'account.settings.notif.emailGroup' | transloco }}</h3>
+
+                <div class="settings-pref">
+                  <div class="settings-pref__copy">
+                    <strong>{{ 'account.settings.notif.items.immediateTitle' | transloco }}</strong>
+                    <small>{{ 'account.settings.notif.items.immediateDesc' | transloco }}</small>
+                  </div>
+                  <label class="k-toggle">
+                    <input type="checkbox" formControlName="email_new" />
+                    <span class="k-toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-pref">
+                  <div class="settings-pref__copy">
+                    <strong>{{ 'account.settings.notif.items.weeklyTitle' | transloco }}</strong>
+                    <small>{{ 'account.settings.notif.items.weeklyDesc' | transloco }}</small>
+                  </div>
+                  <label class="k-toggle">
+                    <input type="checkbox" formControlName="email_weekly" />
+                    <span class="k-toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-pref">
+                  <div class="settings-pref__copy">
+                    <strong>{{ 'account.settings.notif.items.monthlyTitle' | transloco }}</strong>
+                    <small>{{ 'account.settings.notif.items.monthlyDesc' | transloco }}</small>
+                  </div>
+                  <label class="k-toggle">
+                    <input type="checkbox" formControlName="email_monthly" />
+                    <span class="k-toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="settings-group">
+                <h3 class="settings-group__title">{{ 'account.settings.notif.pushGroup' | transloco }}</h3>
+
+                <div class="settings-pref">
+                  <div class="settings-pref__copy"><strong>{{ 'account.settings.notif.items.admissions' | transloco }}</strong></div>
+                  <label class="k-toggle">
+                    <input type="checkbox" formControlName="push_admissions" />
+                    <span class="k-toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-pref">
+                  <div class="settings-pref__copy"><strong>{{ 'account.settings.notif.items.payments' | transloco }}</strong></div>
+                  <label class="k-toggle">
+                    <input type="checkbox" formControlName="push_payments" />
+                    <span class="k-toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-pref">
+                  <div class="settings-pref__copy"><strong>{{ 'account.settings.notif.items.messages' | transloco }}</strong></div>
+                  <label class="k-toggle">
+                    <input type="checkbox" formControlName="push_messages" />
+                    <span class="k-toggle-track"></span>
+                  </label>
+                </div>
+
+                <div class="settings-pref">
+                  <div class="settings-pref__copy"><strong>{{ 'account.settings.notif.items.attendance' | transloco }}</strong></div>
+                  <label class="k-toggle">
+                    <input type="checkbox" formControlName="push_attendance" />
+                    <span class="k-toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+
+              <footer class="settings-form__foot">
+                <button type="button" class="k-btn k-btn--primary" (click)="saveNotifications()" [disabled]="savingNotif()">
+                  @if (savingNotif()) {
+                    <span class="settings-spinner" aria-hidden="true"></span>
+                    {{ 'common.saving' | transloco }}
+                  } @else {
+                    <lucide-icon [img]="CheckIcon" />
+                    {{ 'account.settings.notif.save' | transloco }}
+                  }
+                </button>
+              </footer>
+            </form>
+          </article>
+        }
+
+        <!-- ── SECURITY ── -->
+        @if (activeTab() === 'security') {
+          <article class="kds-card kds-card--padded">
+            <header class="settings-section__head">
+              <h2 class="settings-section__title">{{ 'account.settings.security.title' | transloco }}</h2>
+              <p class="settings-section__hint">{{ 'account.settings.security.hint' | transloco }}</p>
+            </header>
+
+            <form [formGroup]="securityForm" class="settings-form" (ngSubmit)="saveSecurity()">
+              <div class="k-field">
+                <label class="k-label" for="set-old">{{ 'account.settings.security.currentPassword' | transloco }}</label>
+                <div class="settings-pwd">
+                  <input id="set-old" class="k-input" [type]="showOldPwd() ? 'text' : 'password'" formControlName="current_password" autocomplete="current-password" />
+                  <button type="button" class="settings-pwd__toggle" (click)="showOldPwd.set(!showOldPwd())"
+                          [attr.aria-label]="(showOldPwd() ? 'account.settings.security.hide' : 'account.settings.security.show') | transloco">
+                    <lucide-icon [img]="showOldPwd() ? EyeOffIcon : EyeIcon" />
+                  </button>
+                </div>
+              </div>
+
+              <div class="k-field">
+                <label class="k-label" for="set-new">{{ 'account.settings.security.newPassword' | transloco }}</label>
+                <div class="settings-pwd">
+                  <input id="set-new" class="k-input" [type]="showNewPwd() ? 'text' : 'password'" formControlName="new_password" autocomplete="new-password" />
+                  <button type="button" class="settings-pwd__toggle" (click)="showNewPwd.set(!showNewPwd())"
+                          [attr.aria-label]="(showNewPwd() ? 'account.settings.security.hide' : 'account.settings.security.show') | transloco">
+                    <lucide-icon [img]="showNewPwd() ? EyeOffIcon : EyeIcon" />
+                  </button>
+                </div>
+                <p class="k-help">{{ 'account.settings.security.newPasswordHint' | transloco }}</p>
+              </div>
+
+              <div class="k-field">
+                <label class="k-label" for="set-confirm">{{ 'account.settings.security.confirmPassword' | transloco }}</label>
+                <input id="set-confirm" class="k-input" type="password" formControlName="confirm_password" autocomplete="new-password" />
+                @if (securityForm.get('confirm_password')?.hasError('mismatch')) {
+                  <p class="k-help settings-error">{{ 'account.settings.security.mismatch' | transloco }}</p>
+                }
+              </div>
+
+              <footer class="settings-form__foot">
+                <button type="submit" class="k-btn k-btn--primary" [disabled]="savingSecurity()">
+                  @if (savingSecurity()) {
+                    <span class="settings-spinner" aria-hidden="true"></span>
+                    {{ 'account.settings.security.updating' | transloco }}
+                  } @else {
+                    <lucide-icon [img]="ShieldIcon" />
+                    {{ 'account.settings.security.update' | transloco }}
+                  }
+                </button>
+              </footer>
+            </form>
+
+            <hr class="k-divider settings-divider" />
+
+            <div class="settings-sessions">
+              <header class="settings-sessions__head">
+                <div>
+                  <h3 class="settings-group__title">{{ 'account.settings.security.sessionsTitle' | transloco }}</h3>
+                  <p class="settings-section__hint">
+                    @if (sessions().length === 1) {
+                      {{ 'account.settings.security.sessionsCountOne' | transloco: { count: sessions().length } }}
+                    } @else {
+                      {{ 'account.settings.security.sessionsCountMany' | transloco: { count: sessions().length } }}
+                    }
+                  </p>
+                </div>
+                @if (otherSessionsCount() > 0) {
+                  <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="revokeAllOthers()" [disabled]="revokingAllOthers()">
+                    @if (revokingAllOthers()) {
+                      <span class="settings-spinner settings-spinner--dark" aria-hidden="true"></span>
+                      {{ 'account.settings.security.revoking' | transloco }}
+                    } @else {
+                      <lucide-icon [img]="LogOutIcon" />
+                      {{ 'account.settings.security.closeOthers' | transloco: { count: otherSessionsCount() } }}
+                    }
+                  </button>
+                }
+              </header>
+
+              @if (loadingSessions()) {
+                <div class="settings-session settings-session--loading">
+                  <span class="settings-spinner settings-spinner--dark" aria-hidden="true"></span>
+                  <span>{{ 'account.settings.security.loadingSessions' | transloco }}</span>
+                </div>
+              } @else if (sessions().length === 0) {
+                <div class="settings-session settings-session--empty">
+                  <span>{{ 'account.settings.security.noSessions' | transloco }}</span>
+                </div>
+              } @else {
+                @for (s of sessions(); track s.id) {
+                  <div class="settings-session">
+                    <span class="settings-session__icon"><lucide-icon [img]="DeviceIcon" /></span>
+                    <div class="settings-session__body">
+                      <strong>{{ describeDevice(s) }}</strong>
+                      <small>
+                        @if (s.ip_address) { {{ s.ip_address }} · }
+                        {{ 'account.settings.security.startedAgo' | transloco: { time: formatRelativeTime(s.created_at) } }}
+                      </small>
+                    </div>
+                    @if (s.is_current) {
+                      <span class="k-tag k-tag--green">{{ 'common.current' | transloco }}</span>
+                    } @else {
+                      <button
+                        type="button"
+                        class="settings-session__revoke"
+                        (click)="revokeSession(s.id)"
+                        [disabled]="revokingSessionId() === s.id"
+                        [attr.aria-label]="'account.settings.security.revokeSession' | transloco"
+                      >
+                        @if (revokingSessionId() === s.id) {
+                          <span class="settings-spinner settings-spinner--dark" aria-hidden="true"></span>
+                        } @else {
+                          <lucide-icon [img]="TrashIcon" />
+                        }
+                      </button>
+                    }
+                  </div>
+                }
+              }
+            </div>
+          </article>
+        }
+
+        <!-- ── APPEARANCE ── -->
+        @if (activeTab() === 'appearance') {
+          <article class="kds-card kds-card--padded">
+            <header class="settings-section__head">
+              <h2 class="settings-section__title">{{ 'account.settings.appearance.title' | transloco }}</h2>
+              <p class="settings-section__hint">{{ 'account.settings.appearance.hint' | transloco }}</p>
+            </header>
+
+            <div class="theme-grid">
+              <button type="button" class="theme-option" [class.theme-option--active]="theme() === 'light'" (click)="setTheme('light')">
+                <span class="theme-option__preview theme-option__preview--light"></span>
+                <span class="theme-option__label">
+                  <lucide-icon [img]="SunIcon" />
+                  {{ 'account.settings.appearance.light' | transloco }}
+                </span>
+              </button>
+
+              <button type="button" class="theme-option" [class.theme-option--active]="theme() === 'dark'" (click)="setTheme('dark')">
+                <span class="theme-option__preview theme-option__preview--dark"></span>
+                <span class="theme-option__label">
+                  <lucide-icon [img]="MoonIcon" />
+                  {{ 'account.settings.appearance.dark' | transloco }}
+                </span>
+              </button>
+
+              <button type="button" class="theme-option" [class.theme-option--active]="theme() === 'system'" (click)="setTheme('system')">
+                <span class="theme-option__preview theme-option__preview--system"></span>
+                <span class="theme-option__label">
+                  <lucide-icon [img]="MonitorIcon" />
+                  {{ 'account.settings.appearance.system' | transloco }}
+                </span>
+              </button>
+            </div>
+
+            <footer class="settings-form__foot">
+              <button type="button" class="k-btn k-btn--primary" (click)="saveAppearance()" [disabled]="savingAppearance()">
+                @if (savingAppearance()) {
+                  <span class="settings-spinner" aria-hidden="true"></span>
+                  {{ 'common.saving' | transloco }}
+                } @else {
+                  <lucide-icon [img]="CheckIcon" />
+                  {{ 'account.settings.appearance.save' | transloco }}
+                }
+              </button>
+            </footer>
+          </article>
+        }
+
+      }
+    </div>
+  </div>
+</section>

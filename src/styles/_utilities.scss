@@ -1,0 +1,13 @@
+/* Utilidades K!dS — capa adicional sobre tokens y components */
+.k-stack > * + * { margin-top: var(--kids-space-4); }
+.k-row { display: flex; gap: var(--kids-space-4); flex-wrap: wrap; }
+.k-grid { display: grid; gap: var(--kids-space-4); grid-template-columns: repeat(12, minmax(0, 1fr)); }
+@media (max-width: 768px) { .k-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .k-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.k-sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+.k-focus-ring:focus-visible { outline: 3px solid var(--kids-sky); outline-offset: 2px; }
+.k-container { max-width: 1200px; margin-inline: auto; padding-inline: var(--kids-space-6); }
+.k-section { padding-block: var(--kids-space-12); }
+@media (max-width: 768px) { .k-section { padding-block: var(--kids-space-8); } }
+
+/* Fonts are loaded via index.html <link> for performance */

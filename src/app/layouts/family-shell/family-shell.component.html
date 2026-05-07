@@ -1,0 +1,84 @@
+<div class="family-shell" [class.family-shell--menu-open]="menuOpen()">
+
+  <!-- ── Sidebar (dark navy) ──────────────────────────────────────── -->
+  <aside class="family-sidebar" aria-label="Navegació familiar">
+
+    <!-- Brand -->
+    <div class="family-sidebar__brand">
+      <div class="family-sidebar__brand-mark">
+        <kipa-logo [size]="26" />
+      </div>
+      <div class="family-sidebar__brand-text">
+        <span class="family-sidebar__brand-name">K!dS</span>
+        <span class="family-sidebar__brand-sub">Portal de famílies</span>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="family-sidebar__nav" aria-label="Seccions">
+      @for (item of navItems; track item.path) {
+        <a
+          class="family-nav-item"
+          [routerLink]="item.path"
+          routerLinkActive="family-nav-item--active"
+          (click)="closeMenu()"
+        >
+          <lucide-icon [img]="item.icon" class="family-nav-item__icon" />
+          <span class="family-nav-item__label">{{ item.labelKey | transloco }}</span>
+        </a>
+      }
+    </nav>
+
+    <!-- Footer -->
+    <div class="family-sidebar__footer">
+      <kipa-lang-switcher direction="up" [compact]="true" />
+      <button type="button" class="family-logout-btn" (click)="logout()">
+        <lucide-icon [img]="LogOut" />
+        <span>{{ 'nav.logout' | transloco }}</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ──────────────────────────────────────────────────────── -->
+  <div class="family-main">
+
+    <!-- Topbar (mobile + desktop right bar) -->
+    <header class="family-topbar" role="banner">
+      <button
+        type="button"
+        class="family-topbar__toggle kds-icon-btn"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        [attr.aria-label]="'nav.menu' | transloco"
+      >
+        <lucide-icon [img]="menuOpen() ? Close : Menu" />
+      </button>
+
+      <div class="family-topbar__brand">
+        <kipa-logo [size]="24" />
+      </div>
+
+      <div class="family-topbar__spacer"></div>
+
+      <button type="button" class="kds-icon-btn" [attr.aria-label]="'nav.notifications' | transloco">
+        <lucide-icon [img]="Bell" />
+        <span class="kds-dot" aria-hidden="true"></span>
+      </button>
+      <span class="k-avatar k-avatar--sm">{{ userInitials() }}</span>
+    </header>
+
+    <!-- Content -->
+    <main class="family-content" id="main-content">
+      <router-outlet />
+    </main>
+  </div>
+
+  <!-- Mobile scrim -->
+  @if (menuOpen()) {
+    <button
+      class="family-scrim"
+      (click)="closeMenu()"
+      [attr.aria-label]="'nav.closeMenu' | transloco"
+    ></button>
+  }
+</div>

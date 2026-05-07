@@ -1,0 +1,98 @@
+<section class="page kds-page">
+
+  <!-- ── Header ──────────────────────────────────────────────────────── -->
+  <header class="page-header kds-page-header">
+    <div>
+      <h1 class="kds-page-title">Cuotes</h1>
+    </div>
+    <button class="k-btn k-btn--ghost k-btn--icon" (click)="load()" [disabled]="loading()">
+      <lucide-icon [img]="RefreshCw" />
+    </button>
+  </header>
+
+  <!-- ── Filters ─────────────────────────────────────────────────────── -->
+  <div class="filters">
+    <select class="k-select" [(ngModel)]="filterStatus" (change)="load()">
+      <option value="">Tots els estats</option>
+      <option value="pendiente">Pendent</option>
+      <option value="cobrada">Cobrada</option>
+      <option value="en_remesa">En remesa</option>
+      <option value="devuelta">Retornada</option>
+      <option value="pagada_manual">Pagada manual</option>
+      <option value="anulada">Anul·lada</option>
+    </select>
+    <select class="k-select" [(ngModel)]="filterAnio" (change)="load()">
+      @for (y of years; track y) {
+        <option [value]="y">{{ y }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- ── Totals summary ──────────────────────────────────────────────── -->
+  @if (resp(); as r) {
+    <div class="totals-bar">
+      <div class="totals-chip totals-chip--warn">
+        <span class="totals-chip__label">Pendent</span>
+        <span class="totals-chip__value">{{ r.pendiente_total | currency:'EUR':'symbol':'1.2-2' }}</span>
+      </div>
+      <div class="totals-chip totals-chip--ok">
+        <span class="totals-chip__label">Cobrat</span>
+        <span class="totals-chip__value">{{ r.cobrada_total | currency:'EUR':'symbol':'1.2-2' }}</span>
+      </div>
+      <div class="totals-chip">
+        <span class="totals-chip__label">Total</span>
+        <span class="totals-chip__value">{{ r.total }} cuotes</span>
+      </div>
+    </div>
+  }
+
+  <!-- ── Table / states ──────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="loading-rows">
+      @for (n of [1,2,3,4,5]; track n) {
+        <div class="loading-row-skeleton"></div>
+      }
+    </div>
+  } @else if (cuotas().length === 0) {
+    <div class="k-empty-state">
+      <lucide-icon [img]="CheckCircle" class="k-empty-state__icon" />
+      <p>No hi ha cuotes amb aquest filtre.</p>
+    </div>
+  } @else {
+    <div class="table-wrap kds-table-wrap">
+      <table class="kds-table">
+        <thead>
+          <tr>
+            <th>Concepte</th>
+            <th>Període</th>
+            <th>Venciment</th>
+            <th>Import</th>
+            <th>Estat</th>
+            <th>Accions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of cuotas(); track c.id) {
+            <tr>
+              <td class="td--concepto">{{ c.concepto }}</td>
+              <td>{{ c.periodo }}</td>
+              <td>{{ c.vencimiento | date:'dd/MM/yy' }}</td>
+              <td class="td--amount">{{ c.importe_final | currency:'EUR':'symbol':'1.2-2' }}</td>
+              <td>
+                <span [class]="'k-tag ' + statusClass(c.status)">{{ statusLabel(c.status) }}</span>
+              </td>
+              <td>
+                @if (c.status === 'pendiente') {
+                  <button class="k-btn k-btn--ghost k-btn--sm" (click)="markPaid(c)" [disabled]="paying() === c.id">
+                    Marcar cobrada
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</section>

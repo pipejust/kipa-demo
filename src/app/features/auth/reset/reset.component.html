@@ -1,0 +1,101 @@
+<div class="auth-page" role="main">
+  <section class="auth-form-wrap">
+
+    <div class="auth-topbar">
+      <kipa-lang-switcher />
+    </div>
+
+    <div class="auth-card">
+
+      <header class="auth-card__header">
+        <img class="auth-card__logo" src="/assets/branding/kids-logo-color.svg" alt="K!dS" width="200" height="60" />
+
+        @if (success()) {
+          <div class="auth-success">
+            <span class="auth-success__icon"><lucide-icon [img]="CheckCircle" /></span>
+            <h1 class="auth-card__title">{{ 'reset.success.title' | transloco }}</h1>
+            <p class="auth-card__lead">{{ 'reset.success.lead' | transloco }}</p>
+          </div>
+        } @else {
+          <h1 class="auth-card__title">{{ 'reset.title' | transloco }}</h1>
+          <p class="auth-card__lead">{{ 'reset.lead' | transloco }}</p>
+        }
+      </header>
+
+      @if (!success()) {
+        @if (errorMessage(); as msg) {
+          <div class="k-alert k-alert--danger" role="alert"><span>{{ msg }}</span></div>
+        }
+
+        @if (token()) {
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="auth-card__form">
+            <div class="k-field">
+              <label for="rs-pw" class="k-label">{{ 'reset.newPassword' | transloco }}</label>
+              <div class="k-input-wrap">
+                <span class="k-input-icon"><lucide-icon [img]="Lock" /></span>
+                <input
+                  id="rs-pw"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  autocomplete="new-password"
+                  class="k-input k-input--leading"
+                  formControlName="new_password"
+                  [placeholder]="'reset.newPasswordPlaceholder' | transloco"
+                  [attr.aria-invalid]="fieldHasError('new_password')"
+                />
+                <button type="button" class="login-reveal-btn" (click)="togglePassword()"
+                        [attr.aria-label]="(showPassword() ? 'login.hidePassword' : 'login.showPassword') | transloco">
+                  <lucide-icon [img]="showPassword() ? EyeOff : Eye" />
+                </button>
+              </div>
+              @if (fieldHasError('new_password')) {
+                <span class="login-error">{{ 'reset.error.minLength' | transloco }}</span>
+              }
+            </div>
+
+            <div class="k-field">
+              <label for="rs-pw2" class="k-label">{{ 'reset.confirm' | transloco }}</label>
+              <div class="k-input-wrap">
+                <span class="k-input-icon"><lucide-icon [img]="Lock" /></span>
+                <input
+                  id="rs-pw2"
+                  [type]="showConfirm() ? 'text' : 'password'"
+                  autocomplete="new-password"
+                  class="k-input k-input--leading"
+                  formControlName="confirm"
+                  [placeholder]="'reset.confirmPlaceholder' | transloco"
+                  [attr.aria-invalid]="fieldHasError('confirm') || hasMismatch()"
+                />
+                <button type="button" class="login-reveal-btn" (click)="toggleConfirm()"
+                        [attr.aria-label]="(showConfirm() ? 'login.hidePassword' : 'login.showPassword') | transloco">
+                  <lucide-icon [img]="showConfirm() ? EyeOff : Eye" />
+                </button>
+              </div>
+              @if (hasMismatch()) {
+                <span class="login-error">{{ 'reset.error.mismatch' | transloco }}</span>
+              }
+            </div>
+
+            <button type="submit" class="k-btn k-btn--primary k-btn--lg k-btn--block" [disabled]="submitting()">
+              @if (submitting()) {
+                <span class="login-spinner" aria-hidden="true"></span>
+                <span>{{ 'login.submitting' | transloco }}</span>
+              } @else {
+                <span>{{ 'reset.submit' | transloco }}</span>
+                <lucide-icon [img]="ArrowRight" />
+              }
+            </button>
+          </form>
+        }
+      }
+
+      <a class="auth-back" routerLink="/login">
+        <lucide-icon [img]="ArrowLeft" />
+        {{ 'recover.backToLogin' | transloco }}
+      </a>
+    </div>
+
+    <footer class="auth-footer">
+      <span>{{ 'login.footer.rights' | transloco }}</span>
+    </footer>
+  </section>
+</div>

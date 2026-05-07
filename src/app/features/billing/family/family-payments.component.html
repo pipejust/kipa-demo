@@ -1,0 +1,105 @@
+<section class="page kds-page">
+
+  <!-- ── Hero header ─────────────────────────────────────────────────── -->
+  <header class="fam-hero">
+    <span class="fam-eyebrow">Portal família</span>
+    <h1 class="fam-hero__title">Els meus pagaments</h1>
+  </header>
+
+  <!-- ── Summary cards ───────────────────────────────────────────────── -->
+  @if (!loading()) {
+    <div class="summary-cards">
+      <article class="sum-card sum-card--pending">
+        <div class="sum-card__icon">
+          <lucide-icon [img]="Clock" />
+        </div>
+        <div>
+          <span class="sum-card__label">Pendent</span>
+          <span class="sum-card__value">{{ pendienteTotal() | currency:'EUR':'symbol':'1.2-2' }}</span>
+        </div>
+      </article>
+      <article class="sum-card sum-card--paid">
+        <div class="sum-card__icon">
+          <lucide-icon [img]="CheckCircle2" />
+        </div>
+        <div>
+          <span class="sum-card__label">Pagat</span>
+          <span class="sum-card__value">{{ cobradaTotal() | currency:'EUR':'symbol':'1.2-2' }}</span>
+        </div>
+      </article>
+    </div>
+  }
+
+  <!-- ── Cuotes section ──────────────────────────────────────────────── -->
+  <div class="pay-section">
+    <h2 class="pay-section__title">Cuotes</h2>
+
+    @if (loading()) {
+      <div class="loading-rows">
+        @for (n of [1,2,3]; track n) {
+          <div class="loading-row-skeleton"></div>
+        }
+      </div>
+    } @else if (cuotas().length === 0) {
+      <div class="k-empty-state">
+        <lucide-icon [img]="CreditCard" class="k-empty-state__icon" />
+        <p>Encara no tens cuotes assignades.</p>
+      </div>
+    } @else {
+      <ul class="cuota-list">
+        @for (c of cuotas(); track c.id) {
+          <li class="cuota-item">
+            <div class="cuota-item__body">
+              <span class="cuota-item__concepto">{{ c.concepto }}</span>
+              <span class="cuota-item__venc">Venciment: {{ c.vencimiento | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="cuota-item__right">
+              <span class="cuota-item__amount">{{ c.importe_final | currency:'EUR':'symbol':'1.2-2' }}</span>
+              <span [class]="'k-tag ' + statusClass(c.status)">{{ statusLabel(c.status) }}</span>
+              @if (c.status === 'pendiente') {
+                <button class="k-btn k-btn--primary k-btn--sm" (click)="payStripe(c)" [disabled]="paying() === c.id">
+                  <lucide-icon [img]="CreditCard" />
+                  Pagar ara
+                </button>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- ── Rebuts section ─────────────────────────────────────────────── -->
+  <div class="pay-section">
+    <h2 class="pay-section__title">Rebuts</h2>
+
+    @if (loadingRecibos()) {
+      <div class="loading-rows">
+        @for (n of [1,2]; track n) {
+          <div class="loading-row-skeleton"></div>
+        }
+      </div>
+    } @else if (recibos().length === 0) {
+      <p class="pay-empty">Encara no tens rebuts emesos.</p>
+    } @else {
+      <ul class="recibo-list">
+        @for (r of recibos(); track r.id) {
+          <li class="recibo-item">
+            <lucide-icon [img]="FileText" class="recibo-item__icon" />
+            <div class="recibo-item__body">
+              <span class="recibo-item__num">Rebut {{ r.numero }}</span>
+              <span class="recibo-item__date">{{ r.fecha_emision | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <span class="recibo-item__amount">{{ r.importe | currency:'EUR':'symbol':'1.2-2' }}</span>
+            @if (r.pdf_url) {
+              <a class="k-btn k-btn--ghost k-btn--sm" [href]="r.pdf_url" target="_blank" download>
+                <lucide-icon [img]="Download" />
+              </a>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+</section>

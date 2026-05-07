@@ -1,0 +1,242 @@
+<section class="page kds-page">
+
+  <!-- ── Page header ──────────────────────────────────────── -->
+  <header class="page-header kds-page-header">
+    <div>
+      <h1 class="kds-page-title">{{ 'comms.title' | transloco }}</h1>
+      <p class="kds-page-subtitle">{{ 'comms.lead' | transloco }}</p>
+    </div>
+    <button type="button" class="k-btn k-btn--primary" (click)="openCreateDialog()">
+      <lucide-icon [img]="Plus" />
+      {{ 'comms.newBtn' | transloco }}
+    </button>
+  </header>
+
+  <!-- ── 3-panel body ──────────────────────────────────────── -->
+  <div class="comms-body">
+
+    <!-- LEFT: Recent conversations (templates list) -->
+    <aside class="comms-left">
+      <div class="conv-search">
+        <lucide-icon [img]="Search" class="conv-search__icon" />
+        <input type="search" class="conv-search__input" [placeholder]="'comms.searchPlaceholder' | transloco" />
+      </div>
+
+      <div class="conv-list" role="list">
+        @if (loadingTemplates()) {
+          @for (i of [1,2,3]; track i) {
+            <div class="conv-skeleton"></div>
+          }
+        } @else if (templates().length === 0) {
+          <p class="conv-empty">{{ 'comms.noTemplates' | transloco }}</p>
+        } @else {
+          @for (t of templates(); track t.id) {
+            <button type="button"
+                    class="conv-item"
+                    role="listitem"
+                    [class.conv-item--active]="selectedTemplateId() === t.id"
+                    (click)="selectTemplate(t)">
+              <span class="conv-item__avatar">
+                <lucide-icon [img]="channelIcon(t.channel)" />
+              </span>
+              <div class="conv-item__body">
+                <span class="conv-item__name">{{ t.name }}</span>
+                <span class="conv-item__preview">{{ t.subject ?? (t.channel | uppercase) }}</span>
+              </div>
+              <span class="conv-item__tag k-tag tag--info">{{ channelLabel(t.channel) }}</span>
+            </button>
+          }
+        }
+
+        @if (campaigns().length > 0) {
+          <p class="conv-section-label">{{ 'comms.recentCampaigns' | transloco }}</p>
+          @for (c of campaigns(); track c.id) {
+            <div class="conv-item conv-item--campaign" role="listitem">
+              <span class="conv-item__avatar conv-item__avatar--campaign">
+                <lucide-icon [img]="statusIcon(c.status)" />
+              </span>
+              <div class="conv-item__body">
+                <span class="conv-item__name">{{ c.name }}</span>
+                <span class="conv-item__preview">{{ c.total }} destinataris</span>
+              </div>
+              <span [class]="'k-tag ' + statusClass(c.status)">{{ statusLabel(c.status) }}</span>
+            </div>
+          }
+        }
+      </div>
+    </aside>
+
+    <!-- MIDDLE: Message composer -->
+    <div class="comms-middle">
+      <div class="composer">
+        <div class="composer__header">
+          <span class="composer__eyebrow">{{ 'comms.composer.eyebrow' | transloco }}</span>
+          <p class="composer__lead">{{ 'comms.composer.lead' | transloco }}</p>
+        </div>
+
+        <form [formGroup]="templateForm" (ngSubmit)="submitTemplate()" class="composer__form">
+
+          <!-- Subject / name -->
+          <div class="k-field">
+            <label class="k-label">{{ 'comms.composer.nameLabel' | transloco }} *</label>
+            <input class="k-input" formControlName="name" [placeholder]="'comms.composer.namePlaceholder' | transloco" />
+          </div>
+
+          <!-- Channel picker -->
+          <div class="k-field">
+            <label class="k-label">{{ 'comms.composer.channelLabel' | transloco }}</label>
+            <div class="channel-btns">
+              @for (ch of channels; track ch.value) {
+                <label class="channel-btn"
+                       [class.channel-btn--active]="templateForm.get('channel')?.value === ch.value">
+                  <input type="radio" formControlName="channel" [value]="ch.value" />
+                  <lucide-icon [img]="ch.icon" />
+                  {{ ch.label }}
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Email subject (only when email channel selected) -->
+          @if (templateForm.get('channel')?.value === 'email') {
+            <div class="k-field">
+              <label class="k-label">{{ 'comms.composer.subjectLabel' | transloco }}</label>
+              <input class="k-input" formControlName="subject"
+                     [placeholder]="'comms.composer.subjectPlaceholder' | transloco" />
+            </div>
+          }
+
+          <!-- Body -->
+          <div class="k-field">
+            <label class="k-label">{{ 'comms.composer.bodyLabel' | transloco }} *</label>
+            <textarea class="k-textarea composer__textarea"
+                      formControlName="html_body"
+                      rows="8"
+                      [placeholder]="htmlBodyPlaceholder">
+            </textarea>
+          </div>
+
+          @if (formError()) {
+            <div class="k-alert k-alert--danger"><span>{{ formError() }}</span></div>
+          }
+
+          <!-- Actions -->
+          <div class="composer__actions">
+            <button type="button" class="k-btn k-btn--ghost k-btn--sm">
+              <lucide-icon [img]="Clock" />
+              {{ 'comms.composer.schedule' | transloco }}
+            </button>
+            <button type="submit" class="k-btn k-btn--primary"
+                    [disabled]="templateForm.invalid || submitting()">
+              <lucide-icon [img]="Send" />
+              {{ submitting() ? ('comms.composer.sending' | transloco) : ('comms.composer.send' | transloco) }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT: Channels + Stats -->
+    <aside class="comms-right">
+
+      <!-- Channel toggles -->
+      <div class="channels-panel">
+        <h3 class="channels-panel__title">{{ 'comms.channels.title' | transloco }}</h3>
+        <ul class="channel-list">
+          <li class="channel-item">
+            <div class="channel-item__info">
+              <span class="channel-item__icon channel-item__icon--email">
+                <lucide-icon [img]="MailOpen" />
+              </span>
+              <span>Email</span>
+            </div>
+            <label class="toggle" [attr.aria-label]="'Email channel'">
+              <input type="checkbox" checked />
+              <span class="toggle__track"></span>
+            </label>
+          </li>
+          <li class="channel-item">
+            <div class="channel-item__info">
+              <span class="channel-item__icon channel-item__icon--wa">
+                <lucide-icon [img]="MessageCircle" />
+              </span>
+              <span>WhatsApp</span>
+            </div>
+            <label class="toggle" [attr.aria-label]="'WhatsApp channel'">
+              <input type="checkbox" checked />
+              <span class="toggle__track"></span>
+            </label>
+          </li>
+          <li class="channel-item">
+            <div class="channel-item__info">
+              <span class="channel-item__icon channel-item__icon--inapp">
+                <lucide-icon [img]="Bell" />
+              </span>
+              <span>In-app</span>
+            </div>
+            <label class="toggle" [attr.aria-label]="'In-app channel'">
+              <input type="checkbox" />
+              <span class="toggle__track"></span>
+            </label>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-panel">
+        <h3 class="stats-panel__title">{{ 'comms.stats.title' | transloco }}</h3>
+        <div class="stats-grid">
+          <div class="stat-cell">
+            <span class="stat-cell__count">{{ templates().length }}</span>
+            <span class="stat-cell__label">{{ 'comms.stats.templates' | transloco }}</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-cell__count">{{ campaigns().length }}</span>
+            <span class="stat-cell__label">{{ 'comms.stats.campaigns' | transloco }}</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- ── Campaign creation dialog ──────────────────────────── -->
+  @if (showCampaignDialog()) {
+    <div class="dialog-backdrop" (click)="closeCampaignDialog()">
+      <div class="dialog" (click)="$event.stopPropagation()">
+        <h2 class="dialog__title">{{ 'comms.campaignDialog.title' | transloco }}</h2>
+        <p class="dialog__sub">{{ 'comms.campaignDialog.template' | transloco }}: <strong>{{ selectedTemplate()?.name }}</strong></p>
+        <form [formGroup]="campaignForm" (ngSubmit)="submitCampaign()" class="dialog__form">
+          <div class="k-field">
+            <label class="k-label">{{ 'comms.campaignDialog.nameLabel' | transloco }}</label>
+            <input class="k-input" formControlName="name" placeholder="Campanya setembre P3…" />
+          </div>
+          <div class="k-field">
+            <label class="k-label">{{ 'comms.campaignDialog.segmentLabel' | transloco }}</label>
+            <select class="k-select" formControlName="segmentType">
+              <option value="all">{{ 'comms.campaignDialog.segAll' | transloco }}</option>
+              <option value="grade">{{ 'comms.campaignDialog.segGrade' | transloco }}</option>
+            </select>
+          </div>
+          @if (campaignForm.get('segmentType')?.value === 'grade') {
+            <div class="k-field">
+              <label class="k-label">{{ 'comms.campaignDialog.levelsLabel' | transloco }}</label>
+              <input class="k-input" formControlName="levels" placeholder="P3,P4" />
+            </div>
+          }
+          @if (campaignFormError()) {
+            <div class="k-alert k-alert--danger"><span>{{ campaignFormError() }}</span></div>
+          }
+          <div class="dialog__actions">
+            <button type="button" class="k-btn k-btn--ghost" (click)="closeCampaignDialog()">{{ 'comms.cancel' | transloco }}</button>
+            <button type="submit" class="k-btn k-btn--primary" [disabled]="campaignForm.invalid || submitting()">
+              {{ submitting() ? ('comms.creating' | transloco) : ('comms.campaignDialog.create' | transloco) }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+</section>

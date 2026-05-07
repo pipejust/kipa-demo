@@ -1,0 +1,151 @@
+<section class="account-page">
+
+  <!-- Breadcrumb -->
+  <nav class="account-breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/a/dashboard">{{ 'nav.home' | transloco }}</a>
+    <lucide-icon [img]="ChevronRightIcon" />
+    <span>{{ 'account.profile.title' | transloco }}</span>
+  </nav>
+
+  <!-- Header card -->
+  <header class="profile-header">
+    <div class="profile-header__bg" aria-hidden="true"></div>
+    <div class="profile-header__content">
+      <div class="profile-header__avatar-wrap">
+        <span class="profile-header__avatar">{{ initials() }}</span>
+        <button type="button" class="profile-header__avatar-edit" [attr.aria-label]="'account.profile.changePhoto' | transloco">
+          <lucide-icon [img]="CameraIcon" />
+        </button>
+      </div>
+      <div class="profile-header__meta">
+        <h1 class="profile-header__name">{{ auth.currentUser()?.full_name }}</h1>
+        <p class="profile-header__email">{{ auth.currentUser()?.email }}</p>
+        <div class="profile-header__badges">
+          <span class="k-tag k-tag--sky">{{ auth.currentRole() }}</span>
+          <span class="k-tag k-tag--green">{{ 'common.active' | transloco }}</span>
+        </div>
+      </div>
+      @if (!editing()) {
+        <button type="button" class="k-btn k-btn--primary k-btn--sm profile-header__edit" (click)="startEdit()">
+          <lucide-icon [img]="PencilIcon" />
+          {{ 'account.profile.edit' | transloco }}
+        </button>
+      } @else {
+        <div class="profile-header__actions">
+          <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="cancelEdit()">{{ 'common.cancel' | transloco }}</button>
+          <button type="button" class="k-btn k-btn--primary k-btn--sm" (click)="save()">
+            <lucide-icon [img]="CheckIcon" />
+            {{ 'account.profile.save' | transloco }}
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  @if (savedAt()) {
+    <div class="k-alert k-alert--success">
+      <lucide-icon [img]="CheckIcon" />
+      {{ 'account.profile.saved' | transloco }}
+    </div>
+  }
+
+  <!-- Two-column body -->
+  <div class="profile-grid">
+
+    <!-- Personal info -->
+    <article class="kds-card kds-card--padded profile-card">
+      <header class="profile-card__head">
+        <h2 class="profile-card__title">{{ 'account.profile.personalInfo' | transloco }}</h2>
+        <p class="profile-card__hint">{{ 'account.profile.personalInfoHint' | transloco }}</p>
+      </header>
+
+      <form [formGroup]="form" class="profile-form" (ngSubmit)="save()">
+
+        <div class="k-field">
+          <label class="k-label" for="profile-name">{{ 'account.profile.fullName' | transloco }}</label>
+          <input id="profile-name" class="k-input" type="text" formControlName="full_name" [readonly]="!editing()" />
+        </div>
+
+        <div class="k-field">
+          <label class="k-label" for="profile-email">{{ 'account.profile.email' | transloco }}</label>
+          <div class="k-input-wrap">
+            <span class="k-input-icon"><lucide-icon [img]="MailIcon" /></span>
+            <input id="profile-email" class="k-input k-input--leading" type="email" formControlName="email" />
+          </div>
+          <p class="k-help">{{ 'account.profile.emailNote' | transloco }}</p>
+        </div>
+
+        <div class="k-field">
+          <label class="k-label" for="profile-phone">{{ 'account.profile.phone' | transloco }}</label>
+          <div class="k-input-wrap">
+            <span class="k-input-icon"><lucide-icon [img]="PhoneIcon" /></span>
+            <input id="profile-phone" class="k-input k-input--leading" type="tel"
+                   formControlName="phone" [readonly]="!editing()" placeholder="+376 ..." />
+          </div>
+        </div>
+
+        <div class="profile-form__row">
+          <div class="k-field">
+            <label class="k-label" for="profile-lang">{{ 'account.profile.language' | transloco }}</label>
+            <div class="k-input-wrap">
+              <span class="k-input-icon"><lucide-icon [img]="GlobeIcon" /></span>
+              <select id="profile-lang" class="k-select k-select--leading" formControlName="language" [attr.disabled]="!editing() ? '' : null">
+                <option value="ca">Català</option>
+                <option value="es">Español</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="k-field">
+            <label class="k-label" for="profile-tz">{{ 'account.profile.timezone' | transloco }}</label>
+            <div class="k-input-wrap">
+              <span class="k-input-icon"><lucide-icon [img]="ClockIcon" /></span>
+              <select id="profile-tz" class="k-select k-select--leading" formControlName="timezone" [attr.disabled]="!editing() ? '' : null">
+                <option value="Europe/Andorra">Europe/Andorra</option>
+                <option value="Europe/Madrid">Europe/Madrid</option>
+                <option value="Europe/Paris">Europe/Paris</option>
+                <option value="UTC">UTC</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </article>
+
+    <!-- Side: account summary -->
+    <aside class="profile-side">
+      <article class="kds-card kds-card--padded">
+        <h3 class="profile-side__title">{{ 'account.profile.summary' | transloco }}</h3>
+        <dl class="profile-side__list">
+          <div>
+            <dt>{{ 'account.profile.centre' | transloco }}</dt>
+            <dd>{{ auth.currentTenant()?.name || '—' }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'account.profile.role' | transloco }}</dt>
+            <dd class="profile-side__capitalize">{{ auth.currentRole() }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'account.profile.status' | transloco }}</dt>
+            <dd><span class="k-tag k-tag--green">{{ 'common.active' | transloco }}</span></dd>
+          </div>
+          <div>
+            <dt>{{ 'account.profile.userId' | transloco }}</dt>
+            <dd class="profile-side__mono">{{ auth.currentUser()?.id?.slice(0, 8) }}…</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="kds-card kds-card--padded">
+        <h3 class="profile-side__title">{{ 'account.profile.security' | transloco }}</h3>
+        <p class="profile-side__lead">{{ 'account.profile.securityHint' | transloco }}</p>
+        <a routerLink="/a/settings" class="k-btn k-btn--ghost k-btn--block">
+          {{ 'account.profile.goToSettings' | transloco }}
+          <lucide-icon [img]="ChevronRightIcon" />
+        </a>
+      </article>
+    </aside>
+
+  </div>
+</section>

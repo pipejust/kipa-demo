@@ -1,0 +1,89 @@
+<section class="page kds-page">
+
+  <!-- ── Hero greeting with illustration ─────────────────────────────── -->
+  <header class="fam-hero">
+    <div class="fam-hero__text">
+      <h1 class="fam-hero__title">{{ greeting() | transloco }}, {{ firstName() }}! <span class="fam-hero__emoji">👋</span></h1>
+      <p class="fam-hero__lead">{{ 'family.lead' | transloco }}</p>
+    </div>
+    <div class="fam-hero__art" aria-hidden="true">
+      <span class="hero-shape hero-shape--sun"></span>
+      <span class="hero-shape hero-shape--rainbow"></span>
+      <span class="hero-shape hero-shape--cloud"></span>
+    </div>
+  </header>
+
+  <!-- ── Top row: 3 primary cards ────────────────────────────────────── -->
+  <div class="fam-row fam-row--primary">
+
+    <!-- My kids -->
+    <article class="fam-card fam-card--kids">
+      <header class="fam-card__head">
+        <span class="fam-card__icon fam-card__icon--sky">
+          <lucide-icon [img]="Cap" />
+        </span>
+        <h2 class="fam-card__title">{{ 'family.linkedStudents' | transloco }}</h2>
+      </header>
+
+      @if (alumnesLoading()) {
+        <div class="kid-skeleton-list">
+          <div class="kid-skeleton-row"></div>
+          <div class="kid-skeleton-row"></div>
+        </div>
+      } @else if (alumnes().length === 0) {
+        <p class="fam-card__empty">{{ 'family.noStudents' | transloco }}</p>
+        <span class="k-tag">{{ 'family.noneYet' | transloco }}</span>
+      } @else {
+        <ul class="kid-list">
+          @for (alumne of alumnes(); track alumne.id) {
+            <li>
+              <a class="kid-row" [routerLink]="['/f/alumno', alumne.id]">
+                <span class="kid-row__avatar">
+                  {{ alumne.nombre.charAt(0) }}{{ alumne.apellidos.charAt(0) }}
+                </span>
+                <span class="kid-row__info">
+                  <span class="kid-row__name">{{ alumne.nombre }} {{ alumne.apellidos }}</span>
+                  <span class="kid-row__status kid-row__status--{{ alumne.status }}">
+                    {{ alumne.status }}
+                  </span>
+                </span>
+                <lucide-icon [img]="ChevronRight" class="kid-row__arrow" />
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </article>
+
+    <!-- Continue admission CTA -->
+    <article class="fam-card fam-card--admission">
+      <header class="fam-card__head">
+        <span class="fam-card__icon fam-card__icon--mustard">
+          <lucide-icon [img]="FilePlus" />
+        </span>
+        <h2 class="fam-card__title">{{ 'family.startAdmission' | transloco }}</h2>
+      </header>
+      <p class="fam-card__lead">{{ 'family.startAdmissionLead' | transloco }}</p>
+      <a class="k-btn k-btn--primary fam-card__cta" routerLink="/f/admisions">
+        <lucide-icon [img]="FilePlus" />
+        {{ 'family.startButton' | transloco }}
+      </a>
+    </article>
+
+    <!-- Contact card -->
+    <article class="fam-card fam-card--contact">
+      <header class="fam-card__head">
+        <span class="fam-card__icon fam-card__icon--coral">
+          <lucide-icon [img]="Mail" />
+        </span>
+        <h2 class="fam-card__title">{{ 'family.contact' | transloco }}</h2>
+      </header>
+      <p class="fam-card__lead">{{ 'family.contactLead' | transloco }}</p>
+      <a class="k-btn k-btn--ghost k-btn--sm fam-card__cta" href="mailto:hola@kipa.app">
+        {{ 'family.contactButton' | transloco }}
+      </a>
+    </article>
+
+  </div>
+
+</section>

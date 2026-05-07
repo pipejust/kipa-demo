@@ -1,0 +1,132 @@
+<section class="account-page">
+
+  <nav class="account-breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/a/dashboard">{{ 'nav.home' | transloco }}</a>
+    <lucide-icon [img]="ChevronRightIcon" />
+    <span>{{ 'account.help.title' | transloco }}</span>
+  </nav>
+
+  <!-- Hero with search -->
+  <header class="help-hero">
+    <div class="help-hero__content">
+      <span class="help-hero__eyebrow">
+        <lucide-icon [img]="LightbulbIcon" />
+        {{ 'account.help.eyebrow' | transloco }}
+      </span>
+      <h1 class="help-hero__title">{{ 'account.help.heroTitle' | transloco }}</h1>
+      <p class="help-hero__lead">{{ 'account.help.heroLead' | transloco }}</p>
+
+      <div class="help-hero__search">
+        <lucide-icon [img]="SearchIcon" class="help-hero__search-icon" />
+        <input
+          type="search"
+          class="help-hero__search-input"
+          [(ngModel)]="query"
+          [placeholder]="'account.help.searchPlaceholder' | transloco"
+          [attr.aria-label]="'account.help.searchPlaceholder' | transloco"
+        />
+      </div>
+    </div>
+  </header>
+
+  <!-- Resource cards -->
+  <section class="help-resources">
+    @for (r of resources; track r.titleKey) {
+      <article class="help-resource" [class]="'help-resource--' + r.color">
+        <span class="help-resource__icon">
+          <lucide-icon [img]="r.icon" />
+        </span>
+        <div class="help-resource__body">
+          <h3 class="help-resource__title">{{ r.titleKey | transloco }}</h3>
+          <p class="help-resource__desc">{{ r.descKey | transloco }}</p>
+        </div>
+        <lucide-icon [img]="ExternalLinkIcon" class="help-resource__arrow" />
+      </article>
+    }
+  </section>
+
+  <!-- FAQ + Contact -->
+  <div class="help-grid">
+
+    <!-- FAQ accordion -->
+    <article class="kds-card kds-card--padded help-faq">
+      <header class="help-faq__head">
+        <h2 class="help-faq__title">{{ 'account.help.faq.title' | transloco }}</h2>
+        <p class="help-faq__lead">
+          @if (filteredFaqs().length === 1) {
+            {{ 'account.help.faq.result' | transloco: { count: filteredFaqs().length } }}
+          } @else {
+            {{ 'account.help.faq.results' | transloco: { count: filteredFaqs().length } }}
+          }
+        </p>
+      </header>
+
+      @if (filteredFaqs().length === 0) {
+        <div class="help-faq__empty">
+          <p [innerHTML]="'account.help.faq.emptyA' | transloco: { query: query() }"></p>
+          <p>{{ 'account.help.faq.emptyB' | transloco }}</p>
+        </div>
+      } @else {
+        <ul class="help-faq__list">
+          @for (f of filteredFaqs(); track f.q; let i = $index) {
+            <li class="help-faq__item" [class.help-faq__item--open]="openFaq() === i">
+              <button type="button" class="help-faq__q" (click)="toggleFaq(i)" [attr.aria-expanded]="openFaq() === i">
+                <span class="help-faq__topic">{{ f.topic }}</span>
+                <span class="help-faq__question">{{ f.q }}</span>
+                <lucide-icon [img]="ChevronDownIcon" class="help-faq__caret" />
+              </button>
+              @if (openFaq() === i) {
+                <p class="help-faq__a">{{ f.a }}</p>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </article>
+
+    <!-- Contact panel -->
+    <aside class="help-side">
+      <article class="kds-card kds-card--padded help-contact">
+        <h3 class="help-side__title">{{ 'account.help.side.title' | transloco }}</h3>
+        <p class="help-side__lead">{{ 'account.help.side.lead' | transloco }}</p>
+
+        <button type="button" class="k-btn k-btn--primary k-btn--block" (click)="contactSupport()">
+          <lucide-icon [img]="MailIcon" />
+          {{ 'account.help.side.writeSupport' | transloco }}
+        </button>
+
+        <a href="tel:+376123456" class="k-btn k-btn--ghost k-btn--block">
+          <lucide-icon [img]="PhoneIcon" />
+          +376 123 456
+        </a>
+      </article>
+
+      <article class="kds-card kds-card--padded">
+        <h3 class="help-side__title">{{ 'account.help.side.statusTitle' | transloco }}</h3>
+        <ul class="help-status">
+          <li>
+            <span class="help-status__dot help-status__dot--ok"></span>
+            <span>{{ 'account.help.side.platform' | transloco }}</span>
+            <span class="help-status__label">{{ 'account.help.side.operational' | transloco }}</span>
+          </li>
+          <li>
+            <span class="help-status__dot help-status__dot--ok"></span>
+            <span>{{ 'account.help.side.api' | transloco }}</span>
+            <span class="help-status__label">{{ 'account.help.side.operational' | transloco }}</span>
+          </li>
+          <li>
+            <span class="help-status__dot help-status__dot--ok"></span>
+            <span>{{ 'account.help.side.sepa' | transloco }}</span>
+            <span class="help-status__label">{{ 'account.help.side.operational' | transloco }}</span>
+          </li>
+          <li>
+            <span class="help-status__dot help-status__dot--ok"></span>
+            <span>{{ 'account.help.side.notifs' | transloco }}</span>
+            <span class="help-status__label">{{ 'account.help.side.operational' | transloco }}</span>
+          </li>
+        </ul>
+      </article>
+    </aside>
+  </div>
+
+</section>

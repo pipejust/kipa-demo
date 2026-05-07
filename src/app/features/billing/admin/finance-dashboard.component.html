@@ -1,0 +1,114 @@
+<section class="page kds-page">
+
+  <!-- ── Page header ──────────────────────────────────────────────────── -->
+  <header class="page-header kds-page-header">
+    <div>
+      <h1 class="kds-page-title">Finances</h1>
+      <p class="kds-page-subtitle">Any escolar {{ anioEscolar() }}</p>
+    </div>
+    <div class="header-actions">
+      <select class="k-select" [value]="anioEscolar()" (change)="changeYear($event)">
+        @for (y of years; track y) {
+          <option [value]="y">{{ y }}</option>
+        }
+      </select>
+      <button class="k-btn k-btn--ghost k-btn--icon" (click)="load()" [disabled]="loading()">
+        <lucide-icon [img]="RefreshCw" />
+      </button>
+    </div>
+  </header>
+
+  <!-- ── KPI cards ─────────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="kpi-grid">
+      @for (n of [1,2,3,4]; track n) {
+        <div class="kpi-skeleton"></div>
+      }
+    </div>
+  } @else {
+    @if (summary(); as s) {
+    <div class="kpi-grid">
+
+      <article class="kpi-card kpi-card--pending">
+        <div class="kpi-card__icon">
+          <lucide-icon [img]="Clock" />
+        </div>
+        <div class="kpi-card__body">
+          <span class="kpi-card__label">Pendent de cobrar</span>
+          <span class="kpi-card__value">{{ s.importe_pendiente | currency:'EUR':'symbol':'1.2-2':'ca' }}</span>
+          <span class="kpi-card__sub">{{ s.cuotas_pendientes }} cuotes</span>
+        </div>
+      </article>
+
+      <article class="kpi-card kpi-card--collected">
+        <div class="kpi-card__icon">
+          <lucide-icon [img]="TrendingUp" />
+        </div>
+        <div class="kpi-card__body">
+          <span class="kpi-card__label">Cobrat</span>
+          <span class="kpi-card__value">{{ s.importe_cobrado | currency:'EUR':'symbol':'1.2-2':'ca' }}</span>
+          <span class="kpi-card__sub">{{ s.cuotas_cobradas }} cuotes</span>
+        </div>
+      </article>
+
+      <article class="kpi-card kpi-card--returned">
+        <div class="kpi-card__icon">
+          <lucide-icon [img]="TrendingDown" />
+        </div>
+        <div class="kpi-card__body">
+          <span class="kpi-card__label">Devolucions</span>
+          <span class="kpi-card__value">{{ s.importe_devuelto | currency:'EUR':'symbol':'1.2-2':'ca' }}</span>
+          <span class="kpi-card__sub">{{ s.cuotas_devueltas }} cuotes</span>
+        </div>
+      </article>
+
+      <article class="kpi-card kpi-card--remesas">
+        <div class="kpi-card__icon">
+          <lucide-icon [img]="FileText" />
+        </div>
+        <div class="kpi-card__body">
+          <span class="kpi-card__label">Remeses SEPA</span>
+          <span class="kpi-card__value">{{ s.remesas_total }}</span>
+          <span class="kpi-card__sub">generats aquest any</span>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- ── Quick-nav links ──────────────────────────────────────────────── -->
+    <nav class="section-links" aria-label="Seccions de finances">
+      <a class="section-link" routerLink="/a/finanzas/cuotas">
+        <span class="section-link__icon section-link__icon--warn">
+          <lucide-icon [img]="Clock" />
+        </span>
+        <span class="section-link__label">Gestionar cuotes</span>
+      </a>
+      <a class="section-link" routerLink="/a/finanzas/remesas">
+        <span class="section-link__icon section-link__icon--info">
+          <lucide-icon [img]="FileText" />
+        </span>
+        <span class="section-link__label">Remeses SEPA</span>
+      </a>
+      <a class="section-link" routerLink="/a/finanzas/recibos">
+        <span class="section-link__icon section-link__icon--ok">
+          <lucide-icon [img]="TrendingUp" />
+        </span>
+        <span class="section-link__label">Rebuts</span>
+      </a>
+      <a class="section-link" routerLink="/a/finanzas/devoluciones">
+        <span class="section-link__icon section-link__icon--error">
+          <lucide-icon [img]="AlertTriangle" />
+        </span>
+        <span class="section-link__label">Devolucions pendents</span>
+      </a>
+      <a class="section-link" routerLink="/a/finanzas/tarifas">
+        <span class="section-link__icon section-link__icon--muted">
+          <lucide-icon [img]="FileText" />
+        </span>
+        <span class="section-link__label">Tarifes</span>
+      </a>
+    </nav>
+    }
+  }
+
+</section>

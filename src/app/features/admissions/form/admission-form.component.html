@@ -1,0 +1,392 @@
+<section class="page kds-page">
+
+  <!-- ── Success screen ─────────────────────────────────────── -->
+  @if (success()) {
+    <div class="success">
+      <div class="success__icon">
+        <lucide-icon [img]="Done" />
+      </div>
+      <h1 class="success__title">{{ 'admissionForm.success.title' | transloco }}</h1>
+      <p class="success__lead">{{ 'admissionForm.success.lead' | transloco }}</p>
+      <div class="success__actions">
+        <button type="button" class="k-btn k-btn--primary" (click)="goToList()">
+          {{ 'admissionForm.success.viewAll' | transloco }}
+        </button>
+      </div>
+    </div>
+
+  } @else {
+
+    <!-- ── Wizard topbar ─────────────────────────────────────── -->
+    <div class="wizard-topbar">
+      <a class="back-link" routerLink="/a/admissions">
+        <lucide-icon [img]="ArrowLeft" />
+        <span>{{ 'admissionForm.backLink' | transloco }}</span>
+      </a>
+      <div class="wizard-topbar__right">
+        @if (lastSavedAt(); as t) {
+          <span class="autosave">
+            <lucide-icon [img]="Save" />
+            {{ 'admissionForm.savedAt' | transloco }} {{ t | date: 'shortTime' }}
+          </span>
+        } @else if (saving()) {
+          <span class="autosave">{{ 'admissionForm.saving' | transloco }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- ── Page heading ──────────────────────────────────────── -->
+    <div class="wizard-heading">
+      <span class="eyebrow">{{ 'admissionForm.eyebrow' | transloco }}</span>
+      <h1 class="wizard-heading__title">{{ 'admissionForm.title' | transloco }}</h1>
+      <p class="wizard-heading__lead">{{ 'admissionForm.lead' | transloco }}</p>
+    </div>
+
+    <!-- ── Horizontal stepper ────────────────────────────────── -->
+    <nav class="stepper-nav" [attr.aria-label]="'admissionForm.stepperLabel' | transloco">
+      <ol class="stepper">
+        @for (s of steps; track s.index) {
+          <li class="stepper__item"
+              [class.stepper__item--current]="s.index === currentStep()"
+              [class.stepper__item--done]="isStepCompleted(s.index)"
+              [class.stepper__item--error]="hasStepError(s.index)">
+            <button type="button" class="stepper__dot"
+                    (click)="goToStep(s.index)"
+                    [attr.aria-current]="s.index === currentStep() ? 'step' : null">
+              @if (isStepCompleted(s.index)) {
+                <lucide-icon [img]="Check" />
+              } @else {
+                {{ s.index + 1 }}
+              }
+            </button>
+            <span class="stepper__label">{{ s.title }}</span>
+          </li>
+        }
+      </ol>
+    </nav>
+
+    <!-- ── Error banner ──────────────────────────────────────── -->
+    @if (error(); as msg) {
+      <div class="k-alert k-alert--danger"><span>{{ msg }}</span></div>
+    }
+
+    <!-- ── Wizard body (form + sidebar) ─────────────────────── -->
+    <div class="wizard-body">
+
+      <!-- Left: main form panel -->
+      <div class="wizard-main">
+        <article class="step-card">
+
+          <!-- Step identity header -->
+          <header class="step-head">
+            <span class="step-head__num" aria-hidden="true">{{ currentStep() + 1 }}</span>
+            <div class="step-head__text">
+              <h2 class="step-head__title">{{ stepTitle() }}</h2>
+              <p class="step-head__hint">{{ stepHint() }}</p>
+            </div>
+          </header>
+
+          <!-- Step form content -->
+          <div class="step-body">
+            @switch (currentStep()) {
+
+              @case (0) {
+                <form [formGroup]="alumnoForm" class="grid">
+                  <div class="k-field">
+                    <label class="k-label">{{ 'admissionForm.fields.name' | transloco }} *</label>
+                    <input class="k-input" formControlName="nombre" />
+                  </div>
+                  <div class="k-field">
+                    <label class="k-label">{{ 'admissionForm.fields.surnames' | transloco }} *</label>
+                    <input class="k-input" formControlName="apellidos" />
+                  </div>
+                  <div class="k-field">
+                    <label class="k-label">{{ 'admissionForm.fields.birthdate' | transloco }} *</label>
+                    <input class="k-input" type="date" formControlName="fecha_nacimiento" />
+                  </div>
+                  <div class="k-field">
+                    <label class="k-label">{{ 'admissionForm.fields.gender' | transloco }} *</label>
+                    <div class="gender-toggle">
+                      <label class="gender-opt" [class.gender-opt--active]="alumnoForm.get('genero')?.value === 'M'">
+                        <input type="radio" formControlName="genero" value="M" />
+                        {{ 'admissionForm.genders.M' | transloco }}
+                      </label>
+                      <label class="gender-opt" [class.gender-opt--active]="alumnoForm.get('genero')?.value === 'F'">
+                        <input type="radio" formControlName="genero" value="F" />
+                        {{ 'admissionForm.genders.F' | transloco }}
+                      </label>
+                      <label class="gender-opt" [class.gender-opt--active]="alumnoForm.get('genero')?.value === 'X'">
+                        <input type="radio" formControlName="genero" value="X" />
+                        {{ 'admissionForm.genders.X' | transloco }}
+                      </label>
+                    </div>
+                  </div>
+                  <div class="k-field grid--full">
+                    <label class="k-label">{{ 'admissionForm.fields.level' | transloco }} *</label>
+                    <select class="k-select" formControlName="nivel">
+                      <option value="">{{ 'admissionForm.select' | transloco }}</option>
+                      <option value="P0">P0 (Bressol)</option>
+                      <option value="P1">P1 (1 any)</option>
+                      <option value="P2">P2 (2 anys)</option>
+                      <option value="P3">P3 (3 anys)</option>
+                      <option value="P4">P4 (4 anys)</option>
+                      <option value="P5">P5 (5 anys)</option>
+                    </select>
+                  </div>
+                </form>
+              }
+
+              @case (1) {
+                <form [formGroup]="tutor1Form" class="grid">
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.name' | transloco }} *</label><input class="k-input" formControlName="nombre" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.surnames' | transloco }} *</label><input class="k-input" formControlName="apellidos" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.email' | transloco }} *</label><input class="k-input" type="email" formControlName="email" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.phone' | transloco }} *</label><input class="k-input" formControlName="telefono" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.dni' | transloco }}</label><input class="k-input" formControlName="dni" /></div>
+                  <div class="k-field">
+                    <label class="k-label">{{ 'admissionForm.fields.relationship' | transloco }} *</label>
+                    <select class="k-select" formControlName="parentesco">
+                      <option value="">{{ 'admissionForm.select' | transloco }}</option>
+                      <option value="madre">{{ 'admissionForm.relationships.mother' | transloco }}</option>
+                      <option value="padre">{{ 'admissionForm.relationships.father' | transloco }}</option>
+                      <option value="tutor">{{ 'admissionForm.relationships.guardian' | transloco }}</option>
+                      <option value="otro">{{ 'admissionForm.relationships.other' | transloco }}</option>
+                    </select>
+                  </div>
+                </form>
+              }
+
+              @case (2) {
+                <form [formGroup]="tutor2Form" class="grid">
+                  <p class="step-note grid--full">{{ 'admissionForm.tutor2Optional' | transloco }}</p>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.name' | transloco }}</label><input class="k-input" formControlName="nombre" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.surnames' | transloco }}</label><input class="k-input" formControlName="apellidos" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.email' | transloco }}</label><input class="k-input" type="email" formControlName="email" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.phone' | transloco }}</label><input class="k-input" formControlName="telefono" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.dni' | transloco }}</label><input class="k-input" formControlName="dni" /></div>
+                  <div class="k-field">
+                    <label class="k-label">{{ 'admissionForm.fields.relationship' | transloco }}</label>
+                    <select class="k-select" formControlName="parentesco">
+                      <option value="">—</option>
+                      <option value="madre">{{ 'admissionForm.relationships.mother' | transloco }}</option>
+                      <option value="padre">{{ 'admissionForm.relationships.father' | transloco }}</option>
+                      <option value="tutor">{{ 'admissionForm.relationships.guardian' | transloco }}</option>
+                      <option value="otro">{{ 'admissionForm.relationships.other' | transloco }}</option>
+                    </select>
+                  </div>
+                </form>
+              }
+
+              @case (3) {
+                <form [formGroup]="medicalForm" class="grid">
+                  <div class="k-field grid--full">
+                    <label class="k-label">{{ 'admissionForm.fields.allergies' | transloco }}</label>
+                    <textarea class="k-textarea" formControlName="alergias" placeholder="Cap al·lèrgia coneguda…"></textarea>
+                  </div>
+                  <div class="k-field grid--full">
+                    <label class="k-label">{{ 'admissionForm.fields.medication' | transloco }}</label>
+                    <textarea class="k-textarea" formControlName="medicacion" placeholder="Si pren alguna medicació de manera habitual…"></textarea>
+                  </div>
+                  <div class="k-field">
+                    <label class="k-label">{{ 'admissionForm.fields.bloodType' | transloco }}</label>
+                    <select class="k-select" formControlName="grupo_sanguineo">
+                      <option value="">—</option>
+                      <option>A+</option><option>A-</option>
+                      <option>B+</option><option>B-</option>
+                      <option>AB+</option><option>AB-</option>
+                      <option>O+</option><option>O-</option>
+                    </select>
+                  </div>
+                  <div class="k-field">
+                    <label class="k-label">{{ 'admissionForm.fields.doctor' | transloco }}</label>
+                    <input class="k-input" formControlName="medico" />
+                  </div>
+                </form>
+              }
+
+              @case (4) {
+                <form [formGroup]="emergencyForm" class="grid">
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.emergencyContact' | transloco }} *</label><input class="k-input" formControlName="contacto" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'admissionForm.fields.phone' | transloco }} *</label><input class="k-input" formControlName="telefono" /></div>
+                  <div class="k-field grid--full"><label class="k-label">{{ 'admissionForm.fields.emergencyRelation' | transloco }}</label><input class="k-input" formControlName="relacion" placeholder="Ex: àvia, padrina, oncle…" /></div>
+                </form>
+              }
+
+              @case (5) {
+                <form [formGroup]="consentsForm" class="consents">
+                  <label class="consent">
+                    <input type="checkbox" formControlName="fotos" />
+                    <span class="consent__check"></span>
+                    <span class="consent__body">
+                      <strong>{{ 'admissionForm.consents.photosTitle' | transloco }}</strong>
+                      <small>{{ 'admissionForm.consents.photosDesc' | transloco }}</small>
+                    </span>
+                  </label>
+                  <label class="consent">
+                    <input type="checkbox" formControlName="datos" />
+                    <span class="consent__check"></span>
+                    <span class="consent__body">
+                      <strong>{{ 'admissionForm.consents.dataTitle' | transloco }}</strong>
+                      <small>{{ 'admissionForm.consents.dataDesc' | transloco }}</small>
+                    </span>
+                  </label>
+                  <label class="consent">
+                    <input type="checkbox" formControlName="reglamento" />
+                    <span class="consent__check"></span>
+                    <span class="consent__body">
+                      <strong>{{ 'admissionForm.consents.rulesTitle' | transloco }}</strong>
+                      <small>{{ 'admissionForm.consents.rulesDesc' | transloco }}</small>
+                    </span>
+                  </label>
+                </form>
+              }
+
+              @case (6) {
+                <ul class="docs">
+                  @for (doc of REQUIRED_DOCUMENTS; track doc.key) {
+                    <li class="doc">
+                      <div class="doc__body">
+                        <span class="doc__name">{{ doc.label }}</span>
+                        <span class="doc__hint">{{ doc.description }}</span>
+                        @if (documents()[doc.key]; as upload) {
+                          @if (upload.uploaded) {
+                            <span class="doc__filename">
+                              <lucide-icon [img]="FileCheck" />
+                              {{ upload.filename || ('admissionForm.uploaded' | transloco) }}
+                            </span>
+                          }
+                        }
+                      </div>
+                      <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="promptUpload(doc.key)">
+                        <lucide-icon [img]="Upload" />
+                        {{ documents()[doc.key] && documents()[doc.key].uploaded ? ('admissionForm.replace' | transloco) : ('admissionForm.upload' | transloco) }}
+                      </button>
+                    </li>
+                  }
+                </ul>
+                <input #fileInput type="file" hidden (change)="onFileChosen($event)" accept="image/*,application/pdf" />
+              }
+
+              @case (7) {
+                <div class="review">
+                  <section>
+                    <h3>{{ 'admissionForm.review.student' | transloco }}</h3>
+                    <dl>
+                      <div><dt>{{ 'admissionForm.review.name' | transloco }}</dt><dd>{{ alumnoForm.value.nombre }} {{ alumnoForm.value.apellidos }}</dd></div>
+                      <div><dt>{{ 'admissionForm.review.birthdate' | transloco }}</dt><dd>{{ alumnoForm.value.fecha_nacimiento }}</dd></div>
+                      <div><dt>{{ 'admissionForm.review.level' | transloco }}</dt><dd>{{ alumnoForm.value.nivel }}</dd></div>
+                    </dl>
+                  </section>
+                  <section>
+                    <h3>{{ 'admissionForm.review.mainTutor' | transloco }}</h3>
+                    <dl>
+                      <div><dt>{{ 'admissionForm.review.name' | transloco }}</dt><dd>{{ tutor1Form.value.nombre }} {{ tutor1Form.value.apellidos }}</dd></div>
+                      <div><dt>{{ 'admissionForm.review.email' | transloco }}</dt><dd>{{ tutor1Form.value.email }}</dd></div>
+                      <div><dt>{{ 'admissionForm.review.phone' | transloco }}</dt><dd>{{ tutor1Form.value.telefono }}</dd></div>
+                      <div><dt>{{ 'admissionForm.review.relationship' | transloco }}</dt><dd>{{ tutor1Form.value.parentesco }}</dd></div>
+                    </dl>
+                  </section>
+                  <section>
+                    <h3>{{ 'admissionForm.review.healthEmergency' | transloco }}</h3>
+                    <dl>
+                      <div><dt>{{ 'admissionForm.review.allergies' | transloco }}</dt><dd>{{ medicalForm.value.alergias || '—' }}</dd></div>
+                      <div><dt>{{ 'admissionForm.review.emergencyContact' | transloco }}</dt><dd>{{ emergencyForm.value.contacto }} ({{ emergencyForm.value.telefono }})</dd></div>
+                    </dl>
+                  </section>
+                  <section>
+                    <h3>{{ 'admissionForm.review.documents' | transloco }}</h3>
+                    <ul class="review__docs">
+                      @for (doc of REQUIRED_DOCUMENTS; track doc.key) {
+                        <li>
+                          @if (documents()[doc.key] && documents()[doc.key].uploaded) {
+                            <lucide-icon [img]="Check" class="review__docs-icon review__docs-icon--ok" />
+                          } @else {
+                            <lucide-icon [img]="Minus" class="review__docs-icon" />
+                          }
+                          {{ doc.label }}
+                        </li>
+                      }
+                    </ul>
+                  </section>
+                </div>
+              }
+
+            }
+          </div>
+
+          <!-- Info box (shown on all steps) -->
+          <div class="info-box">
+            <span class="info-box__icon" aria-hidden="true">ℹ</span>
+            <p class="info-box__text">{{ 'admissionForm.importantInfo' | transloco }}</p>
+          </div>
+
+        </article>
+
+        <!-- Nav buttons -->
+        <div class="wizard-footer">
+          <button type="button" class="k-btn k-btn--ghost" (click)="back()" [disabled]="currentStep() === 0">
+            <lucide-icon [img]="ArrowLeft" />
+            {{ 'admissionForm.prev' | transloco }}
+          </button>
+          @if (!isLastStep()) {
+            <button type="button" class="k-btn k-btn--primary" (click)="next()">
+              {{ 'admissionForm.next' | transloco }}
+              <lucide-icon [img]="ArrowRight" />
+            </button>
+          } @else {
+            <button type="button" class="k-btn k-btn--success" (click)="submit()" [disabled]="submitting()">
+              @if (submitting()) {
+                {{ 'admissionForm.submitting' | transloco }}
+              } @else {
+                {{ 'admissionForm.submit' | transloco }}
+              }
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Right: progress sidebar -->
+      <aside class="wizard-sidebar">
+        <div class="progress-panel">
+          <h3 class="progress-panel__title">{{ 'admissionForm.progressTitle' | transloco }}</h3>
+
+          <!-- Circular progress ring -->
+          <div class="progress-ring-wrap" role="img" [attr.aria-label]="progressPct() + '%'">
+            <svg class="progress-ring" viewBox="0 0 64 64" aria-hidden="true">
+              <circle class="progress-ring__bg"   cx="32" cy="32" r="26" />
+              <circle class="progress-ring__fill" cx="32" cy="32" r="26"
+                      [style.stroke-dashoffset]="((100 - progressPct()) / 100) * 163.36" />
+            </svg>
+            <span class="progress-ring__pct">{{ progressPct() }}%</span>
+          </div>
+
+          <!-- Per-step list -->
+          <ul class="sidebar-steps" aria-label="Llista de passos">
+            @for (s of steps; track s.index) {
+              <li class="sidebar-step"
+                  [class.sidebar-step--done]="isStepCompleted(s.index)"
+                  [class.sidebar-step--current]="s.index === currentStep()">
+                <span class="sidebar-step__dot" aria-hidden="true">
+                  @if (isStepCompleted(s.index)) {
+                    <lucide-icon [img]="Check" />
+                  }
+                </span>
+                <span class="sidebar-step__label">{{ s.title }}</span>
+              </li>
+            }
+          </ul>
+
+          <!-- Help section -->
+          <div class="help-box">
+            <span class="help-box__icon" aria-hidden="true">?</span>
+            <div class="help-box__body">
+              <strong class="help-box__title">{{ 'admissionForm.helpTitle' | transloco }}</strong>
+              <p class="help-box__desc">{{ 'admissionForm.helpBody' | transloco }}</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div><!-- /.wizard-body -->
+  }
+</section>

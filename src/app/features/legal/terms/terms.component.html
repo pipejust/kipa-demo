@@ -1,0 +1,35 @@
+<div class="legal-page" role="main">
+  <section class="legal-wrap">
+    <div class="legal-topbar">
+      <a class="auth-back" routerLink="/login">
+        <lucide-icon [img]="ArrowLeft" />
+        {{ 'recover.backToLogin' | transloco }}
+      </a>
+      <kipa-lang-switcher />
+    </div>
+
+    <article class="legal-card">
+      <img class="legal-logo" src="/assets/branding/kids-logo-color.svg" alt="K!dS" width="200" height="60" />
+      <h1>{{ 'legal.terms.title' | transloco }}</h1>
+      <p class="legal-lead">{{ 'legal.terms.lead' | transloco }}</p>
+
+      <h2>{{ 'legal.terms.s1Title' | transloco }}</h2>
+      <p>{{ 'legal.terms.s1Body' | transloco }}</p>
+
+      <h2>{{ 'legal.terms.s2Title' | transloco }}</h2>
+      <p>{{ 'legal.terms.s2Body' | transloco }}</p>
+
+      <h2>{{ 'legal.terms.s3Title' | transloco }}</h2>
+      <p>{{ 'legal.terms.s3Body' | transloco }}</p>
+
+      <h2>{{ 'legal.terms.s4Title' | transloco }}</h2>
+      <p>{{ 'legal.terms.s4Body' | transloco }}</p>
+
+      <p class="legal-contact">{{ 'legal.contact' | transloco }}: <a href="mailto:hola@kipa.app">hola&#64;kipa.app</a></p>
+    </article>
+
+    <footer class="auth-footer">
+      <span>{{ 'login.footer.rights' | transloco }}</span>
+    </footer>
+  </section>
+</div>

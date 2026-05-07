@@ -1,0 +1,274 @@
+<div class="login-page" role="main">
+
+  <!-- ── LEFT: institutional aside (light pastel + illustrations) ──── -->
+  <aside class="login-aside" aria-label="Informació institucional">
+
+    <!-- Floating decorations -->
+    <div class="login-aside__deco" aria-hidden="true">
+      <!-- Tiny clouds -->
+      <svg class="deco deco--cloud-1" viewBox="0 0 96 36" fill="#fff">
+        <ellipse cx="48" cy="22" rx="44" ry="12"/>
+        <circle cx="26" cy="14" r="13"/>
+        <circle cx="58" cy="10" r="16"/>
+      </svg>
+      <svg class="deco deco--cloud-2" viewBox="0 0 80 30" fill="#fff">
+        <ellipse cx="40" cy="18" rx="36" ry="10"/>
+        <circle cx="22" cy="12" r="11"/>
+        <circle cx="50" cy="8"  r="13"/>
+      </svg>
+
+      <!-- Pink heart top -->
+      <svg class="deco deco--heart" viewBox="0 0 32 30" fill="#E85A9B">
+        <path d="M3 11 C3 5, 12 1, 16 7 C20 1, 29 5, 29 11 C29 19, 16 28, 16 28 C16 28, 3 19, 3 11 Z"/>
+      </svg>
+
+      <!-- Confetti shapes (decorative) -->
+      <span class="deco deco--dot deco--dot--green"></span>
+      <span class="deco deco--dot deco--dot--mustard"></span>
+      <span class="deco deco--dot deco--dot--purple"></span>
+      <span class="deco deco--dot deco--dot--pink"></span>
+      <span class="deco deco--dot deco--dot--coral"></span>
+      <span class="deco deco--bar"></span>
+    </div>
+
+    <!-- Sun (cute, with face) -->
+    <img class="login-aside__sun" src="assets/illustrations/login-sun.svg" alt="" aria-hidden="true" />
+
+    <div class="login-aside__inner">
+      <span class="login-aside__chip">{{ 'login.aside.eyebrow' | transloco }}</span>
+      <h2 class="login-aside__title">{{ 'login.aside.title' | transloco }}</h2>
+      <p class="login-aside__lead">{{ 'login.aside.lead' | transloco }}</p>
+
+      <ul class="login-aside__features">
+        <li class="login-aside__feature">
+          <span class="feat-icon feat-icon--sky" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>
+          <div>
+            <strong>{{ 'login.aside.feature1Title' | transloco }}</strong>
+            <span>{{ 'login.aside.feature1Desc' | transloco }}</span>
+          </div>
+        </li>
+        <li class="login-aside__feature">
+          <span class="feat-icon feat-icon--green" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </span>
+          <div>
+            <strong>{{ 'login.aside.feature2Title' | transloco }}</strong>
+            <span>{{ 'login.aside.feature2Desc' | transloco }}</span>
+          </div>
+        </li>
+        <li class="login-aside__feature">
+          <span class="feat-icon feat-icon--mustard" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/>
+              <path d="M7 16V9"/>
+              <path d="M12 16v-5"/>
+              <path d="M17 16V7"/>
+            </svg>
+          </span>
+          <div>
+            <strong>{{ 'login.aside.feature3Title' | transloco }}</strong>
+            <span>{{ 'login.aside.feature3Desc' | transloco }}</span>
+          </div>
+        </li>
+        <li class="login-aside__feature">
+          <span class="feat-icon feat-icon--pink" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
+            </svg>
+          </span>
+          <div>
+            <strong>{{ 'login.aside.feature4Title' | transloco }}</strong>
+            <span>{{ 'login.aside.feature4Desc' | transloco }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bottom illustration: rainbow + cute characters -->
+    <img class="login-aside__scene" src="assets/illustrations/login-scene.svg" alt="" aria-hidden="true" />
+  </aside>
+
+  <!-- ── RIGHT: form panel (light grey bg, white card) ─────────────── -->
+  <section class="login-form-wrap">
+
+    <!-- Floating decorations on the right edge of the form panel -->
+    <div class="login-form-deco" aria-hidden="true">
+      <span class="form-deco form-deco--purple"></span>
+      <span class="form-deco form-deco--green"></span>
+      <span class="form-deco form-deco--bar"></span>
+      <svg class="form-deco form-deco--heart" viewBox="0 0 32 30" fill="#E85A9B">
+        <path d="M3 11 C3 5, 12 1, 16 7 C20 1, 29 5, 29 11 C29 19, 16 28, 16 28 C16 28, 3 19, 3 11 Z"/>
+      </svg>
+      <svg class="form-deco form-deco--star" viewBox="0 0 28 28" fill="#F3B337">
+        <path d="M14 1 L17.5 10.5 L27 11 L19.5 17.5 L21.7 27 L14 22 L6.3 27 L8.5 17.5 L1 11 L10.5 10.5 Z"/>
+      </svg>
+      <span class="form-deco form-deco--dot-coral"></span>
+    </div>
+
+    <!-- Top bar: language switcher (top-right) -->
+    <div class="login-topbar">
+      <kipa-lang-switcher />
+    </div>
+
+    <!-- Login card -->
+    <div class="login-card">
+
+      <header class="login-card__header">
+        <img
+          class="login-card__logo"
+          src="/assets/branding/kids-logo-color.svg"
+          alt="K!dS · International Preschool Andorra"
+          width="280"
+          height="80"
+        />
+        <h1 class="login-card__title">{{ 'login.title' | transloco }}</h1>
+        <p class="login-card__lead">{{ 'login.lead' | transloco }}</p>
+      </header>
+
+      @if (errorMessage(); as msg) {
+        <div class="k-alert k-alert--danger" role="alert" aria-live="polite">
+          <span>{{ msg }}</span>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="login-card__form">
+
+        <!-- Centre (real data, no hardcode) -->
+        <div class="k-field">
+          <label for="tenant" class="k-label">{{ 'login.center' | transloco }}</label>
+          <div class="k-input-wrap">
+            <span class="k-input-icon"><lucide-icon [img]="Building" /></span>
+            <select
+              id="tenant"
+              autocomplete="organization"
+              class="k-select k-select--leading"
+              formControlName="tenant_slug"
+              [attr.aria-invalid]="fieldHasError('tenant_slug')"
+              [disabled]="tenantsLoading() || submitting()"
+            >
+              @if (tenantsLoading()) {
+                <option value="" disabled selected>{{ 'login.submitting' | transloco }}</option>
+              } @else if (tenants().length === 0) {
+                <option value="" disabled selected>—</option>
+              } @else {
+                <option value="" disabled>{{ 'login.centerSelect' | transloco }}</option>
+                @for (t of tenants(); track t.slug) {
+                  <option [value]="t.slug">{{ t.name }}</option>
+                }
+              }
+            </select>
+          </div>
+          @if (tenantsError(); as msg) {
+            <span class="login-error">{{ msg }}</span>
+          } @else if (fieldHasError('tenant_slug')) {
+            <span class="login-error">{{ 'login.centerError' | transloco }}</span>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="k-field">
+          <label for="email" class="k-label">{{ 'login.email' | transloco }}</label>
+          <div class="k-input-wrap">
+            <span class="k-input-icon"><lucide-icon [img]="Mail" /></span>
+            <input
+              #emailInput
+              id="email"
+              type="email"
+              autocomplete="email"
+              class="k-input k-input--leading"
+              formControlName="email"
+              [placeholder]="'login.emailPlaceholder' | transloco"
+              [attr.aria-invalid]="fieldHasError('email')"
+            />
+          </div>
+          @if (fieldHasError('email')) {
+            <span class="login-error">{{ 'login.emailError' | transloco }}</span>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="k-field">
+          <label for="password" class="k-label">{{ 'login.password' | transloco }}</label>
+          <div class="k-input-wrap">
+            <span class="k-input-icon"><lucide-icon [img]="Lock" /></span>
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              autocomplete="current-password"
+              class="k-input k-input--leading"
+              formControlName="password"
+              [placeholder]="'login.passwordPlaceholder' | transloco"
+              [attr.aria-invalid]="fieldHasError('password')"
+            />
+            <button
+              type="button"
+              class="login-reveal-btn"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="(showPassword() ? 'login.hidePassword' : 'login.showPassword') | transloco"
+            >
+              <lucide-icon [img]="showPassword() ? EyeOff : Eye" />
+            </button>
+          </div>
+          @if (fieldHasError('password')) {
+            <span class="login-error">{{ 'login.passwordError' | transloco }}</span>
+          }
+        </div>
+
+        <!-- Remember + Forgot -->
+        <div class="login-row">
+          <label class="k-check">
+            <input type="checkbox" formControlName="remember_me" />
+            <span class="k-check-box"></span>
+            <span class="k-check-label">{{ 'login.rememberMe' | transloco }}</span>
+          </label>
+          <a class="login-forgot" routerLink="/recover">{{ 'login.forgotPassword' | transloco }}</a>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="k-btn k-btn--primary k-btn--lg k-btn--block"
+          [disabled]="submitting() || tenantsLoading()"
+        >
+          @if (submitting()) {
+            <span class="login-spinner" aria-hidden="true"></span>
+            <span>{{ 'login.submitting' | transloco }}</span>
+          } @else {
+            <span>{{ 'login.submit' | transloco }}</span>
+            <lucide-icon [img]="Arrow" />
+          }
+        </button>
+
+        <!-- Help -->
+        <div class="login-help">
+          <span class="login-help__divider"></span>
+          <p class="login-help__title">{{ 'login.needHelp' | transloco }}</p>
+          <a class="login-help__link" href="mailto:hola@kipa.app">
+            <lucide-icon [img]="Mail" />
+            {{ 'login.contactCenter' | transloco }}
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer: copyright + privacy + terms -->
+    <footer class="login-footer">
+      <span class="login-footer__rights">{{ 'login.footer.rights' | transloco }}</span>
+      <span class="login-footer__links">
+        <a routerLink="/privacy">{{ 'login.footer.privacy' | transloco }}</a>
+        <span aria-hidden="true">·</span>
+        <a routerLink="/terms">{{ 'login.footer.terms' | transloco }}</a>
+      </span>
+    </footer>
+  </section>
+</div>

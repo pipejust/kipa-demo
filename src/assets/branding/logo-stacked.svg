@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 360" role="img" aria-label="K!dS — stacked lockup">
+  <defs>
+    
+  </defs>
+  <circle cx="70" cy="60" r="16" fill="#4FB3E6"></circle>
+  <circle cx="140" cy="40" r="12" fill="#F3B337"></circle>
+  <circle cx="210" cy="54" r="14" fill="#1F8E5A"></circle>
+  <circle cx="280" cy="38" r="10" fill="#E85A9B"></circle>
+  <circle cx="350" cy="56" r="13" fill="#8A4FB8"></circle>
+
+  <text class="w" x="40" y="210" font-size="150" fill="#1F3A7A">K</text>
+  <rect x="156" y="114" width="18" height="86" rx="9" fill="#1F3A7A"></rect>
+  <circle cx="165" cy="214" r="13" fill="#1F8E5A"></circle>
+  <text class="w" x="190" y="210" font-size="150" fill="#1F3A7A">d</text>
+  <text class="w" x="296" y="210" font-size="150" fill="#1F3A7A">S</text>
+
+  <text class="s" x="210" y="270" text-anchor="middle" font-size="18" fill="#1F3A7A">INTERNATIONAL PRESCHOOL</text>
+  <text class="s" x="210" y="298" text-anchor="middle" font-size="18" fill="#1F8E5A">· ANDORRA ·</text>
+</svg>

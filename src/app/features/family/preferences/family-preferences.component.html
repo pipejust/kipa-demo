@@ -1,0 +1,60 @@
+<section class="page kds-page">
+
+  <!-- ── Hero header ─────────────────────────────────────────────────── -->
+  <header class="fam-hero">
+    <span class="fam-eyebrow">Portal família</span>
+    <h1 class="fam-hero__title">Preferències de comunicació</h1>
+    <p class="fam-hero__sub">
+      Controla com vols que el centre es posi en contacte amb tu.
+      Pots modificar les teves preferències en qualsevol moment.
+    </p>
+  </header>
+
+  <!-- ── Channel list ────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <p class="pref-loading">Carregant preferències…</p>
+  } @else {
+    <ul class="channel-list">
+      @for (option of channels; track option.channel) {
+        <li class="channel-card">
+          <div class="channel-card__icon">
+            <lucide-icon [img]="option.icon" />
+          </div>
+          <div class="channel-card__body">
+            <span class="channel-card__title">{{ option.label }}</span>
+            <span class="channel-card__desc">{{ option.description }}</span>
+          </div>
+          <div class="channel-card__toggle">
+            @if (saving() === option.channel) {
+              <span class="toggle-spinner"></span>
+            } @else {
+              <button
+                class="toggle-btn"
+                [class.toggle-btn--on]="isOptIn(option.channel)"
+                (click)="toggle(option.channel)"
+                [attr.aria-label]="(isOptIn(option.channel) ? 'Desactivar ' : 'Activar ') + option.label"
+                [attr.aria-pressed]="isOptIn(option.channel)">
+                <span class="toggle-btn__track">
+                  <span class="toggle-btn__thumb"></span>
+                </span>
+                <span class="toggle-btn__label">
+                  {{ isOptIn(option.channel) ? 'Activat' : 'Desactivat' }}
+                </span>
+              </button>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+
+    <!-- ── Info note ──────────────────────────────────────────────────── -->
+    <div class="info-note">
+      <lucide-icon [img]="Info" class="info-note__icon" />
+      <p>
+        Les comunicacions obligatòries (factures, urgències de seguretat) s'enviaran
+        independentment d'aquestes preferències.
+      </p>
+    </div>
+  }
+
+</section>

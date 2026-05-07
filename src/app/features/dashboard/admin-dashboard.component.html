@@ -1,0 +1,276 @@
+<section class="dash-page">
+
+  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
+  <header class="dash-hero">
+    <div class="dash-hero__text">
+      <h1 class="dash-hero__title">
+        {{ greeting() | transloco }}, {{ firstName() }}!
+        <span class="dash-hero__emoji" aria-hidden="true">👋</span>
+      </h1>
+      <p class="dash-hero__lead">
+        {{ 'dashHero.summaryLead' | transloco }}
+        <strong>{{ auth.currentTenant()?.name || 'K!dS' }}</strong>.
+      </p>
+
+      <div class="dash-hero__meta">
+        <span class="dash-hero__chip">
+          <span class="dash-hero__chip-mark" aria-hidden="true">
+            <img src="assets/branding/logos/kids-logo-mark.svg" alt="" />
+          </span>
+          <span class="dash-hero__chip-text">
+            <strong>{{ auth.currentTenant()?.name || 'K!dS' }}</strong>
+            <span class="dash-hero__chip-sep">·</span>
+            <span>{{ 'dashHero.course' | transloco }}</span>
+          </span>
+        </span>
+        <span class="dash-hero__pill">
+          <span class="dash-hero__pill-dot" aria-hidden="true"></span>
+          {{ 'dashHero.centreActive' | transloco }}
+        </span>
+      </div>
+    </div>
+
+    <img class="dash-hero__art" src="assets/illustrations/hero-kids.svg" alt="" aria-hidden="true" />
+  </header>
+
+  <!-- ── KPI row ─────────────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="kpi-row">
+      @for (n of [1,2,3,4]; track n) { <div class="kpi-skeleton"></div> }
+    </div>
+  } @else if (error()) {
+    <div class="kpi-error">
+      <span>{{ 'dashboard.loadError' | transloco }}: {{ error() }}</span>
+    </div>
+  } @else if (summary()) {
+    @let s = summary()!;
+    <div class="kpi-row">
+
+      <article class="kpi-card kpi-card--blue">
+        <span class="kpi-card__icon"><lucide-icon [img]="UsersIcon" /></span>
+        <div class="kpi-card__body">
+          <span class="kpi-card__label">{{ 'dashKpi.studentsLabel' | transloco }}</span>
+          <span class="kpi-card__value">{{ s.matriculados | number }}</span>
+          <span class="kpi-card__hint kpi-card__hint--up">{{ 'dashKpi.studentsHint' | transloco: { n: occupancyDelta(s) } }}</span>
+        </div>
+        <svg class="kpi-card__spark" viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path d="M0,22 L15,18 L30,20 L45,14 L60,12 L75,8 L100,4" fill="none" stroke="#4FB3E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </article>
+
+      <article class="kpi-card kpi-card--green">
+        <span class="kpi-card__icon"><lucide-icon [img]="ClipboardCheckIcon" /></span>
+        <div class="kpi-card__body">
+          <span class="kpi-card__label">{{ 'dashKpi.attendanceLabel' | transloco }}</span>
+          <span class="kpi-card__value">{{ s.tasa_asistencia_pct | number:'1.0-0' }}%</span>
+          <span class="kpi-card__hint">{{ 'dashKpi.attendanceHint' | transloco: { present: attendancePresentToday(s), total: s.matriculados } }}</span>
+        </div>
+        <svg class="kpi-card__spark" viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path d="M0,12 L15,16 L30,10 L45,18 L60,8 L75,14 L100,6" fill="none" stroke="#1F8E5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </article>
+
+      <article class="kpi-card kpi-card--mustard">
+        <span class="kpi-card__icon"><lucide-icon [img]="FileTextIcon" /></span>
+        <div class="kpi-card__body">
+          <span class="kpi-card__label">{{ 'dashKpi.admissionsLabel' | transloco }}</span>
+          <span class="kpi-card__value">{{ s.solicitudes_total | number }}</span>
+          <span class="kpi-card__hint">{{ 'dashKpi.admissionsHint' | transloco: { n: pendingInterviews() } }}</span>
+        </div>
+        <svg class="kpi-card__spark" viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path d="M0,18 L15,14 L30,20 L45,12 L60,16 L75,10 L100,12" fill="none" stroke="#F3B337" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </article>
+
+      <article class="kpi-card kpi-card--pink">
+        <span class="kpi-card__icon"><lucide-icon [img]="WalletIcon" /></span>
+        <div class="kpi-card__body">
+          <span class="kpi-card__label">{{ 'dashKpi.revenueLabel' | transloco }}</span>
+          <span class="kpi-card__value">{{ s.total_cobrado | number:'1.0-0' }} €</span>
+          <span class="kpi-card__hint">{{ 'dashKpi.revenueHint' | transloco: { pct: (collectionPct(s) | number:'1.0-0') } }}</span>
+        </div>
+        <svg class="kpi-card__spark" viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path d="M0,22 L15,18 L30,14 L45,16 L60,10 L75,8 L100,4" fill="none" stroke="#E85A9B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </article>
+
+    </div>
+  }
+
+  <!-- ── 3-column main grid ───────────────────────────────────────────────── -->
+  <div class="dash-grid">
+
+    <!-- Activitat recent -->
+    <article class="panel">
+      <header class="panel__head">
+        <h2 class="panel__title">{{ 'dashPanels.activityTitle' | transloco }}</h2>
+        <a class="panel__link" routerLink="/a/alumnos">{{ 'dashPanels.viewAll' | transloco }}</a>
+      </header>
+      <ul class="activity">
+        @for (item of recentActivity; track item.title) {
+          <li class="activity__row">
+            @if (item.kind === 'admission') {
+              <span class="activity__avatar activity__avatar--mauve">{{ item.avatar }}</span>
+            } @else {
+              <span class="activity__icon"
+                [class.activity__icon--green]="item.kind === 'attendance'"
+                [class.activity__icon--pink]="item.kind === 'message'"
+                [class.activity__icon--mustard]="item.kind === 'payment'"
+                [class.activity__icon--coral]="item.kind === 'interview'">
+                @switch (item.kind) {
+                  @case ('attendance') { <lucide-icon [img]="CheckCircleIcon" /> }
+                  @case ('message')    { <lucide-icon [img]="MessageIcon" /> }
+                  @case ('payment')    { <lucide-icon [img]="WalletIcon" /> }
+                  @case ('interview')  { <lucide-icon [img]="CalendarPlusIcon" /> }
+                }
+              </span>
+            }
+            <div class="activity__body">
+              <span class="activity__title">{{ item.title }}</span>
+              <span class="activity__meta">{{ item.meta }}</span>
+            </div>
+            <span class="activity__pill"
+              [class.activity__pill--ok]="item.status === 'completed'"
+              [class.activity__pill--pending]="item.status === 'pending'"
+              [class.activity__pill--sent]="item.status === 'sent'"
+              [class.activity__pill--scheduled]="item.status === 'scheduled'">
+              @switch (item.status) {
+                @case ('completed') { {{ 'dashPanels.status.completed' | transloco }} }
+                @case ('pending')   { {{ 'dashPanels.status.pending' | transloco }} }
+                @case ('sent')      { {{ 'dashPanels.status.sent' | transloco }} }
+                @case ('scheduled') { {{ 'dashPanels.status.scheduled' | transloco }} }
+              }
+            </span>
+          </li>
+        }
+      </ul>
+    </article>
+
+    <!-- Properes entrevistes -->
+    <article class="panel">
+      <header class="panel__head">
+        <h2 class="panel__title">{{ 'dashPanels.upcomingTitle' | transloco }}</h2>
+        <a class="panel__link" routerLink="/a/admissions">{{ 'dashPanels.viewCalendar' | transloco }}</a>
+      </header>
+      <ul class="upcoming">
+        @for (it of upcomingInterviews; track it.title) {
+          <li class="upcoming__row">
+            <span class="upcoming__date">
+              <span class="upcoming__day">{{ it.day }}</span>
+              <span class="upcoming__month">{{ it.month }}</span>
+            </span>
+            <div class="upcoming__body">
+              <span class="upcoming__title">{{ it.title }}</span>
+              <span class="upcoming__meta">{{ it.level }} · {{ it.time }}</span>
+              <span class="upcoming__family">
+                <span class="upcoming__family-dot" aria-hidden="true"></span>
+                {{ it.family }}
+              </span>
+            </div>
+            <span class="upcoming__pill"
+              [class.upcoming__pill--ok]="it.status === 'confirmed'"
+              [class.upcoming__pill--pending]="it.status === 'pending'">
+              {{ (it.status === 'confirmed' ? 'dashPanels.status.confirmed' : 'dashPanels.status.pending') | transloco }}
+            </span>
+            <lucide-icon [img]="ChevronRightIcon" class="upcoming__caret" />
+          </li>
+        }
+      </ul>
+    </article>
+
+    <!-- Resum financer -->
+    @if (summary(); as s) {
+      <article class="panel panel--finance">
+        <header class="panel__head">
+          <h2 class="panel__title">{{ 'dashPanels.financeTitle' | transloco }}</h2>
+          <button type="button" class="panel__select">
+            {{ 'dashPanels.thisMonth' | transloco }}
+            <lucide-icon [img]="ChevronDownIcon" />
+          </button>
+        </header>
+
+        <div class="finance-stats">
+          <div class="finance-stats__col">
+            <span class="finance-stats__label">{{ 'dashPanels.revenue' | transloco }}</span>
+            <span class="finance-stats__value">{{ s.total_cobrado | number:'1.0-0' }} €</span>
+            <span class="finance-stats__sub">{{ 'dashPanels.objective' | transloco }}: {{ (s.total_cobrado + s.total_pendiente) | number:'1.0-0' }} €</span>
+          </div>
+          <div class="finance-stats__col">
+            <span class="finance-stats__label">{{ 'dashPanels.percentage' | transloco }}</span>
+            <span class="finance-stats__value finance-stats__value--ok">{{ collectionPct(s) | number:'1.0-0' }}%</span>
+            <span class="finance-stats__sub finance-stats__sub--up">{{ 'dashPanels.vsLastMonth' | transloco }}</span>
+          </div>
+        </div>
+
+        <!-- Line chart -->
+        <div class="finance-chart">
+          <svg viewBox="0 0 320 140" preserveAspectRatio="none" class="finance-chart__svg">
+            <!-- Grid -->
+            <g stroke="#E3E7F0" stroke-width="1">
+              <line x1="0" y1="20" x2="320" y2="20"/>
+              <line x1="0" y1="55" x2="320" y2="55"/>
+              <line x1="0" y1="90" x2="320" y2="90"/>
+              <line x1="0" y1="125" x2="320" y2="125"/>
+            </g>
+            <!-- Objectiu (dashed) -->
+            <path d="M0,40 L60,38 L120,32 L180,28 L240,22 L320,18"
+                  fill="none" stroke="#8490AB" stroke-width="1.5"
+                  stroke-dasharray="6 5" stroke-linecap="round"/>
+            <!-- Fill -->
+            <path d="M0,90 L60,80 L120,68 L180,52 L240,40 L320,30 L320,140 L0,140 Z"
+                  fill="rgba(31, 58, 122, 0.08)"/>
+            <!-- Recaptació -->
+            <path d="M0,90 L60,80 L120,68 L180,52 L240,40 L320,30"
+                  fill="none" stroke="#1F3A7A" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="finance-chart__yaxis">
+            <span>40K €</span>
+            <span>30K €</span>
+            <span>20K €</span>
+            <span>10K €</span>
+            <span>0 €</span>
+          </div>
+          <div class="finance-chart__xaxis">
+            <span>1 Mai</span><span>8 Mai</span><span>15 Mai</span><span>22 Mai</span><span>31 Mai</span>
+          </div>
+        </div>
+
+        <div class="finance-legend">
+          <span class="finance-legend__item">
+            <span class="finance-legend__swatch finance-legend__swatch--solid"></span>
+            {{ 'dashPanels.revenue' | transloco }}
+          </span>
+          <span class="finance-legend__item">
+            <span class="finance-legend__swatch finance-legend__swatch--dashed"></span>
+            {{ 'dashPanels.objective' | transloco }}
+          </span>
+        </div>
+      </article>
+    }
+
+  </div>
+
+  <!-- ── Quick actions ────────────────────────────────────────────────────── -->
+  <section class="quick">
+    <header class="quick__head">
+      <h2 class="quick__title">{{ 'dashActions.title' | transloco }}</h2>
+    </header>
+
+    <div class="quick__row">
+      @for (qa of quickActions; track qa.titleKey) {
+        <a class="qa-card" [class]="'qa-card--' + qa.color" [routerLink]="qa.link">
+          <span class="qa-card__icon"><lucide-icon [img]="qa.icon" /></span>
+          <div class="qa-card__body">
+            <span class="qa-card__title">{{ qa.titleKey | transloco }}</span>
+            <span class="qa-card__sub">{{ qa.subtitleKey | transloco }}</span>
+          </div>
+          <span class="qa-card__arrow">
+            <lucide-icon [img]="ArrowRightIcon" />
+          </span>
+        </a>
+      }
+    </div>
+  </section>
+
+</section>

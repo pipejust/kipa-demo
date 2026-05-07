@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 280" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="purpleShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#A06BD0"/>
+      <stop offset="100%" stop-color="#7A41A8"/>
+    </linearGradient>
+    <linearGradient id="greenShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#2FA670"/>
+      <stop offset="100%" stop-color="#147245"/>
+    </linearGradient>
+    <linearGradient id="redShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#F0704D"/>
+      <stop offset="100%" stop-color="#C44A2A"/>
+    </linearGradient>
+    <linearGradient id="blueShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#5BB7E8"/>
+      <stop offset="100%" stop-color="#2289C0"/>
+    </linearGradient>
+    <linearGradient id="starShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#FFCB55"/>
+      <stop offset="100%" stop-color="#E59A1B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ── Rainbow (left side, behind characters) ─────────────────────── -->
+  <g transform="translate(8 110)">
+    <!-- 5 arcs from outer pink to inner mustard -->
+    <path d="M0 160 A130 130 0 0 1 260 160" stroke="#E85A9B" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M14 160 A116 116 0 0 1 246 160" stroke="#F0704D" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M28 160 A102 102 0 0 1 232 160" stroke="#F3B337" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M42 160 A88 88 0 0 1 218 160"   stroke="#1F8E5A" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M56 160 A74 74 0 0 1 204 160"   stroke="#4FB3E6" stroke-width="14" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- ── Cloud (front-right of rainbow) ────────────────────────────── -->
+  <g transform="translate(24 230)">
+    <ellipse cx="56" cy="20" rx="56" ry="16" fill="#FFFFFF"/>
+    <circle cx="32" cy="14" r="20" fill="#FFFFFF"/>
+    <circle cx="70" cy="8"  r="22" fill="#FFFFFF"/>
+  </g>
+
+  <!-- ── Cloud (small, far right) ──────────────────────────────────── -->
+  <g transform="translate(420 232)">
+    <ellipse cx="40" cy="16" rx="44" ry="12" fill="#FFFFFF"/>
+    <circle cx="22" cy="10" r="14" fill="#FFFFFF"/>
+    <circle cx="54" cy="6"  r="16" fill="#FFFFFF"/>
+  </g>
+
+  <!-- ────────── Characters (z-ordered front to back) ────────── -->
+
+  <!-- Purple round buddy (left) -->
+  <g transform="translate(168 138)">
+    <ellipse cx="58" cy="116" rx="52" ry="6" fill="#000000" opacity="0.10"/>
+    <circle cx="58" cy="62" r="56" fill="url(#purpleShadow)"/>
+    <!-- highlight -->
+    <ellipse cx="42" cy="40" rx="14" ry="9" fill="#FFFFFF" opacity="0.22"/>
+    <!-- eyes -->
+    <ellipse cx="42" cy="62" rx="5"  ry="7" fill="#1F1635"/>
+    <ellipse cx="74" cy="62" rx="5"  ry="7" fill="#1F1635"/>
+    <!-- eye shines -->
+    <circle cx="44" cy="59" r="1.6" fill="#FFFFFF"/>
+    <circle cx="76" cy="59" r="1.6" fill="#FFFFFF"/>
+    <!-- cheeks -->
+    <circle cx="30" cy="76" r="5" fill="#E85A9B" opacity="0.45"/>
+    <circle cx="86" cy="76" r="5" fill="#E85A9B" opacity="0.45"/>
+    <!-- smile -->
+    <path d="M44 78 Q58 90 72 78" stroke="#1F1635" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Green triangle buddy -->
+  <g transform="translate(258 156)">
+    <ellipse cx="46" cy="100" rx="42" ry="5" fill="#000000" opacity="0.10"/>
+    <path d="M46 4 L88 96 L4 96 Z" fill="url(#greenShadow)" stroke-linejoin="round"/>
+    <path d="M46 4 L88 96 L4 96 Z" fill="none" stroke="#0F5A36" stroke-width="2" stroke-linejoin="round" opacity="0.4"/>
+    <!-- eyes -->
+    <circle cx="36" cy="76" r="3.5" fill="#FFFFFF"/>
+    <circle cx="56" cy="76" r="3.5" fill="#FFFFFF"/>
+    <circle cx="36" cy="76" r="2"   fill="#1F1635"/>
+    <circle cx="56" cy="76" r="2"   fill="#1F1635"/>
+    <!-- smile -->
+    <path d="M38 86 Q46 92 54 86" stroke="#1F1635" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Coral/red square buddy with rounded top (house-block) -->
+  <g transform="translate(330 170)">
+    <ellipse cx="38" cy="86" rx="38" ry="5" fill="#000000" opacity="0.10"/>
+    <rect x="0" y="0" width="76" height="86" rx="14" fill="url(#redShadow)"/>
+    <ellipse cx="22" cy="14" rx="12" ry="6" fill="#FFFFFF" opacity="0.18"/>
+    <!-- eyes -->
+    <circle cx="28" cy="38" r="4" fill="#1F1635"/>
+    <circle cx="50" cy="38" r="4" fill="#1F1635"/>
+    <circle cx="29" cy="36" r="1.4" fill="#FFFFFF"/>
+    <circle cx="51" cy="36" r="1.4" fill="#FFFFFF"/>
+    <!-- cheeks -->
+    <circle cx="18" cy="52" r="4" fill="#FFFFFF" opacity="0.22"/>
+    <circle cx="60" cy="52" r="4" fill="#FFFFFF" opacity="0.22"/>
+    <!-- smile -->
+    <path d="M28 54 Q39 64 50 54" stroke="#1F1635" stroke-width="3" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Blue square house-block (with little arch window) -->
+  <g transform="translate(412 184)">
+    <ellipse cx="36" cy="72" rx="36" ry="5" fill="#000000" opacity="0.10"/>
+    <rect x="0" y="0" width="72" height="72" rx="10" fill="url(#blueShadow)"/>
+    <!-- arched window -->
+    <path d="M22 50 L22 30 A14 14 0 0 1 50 30 L50 50 Z" fill="#1F3A7A" opacity="0.35"/>
+    <ellipse cx="14" cy="12" rx="8" ry="4" fill="#FFFFFF" opacity="0.25"/>
+  </g>
+
+  <!-- Yellow star with smile (front-bottom) -->
+  <g transform="translate(258 198)">
+    <ellipse cx="36" cy="74" rx="30" ry="4" fill="#000000" opacity="0.10"/>
+    <path d="M36 4 L46 28 L72 30 L52 48 L58 74 L36 60 L14 74 L20 48 L0 30 L26 28 Z"
+          fill="url(#starShadow)" stroke-linejoin="round"/>
+    <path d="M36 4 L46 28 L72 30 L52 48 L58 74 L36 60 L14 74 L20 48 L0 30 L26 28 Z"
+          fill="none" stroke="#C77A0A" stroke-width="1.5" stroke-linejoin="round" opacity="0.4"/>
+    <!-- eyes -->
+    <circle cx="28" cy="40" r="2.4" fill="#1F1635"/>
+    <circle cx="44" cy="40" r="2.4" fill="#1F1635"/>
+    <!-- smile -->
+    <path d="M28 48 Q36 54 44 48" stroke="#1F1635" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Floating heart (top-right above rainbow) -->
+  <g transform="translate(458 50)">
+    <path d="M14 24 C14 16, 24 12, 28 18 C32 12, 42 16, 42 24 C42 32, 28 42, 28 42 C28 42, 14 32, 14 24 Z"
+          fill="#E85A9B"/>
+  </g>
+
+</svg>

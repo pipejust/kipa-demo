@@ -1,0 +1,530 @@
+/* ==========================================================================
+   Students list — K!dS redesign (target-matched)
+   ========================================================================== */
+
+:host { display: block; }
+
+.students-page {
+  display: grid;
+  gap: 22px;
+  padding: 28px 36px 40px;
+  width: 100%;
+  background: var(--kids-surface);
+  min-height: 100%;
+}
+
+/* ── Header ────────────────────────────────────────────────────────── */
+.students-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.students-header__title {
+  font-family: var(--kids-font-display);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--kids-navy);
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.students-header__lead {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--kids-slate);
+}
+
+/* ── KPI row (5 cards) ─────────────────────────────────────────────── */
+.students-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* Reuse the same primitives from the dashboard so visuals stay aligned. */
+.kpi-card {
+  position: relative;
+  background: var(--kids-paper);
+  border: 1px solid var(--kids-line);
+  border-radius: 18px;
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  overflow: hidden;
+  transition: transform 0.2s var(--kids-ease), box-shadow 0.2s var(--kids-ease);
+
+  &:hover { transform: translateY(-2px); box-shadow: var(--kids-shadow-md); }
+}
+
+.kpi-card__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+
+  lucide-icon { width: 24px; height: 24px; display: block; stroke-width: 2; }
+}
+
+.kpi-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.kpi-card__label {
+  font-size: 0.78rem;
+  color: var(--kids-slate);
+  font-weight: 500;
+}
+
+.kpi-card__value {
+  font-family: var(--kids-font-display);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--kids-navy);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.kpi-card__hint {
+  font-size: 0.72rem;
+  color: var(--kids-slate);
+
+  &--up { color: var(--kids-green); font-weight: 600; }
+}
+
+.kpi-card__spark {
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  width: 84px;
+  height: 26px;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.kpi-card--blue    .kpi-card__icon { background: #DCF1FB; color: #2289C0; }
+.kpi-card--green   .kpi-card__icon { background: #D6EEE0; color: #1F8E5A; }
+.kpi-card--mustard .kpi-card__icon { background: #FDECC5; color: #B97E0E; }
+.kpi-card--coral   .kpi-card__icon { background: #FCDCD0; color: #C44A2A; }
+.kpi-card--purple  .kpi-card__icon { background: #E6D9F2; color: #5B2E85; }
+.kpi-card--pink    .kpi-card__icon { background: #FBDAE8; color: #C8377F; }
+
+/* ── Filters bar ───────────────────────────────────────────────────── */
+.students-filters {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.4fr) repeat(3, minmax(150px, 1fr)) auto;
+  gap: 14px;
+  align-items: end;
+}
+
+/* Search input: matches the height + radius + border of .k-select so the
+   four controls in the filters bar line up. We set both `height` and
+   `min-height` explicitly because some browsers compute flex-container
+   intrinsic height differently from a native <select>'s intrinsic, which
+   left the search visibly shorter when only `min-height` was set. */
+.students-filters__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 52px;
+  min-height: 52px;
+  background: var(--kids-paper);
+  border: 1.5px solid var(--kids-navy-200);
+  border-radius: var(--kids-radius-lg);
+  padding: 0 16px 0 50px;
+  transition: border-color var(--kids-dur) var(--kids-ease),
+              box-shadow var(--kids-dur) var(--kids-ease);
+
+  &:hover { border-color: var(--kids-navy-400); }
+
+  &:focus-within {
+    border-color: var(--kids-navy);
+    box-shadow: 0 0 0 4px rgba(31, 58, 122, 0.12);
+  }
+}
+
+.students-filters__search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: var(--kids-navy-400);
+  pointer-events: none;
+}
+
+.students-filters__search-input {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  margin: 0;
+  background: transparent;
+  font: inherit;
+  font-size: var(--kids-text-md);
+  line-height: 1.2;
+  color: var(--kids-ink);
+  outline: none;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &::placeholder { color: var(--kids-muted); }
+
+  /* Hide native search clear "x" so the icon sits where we placed it. */
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+}
+
+.students-filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.students-filters__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--kids-slate);
+  letter-spacing: 0.04em;
+}
+
+.students-filters__more {
+  align-self: end;
+  min-height: 52px;
+}
+
+/* ── Table card ────────────────────────────────────────────────────── */
+.students-table-card {
+  background: var(--kids-paper);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.students-table {
+  thead tr {
+    background: var(--kids-cream);
+    border-bottom: 1px solid var(--kids-line);
+  }
+
+  th {
+    padding: 14px 16px;
+    font-size: 0.7rem;
+    color: var(--kids-slate);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 14px 16px;
+    vertical-align: middle;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--kids-line);
+    transition: background 150ms ease;
+
+    &:hover { background: var(--kids-surface); }
+    &:last-child { border-bottom: 0; }
+  }
+}
+
+.students-table__name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.students-table__link {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--kids-navy);
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+.students-table__muted {
+  color: var(--kids-slate);
+  font-size: 0.88rem;
+}
+
+.students-table__actions-col {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.students-table__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ── Avatar (initials, brand-tinted) ───────────────────────────────── */
+.students-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  letter-spacing: 0.01em;
+}
+
+.students-avatar--sky     { background: linear-gradient(135deg, #4FB3E6, #2289C0); }
+.students-avatar--green   { background: linear-gradient(135deg, #5FB88A, #1F8E5A); }
+.students-avatar--mustard { background: linear-gradient(135deg, #F3B337, #B97E0E); color: #4A330B; }
+.students-avatar--pink    { background: linear-gradient(135deg, #E85A9B, #C8377F); }
+.students-avatar--purple  { background: linear-gradient(135deg, #8A4FB8, #5B2E85); }
+.students-avatar--coral   { background: linear-gradient(135deg, #F0704D, #C44A2A); }
+
+/* ── Pills ──────────────────────────────────────────────────────────── */
+.students-class-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--kids-navy-50);
+  color: var(--kids-navy);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.students-tutor {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.students-tutor__name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--kids-navy);
+}
+
+.students-tutor__phone {
+  font-size: 0.75rem;
+  color: var(--kids-slate);
+  font-feature-settings: 'tnum' 1;
+}
+
+/* ── Row "more" menu ───────────────────────────────────────────────── */
+.students-row-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.students-row-menu__btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--kids-slate);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+
+  lucide-icon { width: 16px; height: 16px; }
+
+  &:hover {
+    background: var(--kids-navy-50);
+    color: var(--kids-navy);
+    border-color: var(--kids-navy-200);
+  }
+}
+
+.students-row-menu__pop {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  min-width: 200px;
+  background: var(--kids-paper);
+  border: 1px solid var(--kids-line);
+  border-radius: 12px;
+  box-shadow: var(--kids-shadow-lg);
+  padding: 6px;
+  z-index: 30;
+  display: grid;
+  gap: 2px;
+}
+
+.students-row-menu__item {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--kids-ink);
+  text-align: left;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  width: 100%;
+
+  &:hover { background: var(--kids-navy-50); color: var(--kids-navy); }
+
+  &--danger {
+    color: var(--kids-danger);
+    &:hover { background: #FBEDED; color: var(--kids-danger); }
+  }
+}
+
+.students-row-menu__divider {
+  border: 0;
+  height: 1px;
+  background: var(--kids-line);
+  margin: 4px 0;
+}
+
+/* ── Pagination ────────────────────────────────────────────────────── */
+.students-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-top: 1px solid var(--kids-line);
+  flex-wrap: wrap;
+}
+
+.students-pagination__count {
+  font-size: 0.82rem;
+  color: var(--kids-slate);
+}
+
+.students-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.students-page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--kids-line);
+  background: var(--kids-paper);
+  color: var(--kids-slate);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+
+  lucide-icon { width: 14px; height: 14px; }
+
+  &:hover:not(:disabled) {
+    background: var(--kids-navy-50);
+    color: var(--kids-navy);
+    border-color: var(--kids-navy-200);
+  }
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  &--num { padding: 0; }
+
+  &--active,
+  &--active:hover {
+    background: var(--kids-navy);
+    color: #fff;
+    border-color: var(--kids-navy);
+  }
+}
+
+.students-page-ellipsis {
+  padding: 0 6px;
+  color: var(--kids-muted);
+}
+
+/* ── Empty / loading / error states ────────────────────────────────── */
+.students-loading,
+.students-empty,
+.students-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  padding: 56px 24px;
+  color: var(--kids-slate);
+}
+
+.students-empty h3 {
+  font-family: var(--kids-font-display);
+  color: var(--kids-navy);
+  margin: 0 0 4px;
+}
+
+.students-empty p { margin: 0; font-size: 0.88rem; }
+
+.students-error { color: var(--kids-danger); }
+
+.students-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--kids-navy-200);
+  border-top-color: var(--kids-navy);
+  border-radius: 50%;
+  animation: students-spin 0.8s linear infinite;
+}
+
+@keyframes students-spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+@media (max-width: 1280px) {
+  .students-kpis { grid-template-columns: repeat(3, 1fr); }
+  .students-kpis .kpi-card:nth-child(n+4) { grid-column: span 1; }
+}
+
+@media (max-width: 1024px) {
+  .students-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+  .students-filters__search { grid-column: 1 / -1; }
+  .students-filters__more { grid-column: 1 / -1; }
+}
+
+@media (max-width: 720px) {
+  .students-page { padding: 22px; }
+  .students-kpis { grid-template-columns: 1fr 1fr; }
+  .students-table thead { display: none; }
+  .students-table, .students-table tbody, .students-table tr, .students-table td {
+    display: block;
+    width: 100%;
+  }
+  .students-table tr {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--kids-line);
+  }
+  .students-table td {
+    padding: 4px 16px;
+  }
+  .students-table__name-cell { padding-top: 10px; }
+  .students-table__actions {
+    justify-content: flex-start;
+    padding-top: 8px;
+  }
+}

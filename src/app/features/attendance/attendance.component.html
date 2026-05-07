@@ -1,0 +1,138 @@
+<section class="page kds-page">
+
+  <!-- ── Page header ──────────────────────────────────────── -->
+  <header class="page-header kds-page-header">
+    <div>
+      <h1 class="kds-page-title">{{ 'attendance.title' | transloco }}</h1>
+      <p class="kds-page-subtitle">{{ 'attendance.lead' | transloco }}</p>
+    </div>
+    <div class="page-header__actions">
+      <span class="date-chip">
+        <lucide-icon [img]="CalendarDays" />
+        {{ fecha() | date:'EEEE, d MMM yyyy' }}
+      </span>
+      <input type="date" class="k-input date-input"
+             [value]="fecha()" (change)="onDateChange($event)" [max]="todayIso()" />
+      <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="load()" [disabled]="loading()">
+        <lucide-icon [img]="RefreshCw" />
+        {{ 'attendance.refresh' | transloco }}
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Loading ───────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="skeletons" aria-hidden="true">
+      @for (i of [1,2,3,4]; track i) { <div class="skeleton-card"></div> }
+    </div>
+
+  <!-- ── Empty ─────────────────────────────────────────────── -->
+  } @else if (rows().length === 0) {
+    <div class="empty">
+      <lucide-icon [img]="CalendarDays" class="empty__icon" />
+      <h2>{{ 'attendance.emptyTitle' | transloco }}</h2>
+      <p>{{ 'attendance.emptyHint' | transloco }}</p>
+    </div>
+
+  <!-- ── Content ───────────────────────────────────────────── -->
+  } @else {
+
+    <!-- KPI cards + donut ring -->
+    <div class="stats-section">
+      <div class="kpi-cards">
+
+        <div class="kpi-card kpi-card--present">
+          <div class="kpi-card__icon"><lucide-icon [img]="CheckCircle2" /></div>
+          <div class="kpi-card__body">
+            <span class="kpi-card__count">{{ presentCount() }}</span>
+            <span class="kpi-card__label">{{ 'attendance.presents' | transloco }}</span>
+            <span class="kpi-card__pct">{{ presentPct() }}%</span>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-card--absent">
+          <div class="kpi-card__icon"><lucide-icon [img]="XCircle" /></div>
+          <div class="kpi-card__body">
+            <span class="kpi-card__count">{{ absentCount() }}</span>
+            <span class="kpi-card__label">{{ 'attendance.absents' | transloco }}</span>
+            <span class="kpi-card__pct">{{ absentPct() }}%</span>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-card--tarde">
+          <div class="kpi-card__icon"><lucide-icon [img]="Clock" /></div>
+          <div class="kpi-card__body">
+            <span class="kpi-card__count">{{ tardeCount() }}</span>
+            <span class="kpi-card__label">{{ 'attendance.tardances' | transloco }}</span>
+            <span class="kpi-card__pct">{{ tardePct() }}%</span>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-card--justif">
+          <div class="kpi-card__icon"><lucide-icon [img]="AlertCircle" /></div>
+          <div class="kpi-card__body">
+            <span class="kpi-card__count">{{ justificatCount() }}</span>
+            <span class="kpi-card__label">{{ 'attendance.justificats' | transloco }}</span>
+            <span class="kpi-card__pct">{{ justificatPct() }}%</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Donut ring (right side) -->
+      <div class="donut-panel" role="img" [attr.aria-label]="presentPct() + '% assistència'">
+        <div class="donut-wrap">
+          <svg class="donut-svg" viewBox="0 0 64 64" aria-hidden="true">
+            <circle class="donut-bg"   cx="32" cy="32" r="26" />
+            <circle class="donut-fill" cx="32" cy="32" r="26"
+                    [style.stroke-dashoffset]="donutOffset()" />
+          </svg>
+          <div class="donut-center">
+            <span class="donut-pct">{{ presentPct() }}%</span>
+            <span class="donut-sub">{{ presentCount() }} {{ 'attendance.of' | transloco }} {{ totalCount() }}</span>
+          </div>
+        </div>
+        <p class="donut-label">{{ 'attendance.dayLabel' | transloco }}</p>
+      </div>
+    </div>
+
+    <!-- Student list -->
+    <div class="list-wrap kds-table-wrap" role="region" [attr.aria-label]="'attendance.listLabel' | transloco">
+      <table class="kds-table">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'attendance.colStudent' | transloco }}</th>
+            <th scope="col">{{ 'attendance.colStatus' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.alumno_id) {
+            <tr [class.row-saving]="row.saving">
+              <td>
+                <div class="cell-student">
+                  <span class="k-avatar k-avatar--sm">{{ alumnoInitials(row.alumno_nombre) }}</span>
+                  <span class="cell-student__name">{{ row.alumno_nombre ?? row.alumno_id.slice(0, 8) + '…' }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="estado-btns">
+                  @for (estat of estados; track estat) {
+                    <button type="button"
+                            class="estado-btn"
+                            [class]="'estado-btn--' + estat"
+                            [class.estado-btn--active]="row.estado === estat"
+                            (click)="setEstado(row, estat)"
+                            [disabled]="row.saving">
+                      {{ estadoLabel(estat) }}
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+  }
+</section>

@@ -1,0 +1,282 @@
+<section class="students-page" (click)="closeMenus()">
+
+  <!-- ── Header ───────────────────────────────────────────────────────── -->
+  <header class="students-header">
+    <div>
+      <h1 class="students-header__title">{{ 'nav.students' | transloco }}</h1>
+      <p class="students-header__lead">{{ 'students.lead' | transloco }}</p>
+    </div>
+    <button type="button" class="k-btn k-btn--primary" (click)="openCreateModal()">
+      <lucide-icon [img]="Plus" />
+      {{ 'students.add' | transloco }}
+    </button>
+  </header>
+
+  @if (toast(); as t) {
+    @if (t.kind === 'success') {
+      <div class="k-alert k-alert--success">{{ t.msg }}</div>
+    } @else {
+      <div class="k-alert k-alert--danger">{{ t.msg }}</div>
+    }
+  }
+
+  <!-- ── KPI row (5 cards) ─────────────────────────────────────────────── -->
+  <div class="students-kpis">
+    <article class="kpi-card kpi-card--blue">
+      <span class="kpi-card__icon"><lucide-icon [img]="Users" /></span>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label">{{ 'students.kpi.total' | transloco }}</span>
+        <span class="kpi-card__value">{{ totalCount() }}</span>
+        <span class="kpi-card__hint kpi-card__hint--up">+{{ alumnos().length }} {{ 'students.kpi.thisMonth' | transloco }}</span>
+      </div>
+      <svg class="kpi-card__spark" viewBox="0 0 100 30" preserveAspectRatio="none">
+        <path d="M0,22 L15,18 L30,20 L45,14 L60,12 L75,8 L100,4" fill="none" stroke="#4FB3E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </article>
+
+    <article class="kpi-card kpi-card--purple">
+      <span class="kpi-card__icon"><lucide-icon [img]="Baby" /></span>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label">{{ 'students.kpi.nursery' | transloco }}</span>
+        <span class="kpi-card__value">{{ nurseryCount() }}</span>
+        <span class="kpi-card__hint">{{ pct(nurseryCount()) }}% {{ 'students.kpi.ofTotal' | transloco }}</span>
+      </div>
+    </article>
+
+    <article class="kpi-card kpi-card--coral">
+      <span class="kpi-card__icon"><lucide-icon [img]="BookOpen" /></span>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label">{{ 'students.kpi.p3' | transloco }}</span>
+        <span class="kpi-card__value">{{ p3Count() }}</span>
+        <span class="kpi-card__hint">{{ pct(p3Count()) }}% {{ 'students.kpi.ofTotal' | transloco }}</span>
+      </div>
+    </article>
+
+    <article class="kpi-card kpi-card--green">
+      <span class="kpi-card__icon"><lucide-icon [img]="GraduationCap" /></span>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label">{{ 'students.kpi.p4' | transloco }}</span>
+        <span class="kpi-card__value">{{ p4Count() }}</span>
+        <span class="kpi-card__hint">{{ pct(p4Count()) }}% {{ 'students.kpi.ofTotal' | transloco }}</span>
+      </div>
+    </article>
+
+    <article class="kpi-card kpi-card--mustard">
+      <span class="kpi-card__icon"><lucide-icon [img]="Sparkles" /></span>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label">{{ 'students.kpi.p5' | transloco }}</span>
+        <span class="kpi-card__value">{{ p5Count() }}</span>
+        <span class="kpi-card__hint">{{ pct(p5Count()) }}% {{ 'students.kpi.ofTotal' | transloco }}</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ── Filters bar ──────────────────────────────────────────────────── -->
+  <div class="students-filters">
+    <div class="students-filters__search">
+      <lucide-icon [img]="Search" class="students-filters__search-icon" />
+      <input
+        type="search"
+        class="students-filters__search-input"
+        [formControl]="searchControl"
+        [placeholder]="'students.searchPlaceholder' | transloco"
+        [attr.aria-label]="'students.searchPlaceholder' | transloco"
+      />
+    </div>
+
+    <div class="students-filters__field">
+      <label class="students-filters__label">{{ 'students.filters.class' | transloco }}</label>
+      <select class="k-select" [formControl]="classControl">
+        <option value="">{{ 'students.filters.all' | transloco }}</option>
+        <option value="P3">P3</option>
+        <option value="P4">P4</option>
+        <option value="P5">P5</option>
+      </select>
+    </div>
+
+    <div class="students-filters__field">
+      <label class="students-filters__label">{{ 'students.filters.attendance' | transloco }}</label>
+      <select class="k-select" [formControl]="attendanceControl">
+        <option value="">{{ 'students.filters.allFem' | transloco }}</option>
+        <option value="excellent">{{ 'students.attendance.excellent' | transloco }}</option>
+        <option value="good">{{ 'students.attendance.good' | transloco }}</option>
+        <option value="regular">{{ 'students.attendance.regular' | transloco }}</option>
+      </select>
+    </div>
+
+    <div class="students-filters__field">
+      <label class="students-filters__label">{{ 'students.filters.payment' | transloco }}</label>
+      <select class="k-select" [formControl]="paymentControl">
+        <option value="">{{ 'students.filters.allMasc' | transloco }}</option>
+        <option value="paid">{{ 'students.payment.paid' | transloco }}</option>
+        <option value="pending">{{ 'students.payment.pending' | transloco }}</option>
+        <option value="overdue">{{ 'students.payment.overdue' | transloco }}</option>
+      </select>
+    </div>
+
+    <button type="button" class="k-btn k-btn--ghost students-filters__more">
+      <lucide-icon [img]="Filters" />
+      {{ 'students.filters.more' | transloco }}
+    </button>
+  </div>
+
+  <!-- ── Table ────────────────────────────────────────────────────────── -->
+  <article class="kds-card students-table-card">
+
+    @if (error()) {
+      <div class="students-error">
+        <span>{{ error() }}</span>
+        <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="retry()">
+          <lucide-icon [img]="RefreshCw" />
+          {{ 'common.loading' | transloco }}
+        </button>
+      </div>
+    } @else if (loading() && !hasResults()) {
+      <div class="students-loading">
+        <span class="students-spinner" aria-hidden="true"></span>
+        <span>{{ 'common.loading' | transloco }}</span>
+      </div>
+    } @else if (!hasResults()) {
+      <div class="students-empty">
+        <h3>{{ 'students.empty.title' | transloco }}</h3>
+        <p>{{ 'students.empty.body' | transloco }}</p>
+      </div>
+    } @else {
+
+      <div class="table-wrap">
+        <table class="kds-table students-table">
+          <thead>
+            <tr>
+              <th>{{ 'students.col.student' | transloco }}</th>
+              <th>{{ 'students.col.class' | transloco }}</th>
+              <th>{{ 'students.col.age' | transloco }}</th>
+              <th>{{ 'students.col.tutor' | transloco }}</th>
+              <th>{{ 'students.col.attendance' | transloco }}</th>
+              <th>{{ 'students.col.payment' | transloco }}</th>
+              <th class="students-table__actions-col">{{ 'students.col.actions' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (a of alumnos(); track trackById($index, a)) {
+              <tr>
+                <td class="students-table__name-cell">
+                  <span class="students-avatar" [class]="'students-avatar--' + avatarTone(a)">
+                    {{ initials(a) }}
+                  </span>
+                  <a class="students-table__link" [routerLink]="['/a/alumnos', a.id]">{{ fullName(a) }}</a>
+                </td>
+                <td>
+                  <span class="students-class-pill">{{ classLabel(a) }}</span>
+                </td>
+                <td class="students-table__muted">{{ ageInYears(a) }}</td>
+                <td>
+                  <div class="students-tutor">
+                    <span class="students-tutor__name">{{ tutorName(a) }}</span>
+                    @if (tutorPhone(a); as phone) {
+                      <span class="students-tutor__phone">{{ phone }}</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  @if (attendanceFor(a); as att) {
+                    <span class="kds-badge"
+                      [class.kds-badge--success]="att.level === 'excellent'"
+                      [class.kds-badge--info]="att.level === 'good'"
+                      [class.kds-badge--warning]="att.level === 'regular'">
+                      {{ ('students.attendance.' + att.level) | transloco }}
+                    </span>
+                  }
+                </td>
+                <td>
+                  @if (paymentFor(a); as pay) {
+                    <span class="kds-badge"
+                      [class.kds-badge--success]="pay.status === 'paid'"
+                      [class.kds-badge--warning]="pay.status === 'pending'"
+                      [class.kds-badge--danger]="pay.status === 'overdue'">
+                      {{ ('students.payment.' + pay.status) | transloco }}
+                    </span>
+                  }
+                </td>
+                <td class="students-table__actions">
+                  <a class="k-btn k-btn--ghost k-btn--sm" [routerLink]="['/a/alumnos', a.id]">
+                    {{ 'students.view' | transloco }}
+                  </a>
+                  <div class="students-row-menu">
+                    <button
+                      type="button"
+                      class="students-row-menu__btn"
+                      (click)="toggleMenu(a.id, $event)"
+                      [attr.aria-label]="'students.col.actions' | transloco"
+                    >
+                      <lucide-icon [img]="MoreVertical" />
+                    </button>
+                    @if (openMenuFor() === a.id) {
+                      <div class="students-row-menu__pop" (click)="$event.stopPropagation()">
+                        <a [routerLink]="['/a/alumnos', a.id]" class="students-row-menu__item" (click)="closeMenus()">
+                          {{ 'students.menu.view' | transloco }}
+                        </a>
+                        <a [routerLink]="['/a/alumnos', a.id]" class="students-row-menu__item" (click)="closeMenus()">
+                          {{ 'students.menu.edit' | transloco }}
+                        </a>
+                        <a routerLink="/a/comunicaciones" class="students-row-menu__item" (click)="closeMenus()">
+                          {{ 'students.menu.message' | transloco }}
+                        </a>
+                        <hr class="students-row-menu__divider" />
+                        <button type="button" class="students-row-menu__item students-row-menu__item--danger" (click)="closeMenus()">
+                          {{ 'students.menu.archive' | transloco }}
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <footer class="students-pagination">
+        <span class="students-pagination__count">
+          {{ 'students.showing' | transloco: {
+            from: ((page() - 1) * limit() + 1),
+            to: ((page() - 1) * limit() + alumnos().length),
+            total: total()
+          } }}
+        </span>
+
+        <div class="students-pagination__controls">
+          <button type="button" class="students-page-btn" [disabled]="page() <= 1" (click)="prevPage()">
+            <lucide-icon [img]="ChevronLeft" />
+            {{ 'students.previous' | transloco }}
+          </button>
+
+          @for (p of pageRange(); track $index) {
+            @if (p === null) {
+              <span class="students-page-ellipsis">…</span>
+            } @else {
+              <button
+                type="button"
+                class="students-page-btn students-page-btn--num"
+                [class.students-page-btn--active]="p === page()"
+                (click)="goToPage(p)"
+              >{{ p }}</button>
+            }
+          }
+
+          <button type="button" class="students-page-btn" [disabled]="page() >= totalPages()" (click)="nextPage()">
+            {{ 'students.next' | transloco }}
+            <lucide-icon [img]="ChevronRight" />
+          </button>
+        </div>
+      </footer>
+    }
+  </article>
+
+  @if (createOpen()) {
+    <kipa-student-create-modal
+      (closed)="closeCreateModal()"
+      (created)="onStudentCreated()"
+    />
+  }
+</section>

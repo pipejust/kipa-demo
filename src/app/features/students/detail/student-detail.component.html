@@ -1,0 +1,683 @@
+<section class="page kds-page">
+  <!-- Breadcrumb -->
+  <nav class="sd-crumbs" aria-label="Breadcrumb">
+    <a routerLink="/a/alumnos">{{ 'studentDetail.breadcrumb.students' | transloco }}</a>
+    <lucide-icon [img]="ChevronRight" />
+    <span>{{ 'studentDetail.breadcrumb.record' | transloco }}</span>
+  </nav>
+
+  <!-- Page header -->
+  <header class="sd-page-head">
+    <h1 class="sd-page-title">{{ 'studentDetail.pageTitle' | transloco }}</h1>
+    <a class="k-btn k-btn--ghost k-btn--sm" routerLink="/a/alumnos">
+      <lucide-icon [img]="ArrowLeft" />
+      <span>{{ 'studentDetail.backToList' | transloco }}</span>
+    </a>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <span>{{ 'studentDetail.loading' | transloco }}</span>
+    </div>
+  } @else {
+    @if (error()) {
+      <div class="k-alert k-alert--danger">
+        <span>{{ error() }}</span>
+      </div>
+    }
+    @if (alumno(); as a) {
+      <!-- Hero card -->
+      <header class="sd-hero">
+        <div class="sd-hero__id">
+          @if (a.foto_url) {
+            <img class="sd-hero__photo" [src]="a.foto_url" [alt]="fullName()" />
+          } @else {
+            <span class="sd-hero__avatar k-avatar k-avatar--xl">{{ initials() }}</span>
+          }
+          <div class="sd-hero__meta">
+            <h2 class="sd-hero__name">{{ fullName() }}</h2>
+            @if (classroomLine()) {
+              <p class="sd-hero__sub">{{ 'studentDetail.classPrefix' | transloco }} {{ classroomLine() }}</p>
+            }
+            @if (ageLine()) {
+              <p class="sd-hero__age">{{ ageLine() }}</p>
+            }
+            <div class="sd-hero__chips">
+              <kipa-status-badge [status]="a.status" />
+              @if (schoolYear()) {
+                <span class="k-tag k-tag--sky">{{ 'studentDetail.chips.enrolled' | transloco }} {{ schoolYear() }}</span>
+              }
+              @if (attendance(); as att) {
+                <span class="k-tag" [ngClass]="attendanceTrend() === 'good' ? 'k-tag--green' : 'k-tag--mustard'">
+                  @if (attendanceTrend() === 'good') {
+                    {{ 'studentDetail.chips.regularAttendance' | transloco }}
+                  } @else {
+                    {{ 'studentDetail.chips.watchAttendance' | transloco }}
+                  }
+                </span>
+              }
+              <span class="k-tag" [ngClass]="hasAllergies() ? 'k-tag--coral' : 'k-tag--purple'">
+                @if (hasAllergies()) {
+                  {{ 'studentDetail.chips.hasAllergies' | transloco }}
+                } @else {
+                  {{ 'studentDetail.chips.noAllergies' | transloco }}
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="sd-hero__actions">
+          @if (!editMode()) {
+            <button type="button" class="k-btn k-btn--primary" (click)="enterEdit()">
+              <lucide-icon [img]="Pencil" />
+              <span>{{ 'studentDetail.edit' | transloco }}</span>
+            </button>
+            <button type="button" class="k-btn k-btn--ghost" (click)="contactFamily()" [disabled]="!mainTutor()?.email">
+              <lucide-icon [img]="Mail" />
+              <span>{{ 'studentDetail.contactFamily' | transloco }}</span>
+            </button>
+            <button type="button" class="k-btn k-btn--ghost" (click)="setTab('activity')">
+              <lucide-icon [img]="History" />
+              <span>{{ 'studentDetail.viewHistory' | transloco }}</span>
+            </button>
+            <button type="button" class="sd-hero__more" [attr.aria-label]="'studentDetail.moreActions' | transloco">
+              <lucide-icon [img]="EllipsisVertical" />
+            </button>
+          } @else {
+            <button type="button" class="k-btn k-btn--ghost" (click)="cancelEdit()" [disabled]="saving()">
+              <lucide-icon [img]="Close" />
+              <span>{{ 'studentDetail.cancel' | transloco }}</span>
+            </button>
+            <button type="button" class="k-btn k-btn--primary" (click)="save()" [disabled]="saving()">
+              <lucide-icon [img]="Save" />
+              <span>{{ saving() ? ('studentDetail.saving' | transloco) : ('studentDetail.save' | transloco) }}</span>
+            </button>
+          }
+        </div>
+      </header>
+
+      <!-- Tabs -->
+      <nav class="sd-tabs" role="tablist" aria-label="Student sections">
+        @for (t of tabs; track t.key) {
+          <button
+            type="button"
+            role="tab"
+            [attr.aria-selected]="currentTab() === t.key"
+            class="sd-tab"
+            [class.sd-tab--active]="currentTab() === t.key"
+            (click)="setTab(t.key)"
+          >
+            {{ t.labelKey | transloco }}
+          </button>
+        }
+      </nav>
+
+      <!-- Tab content -->
+      @switch (currentTab()) {
+
+        @case ('summary') {
+          <div class="sd-grid">
+            <!-- Personal data mini-card -->
+            <article class="sd-mini">
+              <header class="sd-mini__head">
+                <span class="sd-mini__icon sd-mini__icon--purple"><lucide-icon [img]="Users" /></span>
+                <h3 class="sd-mini__title">{{ 'studentDetail.personalData' | transloco }}</h3>
+              </header>
+              <dl class="sd-mini__list">
+                <div><dt>{{ 'studentDetail.fields.fullName' | transloco }}</dt><dd>{{ fullName() || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.fields.dni' | transloco }}</dt><dd>{{ a.dni || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.fields.birthdate' | transloco }}</dt>
+                  <dd>{{ formatDate(a.fecha_nacimiento) }}<span class="sd-mini__muted"> ({{ ageOnly() }})</span></dd></div>
+                <div><dt>{{ 'studentDetail.fields.nationality' | transloco }}</dt><dd>{{ a.nacionalidad || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.fields.language' | transloco }}</dt><dd>{{ a.idioma_principal || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.fields.medicalNotes' | transloco }}</dt>
+                  <dd>{{ medical().alergias || ('studentDetail.none' | transloco) }}</dd></div>
+              </dl>
+              <button type="button" class="sd-mini__link" (click)="setTab('personal')">
+                {{ 'studentDetail.summary.viewAllData' | transloco }}
+                <lucide-icon [img]="ChevronRight" />
+              </button>
+            </article>
+
+            <!-- Tutors mini-card -->
+            <article class="sd-mini">
+              <header class="sd-mini__head">
+                <span class="sd-mini__icon sd-mini__icon--sky"><lucide-icon [img]="Users" /></span>
+                <h3 class="sd-mini__title">{{ 'studentDetail.tutorsAndContacts' | transloco }}</h3>
+              </header>
+
+              @if (tutorList().length > 0) {
+                <ul class="sd-tutor-list sd-tutor-list--mini">
+                  @for (t of tutorList().slice(0, 2); track $index) {
+                    <li class="sd-tutor-row">
+                      <span class="k-avatar k-avatar--sm">{{ (t.nombre.charAt(0) || '') + (t.apellidos.charAt(0) || '') }}</span>
+                      <div class="sd-tutor-row__body">
+                        <span class="sd-tutor-row__name">
+                          {{ t.nombre }} {{ t.apellidos }}
+                          <span class="sd-tutor-row__role">({{ formatTutorRole(t) }})</span>
+                          @if (t.es_responsable_principal || t.primario) {
+                            <span class="k-tag k-tag--green sd-tutor-row__chip">{{ 'studentDetail.summary.primary' | transloco }}</span>
+                          }
+                        </span>
+                        @if (t.telefono) {
+                          <span class="sd-tutor-row__line"><lucide-icon [img]="Phone" /> {{ t.telefono }}</span>
+                        }
+                        @if (t.email) {
+                          <span class="sd-tutor-row__line"><lucide-icon [img]="Mail" /> {{ t.email }}</span>
+                        }
+                      </div>
+                    </li>
+                  }
+                </ul>
+                @if (tutorList().length > 2) {
+                  <p class="sd-mini__note">+ {{ tutorList().length - 2 }}
+                    {{ (tutorList().length - 2 === 1 ? 'studentDetail.summary.moreContact' : 'studentDetail.summary.moreContacts') | transloco }}</p>
+                }
+              } @else {
+                <p class="sd-mini__empty">{{ 'studentDetail.noTutors' | transloco }}</p>
+              }
+              <button type="button" class="sd-mini__link" (click)="setTab('tutors')">
+                {{ 'studentDetail.summary.viewAllContacts' | transloco }}
+                <lucide-icon [img]="ChevronRight" />
+              </button>
+            </article>
+
+            <!-- Attendance mini-card -->
+            <article class="sd-mini">
+              <header class="sd-mini__head">
+                <span class="sd-mini__icon sd-mini__icon--green"><lucide-icon [img]="CalendarDays" /></span>
+                <h3 class="sd-mini__title">{{ 'studentDetail.attendance30' | transloco }}</h3>
+              </header>
+              @if (attendance(); as att) {
+                <div class="sd-att-grid">
+                  <div class="sd-att-stat">
+                    <span class="sd-att-stat__value sd-att-stat__value--green">{{ att.percent }}%</span>
+                    <span class="sd-att-stat__label">{{ 'studentDetail.summary.globalAttendance' | transloco }}</span>
+                  </div>
+                  <div class="sd-att-stat">
+                    <span class="sd-att-stat__value sd-att-stat__value--green">{{ att.present + att.late }}</span>
+                    <span class="sd-att-stat__label">{{ 'studentDetail.summary.daysPresent' | transloco }}</span>
+                  </div>
+                  <div class="sd-att-stat">
+                    <span class="sd-att-stat__value sd-att-stat__value--coral">{{ att.absent }}</span>
+                    <span class="sd-att-stat__label">{{ 'studentDetail.summary.absences' | transloco }}</span>
+                  </div>
+                </div>
+                <svg class="sd-spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true">
+                  <polyline [attr.points]="attendancePoints()" fill="none" stroke="var(--kids-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              } @else {
+                <p class="sd-mini__empty">{{ 'studentDetail.summary.attendanceEmpty' | transloco }}</p>
+              }
+              <button type="button" class="sd-mini__link" (click)="setTab('attendance')">
+                {{ 'studentDetail.summary.viewCalendar' | transloco }}
+                <lucide-icon [img]="ChevronRight" />
+              </button>
+            </article>
+
+            <!-- Admission mini-card -->
+            <article class="sd-mini">
+              <header class="sd-mini__head">
+                <span class="sd-mini__icon sd-mini__icon--mustard"><lucide-icon [img]="GraduationCap" /></span>
+                <h3 class="sd-mini__title">{{ 'studentDetail.admissionEnrollment' | transloco }}</h3>
+              </header>
+              <dl class="sd-mini__list">
+                <div><dt>{{ 'studentDetail.summary.admissionDate' | transloco }}</dt>
+                  <dd>{{ formatDate(admissionDate()) }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.schoolYear' | transloco }}</dt>
+                  <dd>{{ schoolYear() || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.classroom' | transloco }}</dt>
+                  <dd>{{ matriculaInfo().classe || classroomLine() || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.schedule' | transloco }}</dt>
+                  <dd>{{ matriculaInfo().horario || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.days' | transloco }}</dt>
+                  <dd>{{ matriculaInfo().dias || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.observations' | transloco }}</dt>
+                  <dd>{{ matriculaInfo().observaciones || ('studentDetail.none' | transloco) }}</dd></div>
+              </dl>
+              <button type="button" class="sd-mini__link" (click)="setTab('admission')">
+                {{ 'studentDetail.summary.viewAdmissionHistory' | transloco }}
+                <lucide-icon [img]="ChevronRight" />
+              </button>
+            </article>
+
+            <!-- Payments mini-card -->
+            <article class="sd-mini">
+              <header class="sd-mini__head">
+                <span class="sd-mini__icon sd-mini__icon--coral"><lucide-icon [img]="Wallet" /></span>
+                <h3 class="sd-mini__title">{{ 'studentDetail.paymentsSummary' | transloco }}</h3>
+                @if (payments()) {
+                  <span class="k-tag sd-mini__chip" [ngClass]="'k-tag--' + paymentStateTone()">
+                    {{ paymentStateLabelKey() | transloco }}
+                  </span>
+                }
+              </header>
+              @if (payments(); as p) {
+                <dl class="sd-mini__list">
+                  <div><dt>{{ 'studentDetail.summary.monthlyFee' | transloco }}</dt>
+                    <dd>{{ p.monthly !== null ? (p.monthly | number:'1.2-2') + ' €' : '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.summary.nextDue' | transloco }}</dt>
+                    <dd>{{ formatDate(p.nextDue) }}</dd></div>
+                  <div><dt>{{ 'studentDetail.summary.currentState' | transloco }}</dt>
+                    <dd class="sd-mini__state" [ngClass]="'sd-mini__state--' + paymentStateTone()">
+                      {{ paymentStateLabelKey() | transloco }}
+                    </dd></div>
+                  <div><dt>{{ 'studentDetail.summary.paidInvoices' | transloco }}</dt>
+                    <dd>{{ p.paid }} {{ 'studentDetail.summary.of' | transloco }} {{ p.total }}</dd></div>
+                  <div><dt>{{ 'studentDetail.summary.totalPaid' | transloco }}</dt>
+                    <dd>{{ p.totalPaid | number:'1.2-2' }} €</dd></div>
+                </dl>
+              } @else {
+                <p class="sd-mini__empty">{{ 'studentDetail.summary.paymentsEmpty' | transloco }}</p>
+              }
+              <button type="button" class="sd-mini__link" (click)="setTab('payments')">
+                {{ 'studentDetail.summary.viewPaymentsHistory' | transloco }}
+                <lucide-icon [img]="ChevronRight" />
+              </button>
+            </article>
+
+            <!-- Activity mini-card -->
+            <article class="sd-mini">
+              <header class="sd-mini__head">
+                <span class="sd-mini__icon sd-mini__icon--pink"><lucide-icon [img]="Activity" /></span>
+                <h3 class="sd-mini__title">{{ 'studentDetail.recentActivity' | transloco }}</h3>
+              </header>
+              @if (recentActivity().length > 0) {
+                <ul class="sd-activity sd-activity--mini">
+                  @for (e of recentActivity().slice(0, 4); track e.id) {
+                    <li class="sd-activity__item">
+                      <span class="sd-activity__dot" [ngClass]="'sd-activity__dot--' + e.color"></span>
+                      <div class="sd-activity__main">
+                        <span class="sd-activity__when">{{ formatRelativeDateTime(e.date) }}</span>
+                        <span class="sd-activity__title">{{ e.titleKey | transloco:e.titleParams }}</span>
+                      </div>
+                      @if (e.detail) { <span class="sd-activity__detail">{{ e.detail }}</span> }
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="sd-mini__empty">{{ 'studentDetail.summary.activityEmpty' | transloco }}</p>
+              }
+              <button type="button" class="sd-mini__link" (click)="setTab('activity')">
+                {{ 'studentDetail.summary.viewAllActivity' | transloco }}
+                <lucide-icon [img]="ChevronRight" />
+              </button>
+            </article>
+          </div>
+        }
+
+        @case ('personal') {
+          <div class="sd-grid sd-grid--7-3">
+            <article class="sd-panel">
+              <h3 class="sd-panel__title">{{ 'studentDetail.personalData' | transloco }}</h3>
+              @if (!editMode()) {
+                <dl class="sd-kv">
+                  <div><dt>{{ 'studentDetail.fields.name' | transloco }}</dt><dd>{{ a.nombre || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.surnames' | transloco }}</dt><dd>{{ a.apellidos || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.dni' | transloco }}</dt><dd>{{ a.dni || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.birthdate' | transloco }}</dt>
+                    <dd>{{ formatDate(a.fecha_nacimiento) }}<span class="sd-kv__muted"> · {{ ageOnly() }}</span></dd></div>
+                  <div><dt>{{ 'studentDetail.fields.gender' | transloco }}</dt><dd>{{ a.genero || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.nationality' | transloco }}</dt><dd>{{ a.nacionalidad || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.language' | transloco }}</dt><dd>{{ a.idioma_principal || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.level' | transloco }}</dt><dd>{{ a.nivel || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.class' | transloco }}</dt><dd>{{ a.aula || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.email' | transloco }}</dt><dd>{{ a.email || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.phone' | transloco }}</dt><dd>{{ a.telefono || '—' }}</dd></div>
+                </dl>
+              } @else {
+                <form [formGroup]="form" class="sd-form-grid">
+                  <div class="k-field"><label class="k-label">{{ 'studentDetail.fields.name' | transloco }}</label><input class="k-input" formControlName="nombre" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'studentDetail.fields.surnames' | transloco }}</label><input class="k-input" formControlName="apellidos" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'studentDetail.fields.birthdate' | transloco }}</label><input type="date" class="k-input" formControlName="fecha_nacimiento" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'studentDetail.fields.gender' | transloco }}</label>
+                    <select class="k-select" formControlName="genero">
+                      <option value="">—</option>
+                      <option value="F">F</option>
+                      <option value="M">M</option>
+                      <option value="X">X</option>
+                    </select>
+                  </div>
+                  <div class="k-field"><label class="k-label">{{ 'studentDetail.fields.level' | transloco }}</label><input class="k-input" formControlName="nivel" placeholder="P3, P4, P5…" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'studentDetail.fields.class' | transloco }}</label><input class="k-input" formControlName="aula" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'studentDetail.fields.contactEmail' | transloco }}</label><input class="k-input" formControlName="email" type="email" /></div>
+                  <div class="k-field"><label class="k-label">{{ 'studentDetail.fields.phone' | transloco }}</label><input class="k-input" formControlName="telefono" /></div>
+                </form>
+              }
+            </article>
+
+            <article class="sd-panel">
+              <h3 class="sd-panel__title">{{ 'studentDetail.consents' | transloco }}</h3>
+              <dl class="sd-kv sd-kv--single">
+                <div>
+                  <dt>{{ 'studentDetail.fields.photoConsent' | transloco }}</dt>
+                  <dd>
+                    <span class="k-tag" [ngClass]="'k-tag--' + consentTone(a.consentimiento_foto)">
+                      {{ consentLabel(a.consentimiento_foto) }}
+                    </span>
+                  </dd>
+                </div>
+                <div>
+                  <dt>{{ 'studentDetail.fields.dataConsent' | transloco }}</dt>
+                  <dd>
+                    <span class="k-tag" [ngClass]="'k-tag--' + consentTone(a.consentimiento_datos)">
+                      {{ consentLabel(a.consentimiento_datos) }}
+                    </span>
+                  </dd>
+                </div>
+                <div>
+                  <dt>{{ 'studentDetail.fields.createdAt' | transloco }}</dt>
+                  <dd>{{ formatDate(a.created_at) }}</dd>
+                </div>
+                <div>
+                  <dt>{{ 'studentDetail.fields.updatedAt' | transloco }}</dt>
+                  <dd>{{ formatDate(a.updated_at) }}</dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+        }
+
+        @case ('tutors') {
+          <div class="sd-grid sd-grid--7-3">
+            <article class="sd-panel">
+              <h3 class="sd-panel__title">{{ 'studentDetail.tutors' | transloco }}</h3>
+              @if (tutorList().length > 0) {
+                <ul class="sd-tutor-list">
+                  @for (t of tutorList(); track $index) {
+                    <li class="sd-tutor-card">
+                      <span class="k-avatar k-avatar--lg">{{ (t.nombre.charAt(0) || '') + (t.apellidos.charAt(0) || '') }}</span>
+                      <div class="sd-tutor-card__body">
+                        <header class="sd-tutor-card__head">
+                          <h4 class="sd-tutor-card__name">{{ t.nombre }} {{ t.apellidos }}</h4>
+                          @if (t.es_responsable_principal || t.primario) {
+                            <span class="k-tag k-tag--green">{{ 'studentDetail.summary.primary' | transloco }}</span>
+                          }
+                          @if (t.autorizado_recoger) {
+                            <span class="k-tag k-tag--sky">{{ 'studentDetail.tutorBadges.canPickup' | transloco }}</span>
+                          }
+                        </header>
+                        <p class="sd-tutor-card__role">{{ formatTutorRole(t) }}</p>
+                        <dl class="sd-tutor-card__contact">
+                          @if (t.telefono) {
+                            <div><dt><lucide-icon [img]="Phone" /></dt><dd>{{ t.telefono }}</dd></div>
+                          }
+                          @if (t.email) {
+                            <div><dt><lucide-icon [img]="Mail" /></dt><dd><a [href]="'mailto:' + t.email">{{ t.email }}</a></dd></div>
+                          }
+                          @if (t.dni) {
+                            <div><dt>DNI</dt><dd>{{ t.dni }}</dd></div>
+                          }
+                        </dl>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="sd-panel__empty">{{ 'studentDetail.noTutors' | transloco }}</p>
+              }
+            </article>
+
+            <article class="sd-panel">
+              <h3 class="sd-panel__title">{{ 'studentDetail.medical' | transloco }}</h3>
+              @if (!medical().isEmpty) {
+                <dl class="sd-kv sd-kv--single">
+                  <div><dt>{{ 'studentDetail.fields.allergies' | transloco }}</dt>
+                    <dd>{{ medical().alergias || ('studentDetail.none' | transloco) }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.medication' | transloco }}</dt>
+                    <dd>{{ medical().medicacion || ('studentDetail.none' | transloco) }}</dd></div>
+                  @if (medical().condiciones) {
+                    <div><dt>{{ 'studentDetail.fields.conditions' | transloco }}</dt>
+                      <dd>{{ medical().condiciones }}</dd></div>
+                  }
+                  <div><dt>{{ 'studentDetail.fields.bloodType' | transloco }}</dt>
+                    <dd>{{ medical().grupo_sanguineo || '—' }}</dd></div>
+                  <div><dt>{{ 'studentDetail.fields.doctor' | transloco }}</dt>
+                    <dd>{{ medical().medico_nombre || '—' }}</dd></div>
+                  @if (medical().medico_tel) {
+                    <div><dt>{{ 'studentDetail.fields.doctorPhone' | transloco }}</dt>
+                      <dd>{{ medical().medico_tel }}</dd></div>
+                  }
+                </dl>
+              } @else {
+                <p class="sd-panel__empty">{{ 'studentDetail.noMedical' | transloco }}</p>
+              }
+            </article>
+          </div>
+        }
+
+        @case ('attendance') {
+          <article class="sd-panel">
+            <header class="sd-panel__head">
+              <h3 class="sd-panel__title">{{ 'studentDetail.attendance' | transloco }}</h3>
+              <a class="k-btn k-btn--ghost k-btn--sm" routerLink="/a/asistencia">
+                <lucide-icon [img]="CalendarDays" />
+                <span>{{ 'studentDetail.placeholders.openAttendance' | transloco }}</span>
+              </a>
+            </header>
+
+            @if (attendance(); as att) {
+              <div class="sd-att-board">
+                <div class="sd-att-tile sd-att-tile--green">
+                  <span class="sd-att-tile__value">{{ att.percent }}%</span>
+                  <span class="sd-att-tile__label">{{ 'studentDetail.summary.globalAttendance' | transloco }}</span>
+                </div>
+                <div class="sd-att-tile">
+                  <span class="sd-att-tile__value">{{ att.present }}</span>
+                  <span class="sd-att-tile__label">{{ 'studentDetail.attendanceState.presente' | transloco }}</span>
+                </div>
+                <div class="sd-att-tile">
+                  <span class="sd-att-tile__value sd-att-tile__value--mustard">{{ att.late }}</span>
+                  <span class="sd-att-tile__label">{{ 'studentDetail.attendanceState.tarde' | transloco }}</span>
+                </div>
+                <div class="sd-att-tile">
+                  <span class="sd-att-tile__value sd-att-tile__value--coral">{{ att.absent }}</span>
+                  <span class="sd-att-tile__label">{{ 'studentDetail.attendanceState.ausente' | transloco }}</span>
+                </div>
+                <div class="sd-att-tile">
+                  <span class="sd-att-tile__value sd-att-tile__value--sky">{{ att.justified }}</span>
+                  <span class="sd-att-tile__label">{{ 'studentDetail.attendanceState.justificado' | transloco }}</span>
+                </div>
+              </div>
+
+              <h4 class="sd-section-title">{{ 'studentDetail.attendanceRecent' | transloco }}</h4>
+              <div class="sd-table-wrap">
+                <table class="sd-table">
+                  <thead>
+                    <tr>
+                      <th>{{ 'studentDetail.fields.date' | transloco }}</th>
+                      <th>{{ 'studentDetail.fields.state' | transloco }}</th>
+                      <th>{{ 'studentDetail.fields.note' | transloco }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of att.recent; track row.id) {
+                      <tr>
+                        <td>{{ formatDate(row.fecha) }}</td>
+                        <td>
+                          <span class="k-tag" [ngClass]="'k-tag--' + attendanceStatusTone(row.estado)">
+                            {{ attendanceStatusLabel(row.estado) }}
+                          </span>
+                        </td>
+                        <td class="sd-table__muted">{{ row.nota || '—' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <p class="sd-panel__empty">{{ 'studentDetail.summary.attendanceEmpty' | transloco }}</p>
+            }
+          </article>
+        }
+
+        @case ('admission') {
+          <article class="sd-panel">
+            <header class="sd-panel__head">
+              <h3 class="sd-panel__title">{{ 'studentDetail.admissionEnrollment' | transloco }}</h3>
+              <button type="button" class="k-btn k-btn--accent" (click)="startAdmission()">
+                <lucide-icon [img]="FileText" />
+                <span>{{ 'studentDetail.newAdmission' | transloco }}</span>
+              </button>
+            </header>
+
+            @if (currentEnrollment(); as adm) {
+              <dl class="sd-kv">
+                <div><dt>{{ 'studentDetail.summary.admissionDate' | transloco }}</dt><dd>{{ formatDate(adm.submitted_at ?? adm.created_at) }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.schoolYear' | transloco }}</dt><dd>{{ adm.anio_escolar }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.requestedLevel' | transloco }}</dt><dd>{{ adm.nivel_solicitado || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.status' | transloco }}</dt>
+                  <dd><kipa-status-badge [status]="adm.status" /></dd></div>
+                <div><dt>{{ 'studentDetail.summary.classroom' | transloco }}</dt>
+                  <dd>{{ matriculaInfo().classe || a.aula || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.schedule' | transloco }}</dt>
+                  <dd>{{ matriculaInfo().horario || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.days' | transloco }}</dt>
+                  <dd>{{ matriculaInfo().dias || '—' }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.observations' | transloco }}</dt>
+                  <dd>{{ matriculaInfo().observaciones || ('studentDetail.none' | transloco) }}</dd></div>
+                <div><dt>{{ 'studentDetail.summary.currentStep' | transloco }}</dt><dd>{{ adm.current_step }} / 8</dd></div>
+              </dl>
+
+              @if (adm.pdf_url) {
+                <div class="sd-actions">
+                  <a class="k-btn k-btn--ghost k-btn--sm" [href]="adm.pdf_url" target="_blank" rel="noopener">
+                    <lucide-icon [img]="Download" />
+                    <span>{{ 'studentDetail.downloadDossier' | transloco }}</span>
+                  </a>
+                </div>
+              }
+            }
+
+            @if (admissions().length > 1) {
+              <h4 class="sd-section-title">{{ 'studentDetail.admissionHistory' | transloco }}</h4>
+              <ul class="sd-timeline">
+                @for (adm of admissions(); track adm.id) {
+                  <li class="sd-timeline__item">
+                    <span class="sd-timeline__dot"></span>
+                    <div class="sd-timeline__body">
+                      <header class="sd-timeline__head">
+                        <span class="sd-timeline__when">{{ formatDate(adm.submitted_at ?? adm.created_at) }}</span>
+                        <kipa-status-badge [status]="adm.status" />
+                      </header>
+                      <p class="sd-timeline__title">
+                        {{ 'studentDetail.summary.schoolYear' | transloco }} {{ adm.anio_escolar }}
+                        @if (adm.nivel_solicitado) { · {{ adm.nivel_solicitado }} }
+                      </p>
+                      @if (adm.pdf_url) {
+                        <a class="sd-timeline__link" [href]="adm.pdf_url" target="_blank" rel="noopener">
+                          {{ 'studentDetail.downloadDossier' | transloco }}
+                        </a>
+                      }
+                    </div>
+                  </li>
+                }
+              </ul>
+            }
+
+            @if (admissions().length === 0) {
+              <p class="sd-panel__empty">{{ 'studentDetail.placeholders.admission' | transloco }}</p>
+            }
+          </article>
+        }
+
+        @case ('payments') {
+          <article class="sd-panel">
+            <header class="sd-panel__head">
+              <h3 class="sd-panel__title">{{ 'studentDetail.payments' | transloco }}</h3>
+              @if (payments(); as p) {
+                <span class="k-tag" [ngClass]="p.state === 'overdue' ? 'k-tag--coral' : (p.state === 'pending' ? 'k-tag--mustard' : 'k-tag--green')">
+                  {{ ('studentDetail.summary.' +
+                      (p.state === 'overdue' ? 'overdue' : (p.state === 'pending' ? 'pendingPay' : 'onTrack'))
+                     ) | transloco }}
+                </span>
+              }
+            </header>
+
+            @if (payments(); as p) {
+              <div class="sd-stats-row">
+                <div class="sd-stat-tile">
+                  <span class="sd-stat-tile__label">{{ 'studentDetail.summary.monthlyFee' | transloco }}</span>
+                  <span class="sd-stat-tile__value">{{ p.monthly !== null ? (p.monthly | number:'1.2-2') + ' €' : '—' }}</span>
+                </div>
+                <div class="sd-stat-tile">
+                  <span class="sd-stat-tile__label">{{ 'studentDetail.summary.totalPaid' | transloco }}</span>
+                  <span class="sd-stat-tile__value sd-stat-tile__value--green">{{ p.totalPaid | number:'1.2-2' }} €</span>
+                </div>
+                <div class="sd-stat-tile">
+                  <span class="sd-stat-tile__label">{{ 'studentDetail.summary.totalPending' | transloco }}</span>
+                  <span class="sd-stat-tile__value" [ngClass]="p.totalPending > 0 ? 'sd-stat-tile__value--mustard' : ''">
+                    {{ p.totalPending | number:'1.2-2' }} €
+                  </span>
+                </div>
+                <div class="sd-stat-tile">
+                  <span class="sd-stat-tile__label">{{ 'studentDetail.summary.paidInvoices' | transloco }}</span>
+                  <span class="sd-stat-tile__value">{{ p.paid }} / {{ p.total }}</span>
+                </div>
+              </div>
+
+              <h4 class="sd-section-title">{{ 'studentDetail.paymentsHistory' | transloco }}</h4>
+              <div class="sd-table-wrap">
+                <table class="sd-table">
+                  <thead>
+                    <tr>
+                      <th>{{ 'studentDetail.fields.period' | transloco }}</th>
+                      <th>{{ 'studentDetail.fields.concept' | transloco }}</th>
+                      <th>{{ 'studentDetail.fields.dueDate' | transloco }}</th>
+                      <th class="sd-table__num">{{ 'studentDetail.fields.amount' | transloco }}</th>
+                      <th>{{ 'studentDetail.fields.state' | transloco }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (c of p.cuotas; track c.id) {
+                      <tr>
+                        <td>{{ c.periodo }}</td>
+                        <td class="sd-table__muted">{{ c.concepto || '—' }}</td>
+                        <td>{{ formatDate(c.vencimiento) }}</td>
+                        <td class="sd-table__num">{{ c.importe_final | number:'1.2-2' }} €</td>
+                        <td>
+                          <span class="k-tag" [ngClass]="'k-tag--' + cuotaStatusTone(c)">{{ formatCuotaStatus(c) }}</span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <p class="sd-panel__empty">{{ 'studentDetail.summary.paymentsEmpty' | transloco }}</p>
+              <div class="sd-actions">
+                <a class="k-btn k-btn--ghost k-btn--sm" routerLink="/a/finanzas">
+                  <lucide-icon [img]="Wallet" />
+                  <span>{{ 'studentDetail.placeholders.openPayments' | transloco }}</span>
+                </a>
+              </div>
+            }
+          </article>
+        }
+
+        @case ('activity') {
+          <article class="sd-panel">
+            <h3 class="sd-panel__title">{{ 'studentDetail.recentActivity' | transloco }}</h3>
+            @if (recentActivity().length > 0) {
+              <ul class="sd-activity">
+                @for (e of recentActivity(); track e.id) {
+                  <li class="sd-activity__item">
+                    <span class="sd-activity__dot" [ngClass]="'sd-activity__dot--' + e.color"></span>
+                    <div class="sd-activity__body">
+                      <span class="sd-activity__when">{{ formatDateTime(e.date) }}</span>
+                      <span class="sd-activity__title">{{ e.titleKey | transloco:e.titleParams }}</span>
+                      @if (e.detail) { <span class="sd-activity__detail">{{ e.detail }}</span> }
+                    </div>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="sd-panel__empty">{{ 'studentDetail.summary.activityEmpty' | transloco }}</p>
+            }
+          </article>
+        }
+      }
+    }
+  }
+</section>

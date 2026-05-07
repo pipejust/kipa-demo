@@ -1,0 +1,309 @@
+<div class="admin-shell"
+     [class.admin-shell--collapsed]="sidebarCollapsed()"
+     [class.admin-shell--menu-open]="menuOpen()">
+
+  <!-- ── Sidebar ──────────────────────────────────────────────────── -->
+  <aside class="admin-sidebar" aria-label="Navegació principal">
+
+    <!-- Brand -->
+    <div class="admin-sidebar__brand">
+      <div class="admin-sidebar__brand-row">
+        @if (sidebarCollapsed()) {
+          <kipa-logo variant="mark" [size]="36" />
+        } @else {
+          <kipa-logo variant="horizontal" [size]="44" />
+        }
+        <button
+          type="button"
+          class="admin-sidebar__collapse-btn"
+          (click)="toggleSidebar()"
+          [attr.aria-label]="(sidebarCollapsed() ? 'nav.expandSidebar' : 'nav.collapseSidebar') | transloco"
+        >
+          <lucide-icon [img]="sidebarCollapsed() ? ChevronRight : ChevronLeft" />
+        </button>
+      </div>
+      @if (!sidebarCollapsed()) {
+        <span class="admin-sidebar__brand-sub">{{ 'nav.schoolMeta' | transloco }}</span>
+      }
+    </div>
+
+    <!-- Nav -->
+    <nav class="admin-sidebar__nav" aria-label="Seccions">
+      @for (item of navItems; track item.path) {
+        @if (item.disabled) {
+          <span
+            class="admin-nav-item admin-nav-item--disabled"
+            aria-disabled="true"
+            [attr.title]="item.labelKey | transloco"
+          >
+            <lucide-icon [img]="item.icon" class="admin-nav-item__icon" />
+            @if (!sidebarCollapsed()) {
+              <span class="admin-nav-item__label">{{ item.labelKey | transloco }}</span>
+              <span class="admin-nav-item__pill">{{ 'nav.soon' | transloco }}</span>
+            }
+          </span>
+        } @else {
+          <a
+            class="admin-nav-item"
+            [routerLink]="item.path"
+            routerLinkActive="admin-nav-item--active"
+            [attr.title]="sidebarCollapsed() ? (item.labelKey | transloco) : null"
+            (click)="closeMenu()"
+          >
+            <lucide-icon [img]="item.icon" class="admin-nav-item__icon" />
+            @if (!sidebarCollapsed()) {
+              <span class="admin-nav-item__label">{{ item.labelKey | transloco }}</span>
+            }
+          </a>
+        }
+      }
+    </nav>
+
+    <!-- Family card (collapsed: hide) -->
+    @if (!sidebarCollapsed()) {
+      <div class="admin-sidebar__family-card">
+        <div class="admin-sidebar__family-illustration" aria-hidden="true">
+          <span class="fam-figure fam-figure--purple"></span>
+          <span class="fam-figure fam-figure--mustard"></span>
+          <span class="fam-figure fam-figure--coral"></span>
+          <span class="fam-figure fam-figure--green"></span>
+          <span class="fam-heart"></span>
+        </div>
+        <h3 class="admin-sidebar__family-title">{{ 'nav.familyPortalTitle' | transloco }}</h3>
+        <p class="admin-sidebar__family-text">{{ 'nav.familyPortalHint' | transloco }}</p>
+        <a routerLink="/f/inicio" class="admin-sidebar__family-btn">
+          {{ 'nav.familyPortal' | transloco }}
+        </a>
+      </div>
+    }
+
+    <!-- Footer: Settings + lang -->
+    <div class="admin-sidebar__footer">
+      <a
+        routerLink="/a/settings"
+        class="admin-sidebar__settings"
+        [attr.title]="sidebarCollapsed() ? ('nav.settings' | transloco) : null"
+        (click)="closeMenu()"
+      >
+        <lucide-icon [img]="Settings" class="admin-sidebar__settings-icon" />
+        @if (!sidebarCollapsed()) {
+          <span class="admin-sidebar__settings-label">{{ 'nav.settings' | transloco }}</span>
+          <lucide-icon [img]="ChevronRight" class="admin-sidebar__settings-caret" />
+        }
+      </a>
+
+      @if (!sidebarCollapsed()) {
+        <kipa-lang-switcher direction="up" [compact]="true" />
+      }
+    </div>
+  </aside>
+
+  <!-- ── Main ──────────────────────────────────────────────────────── -->
+  <div class="admin-main">
+
+    <!-- Topbar -->
+    <header class="admin-topbar" role="banner">
+      <!-- Mobile menu toggle -->
+      <button
+        type="button"
+        class="admin-topbar__menu-btn kds-icon-btn"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        [attr.aria-label]="'nav.menu' | transloco"
+      >
+        <lucide-icon [img]="menuOpen() ? Close : Menu" />
+      </button>
+
+      <!-- Search -->
+      <div class="admin-topbar__search">
+        <lucide-icon [img]="Search" class="admin-topbar__search-icon" />
+        <input
+          type="search"
+          class="admin-topbar__search-input"
+          [placeholder]="'nav.search' | transloco"
+          aria-label="Cerca"
+        />
+        <kbd class="admin-topbar__search-kbd" aria-hidden="true">⌘ K</kbd>
+      </div>
+
+      <div class="admin-topbar__spacer"></div>
+
+      <!-- Actions -->
+      <div class="admin-topbar__actions">
+
+        <!-- Notifications -->
+        <div class="admin-topbar__popover-host">
+          <button
+            type="button"
+            class="admin-topbar__bell"
+            [class.is-active]="notifMenuOpen()"
+            [attr.aria-expanded]="notifMenuOpen()"
+            [attr.aria-label]="'nav.notifications' | transloco"
+            (click)="$event.stopPropagation(); toggleNotifMenu()"
+          >
+            <lucide-icon [img]="Bell" />
+            @if (unreadCount() > 0) {
+              <span class="admin-topbar__bell-dot" aria-hidden="true">{{ unreadCount() }}</span>
+            }
+          </button>
+
+          @if (notifMenuOpen()) {
+            <div class="popover popover--notif" role="menu" (click)="$event.stopPropagation()">
+              <header class="popover__head">
+                <span class="popover__title">{{ 'nav.notifications' | transloco }}</span>
+                @if (notif.unread() > 0) {
+                  <button type="button" class="popover__link" (click)="markAllNotificationsRead($event)">
+                    {{ 'nav.markAllRead' | transloco }}
+                  </button>
+                }
+              </header>
+
+              @if (notif.bellItems().length === 0) {
+                <div class="popover__empty">
+                  {{ 'account.notifications.empty.title' | transloco }}
+                </div>
+              } @else {
+                <ul class="popover__list">
+                  @for (n of notif.bellItems(); track n.id) {
+                    <li
+                      class="popover__row"
+                      [class.is-unread]="!n.read_at"
+                      [class.is-clickable]="n.link"
+                      (click)="openNotification(n.id, n.link)"
+                    >
+                      <span class="popover__icon"
+                        [class.popover__icon--green]="n.kind === 'attendance'"
+                        [class.popover__icon--pink]="n.kind === 'message'"
+                        [class.popover__icon--mustard]="n.kind === 'payment' || n.kind === 'announcement'"
+                        [class.popover__icon--purple]="n.kind === 'admission'">
+                        @switch (n.kind) {
+                          @case ('attendance')  { <lucide-icon [img]="CheckCircle" /> }
+                          @case ('message')     { <lucide-icon [img]="MessageCircle" /> }
+                          @case ('payment')     { <lucide-icon [img]="Wallet" /> }
+                          @case ('admission')   { <lucide-icon [img]="CalendarPlus" /> }
+                          @case ('announcement') { <lucide-icon [img]="Bell" /> }
+                          @default              { <lucide-icon [img]="Bell" /> }
+                        }
+                      </span>
+                      <div class="popover__body">
+                        <span class="popover__name">{{ n.title }}</span>
+                        <span class="popover__meta">
+                          {{ n.body || formatNotifTime(n.created_at) }}
+                          @if (n.body) { · {{ formatNotifTime(n.created_at) }} }
+                        </span>
+                      </div>
+                      @if (!n.read_at) {
+                        <span class="popover__unread-dot" aria-hidden="true"></span>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+              <footer class="popover__foot">
+                <a routerLink="/a/notifications" class="popover__see-all" (click)="closeAllPopovers()">
+                  {{ 'nav.seeAllNotifications' | transloco }}
+                </a>
+              </footer>
+            </div>
+          }
+        </div>
+
+        <!-- User profile -->
+        <div class="admin-topbar__popover-host">
+          <button
+            type="button"
+            class="admin-topbar__user"
+            [class.is-active]="profileMenuOpen()"
+            [attr.aria-expanded]="profileMenuOpen()"
+            (click)="$event.stopPropagation(); toggleProfileMenu()"
+          >
+            <span class="k-avatar k-avatar--sm">{{ userInitials() }}</span>
+            <span class="admin-topbar__user-meta">
+              <span class="admin-topbar__user-name">{{ auth.currentUser()?.full_name }}</span>
+              <span class="admin-topbar__user-role">{{ auth.currentRole() }}</span>
+            </span>
+            <lucide-icon [img]="ChevronDown" class="admin-topbar__user-caret" />
+          </button>
+
+          @if (profileMenuOpen()) {
+            <div class="popover popover--profile" role="menu" (click)="$event.stopPropagation()">
+              <header class="popover__profile-head">
+                <span class="k-avatar k-avatar--lg popover__avatar">{{ userInitials() }}</span>
+                <div class="popover__profile-meta">
+                  <span class="popover__profile-name">{{ auth.currentUser()?.full_name }}</span>
+                  <span class="popover__profile-email">{{ auth.currentUser()?.email }}</span>
+                  <span class="popover__profile-role">{{ auth.currentRole() }}</span>
+                </div>
+              </header>
+
+              <hr class="popover__divider" />
+
+              <ul class="popover__menu">
+                <li>
+                  <a routerLink="/a/profile" (click)="closeAllPopovers()" class="popover__item">
+                    <lucide-icon [img]="User" />
+                    <span>{{ 'nav.profile' | transloco }}</span>
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/a/settings" (click)="closeAllPopovers()" class="popover__item">
+                    <lucide-icon [img]="Settings" />
+                    <span>{{ 'nav.settings' | transloco }}</span>
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/a/notifications" (click)="closeAllPopovers()" class="popover__item">
+                    <lucide-icon [img]="Bell" />
+                    <span>{{ 'nav.notifications' | transloco }}</span>
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/a/help" (click)="closeAllPopovers()" class="popover__item">
+                    <lucide-icon [img]="HelpCircle" />
+                    <span>{{ 'nav.help' | transloco }}</span>
+                  </a>
+                </li>
+              </ul>
+
+              <hr class="popover__divider" />
+
+              <button
+                type="button"
+                class="popover__item popover__item--danger"
+                (click)="closeAllPopovers(); logout()"
+              >
+                <lucide-icon [img]="LogOut" />
+                <span>{{ 'nav.logout' | transloco }}</span>
+              </button>
+            </div>
+          }
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="admin-content" id="main-content">
+      <router-outlet />
+    </main>
+  </div>
+
+  <!-- Mobile sidebar scrim -->
+  @if (menuOpen()) {
+    <button
+      class="admin-scrim"
+      (click)="closeMenu()"
+      [attr.aria-label]="'nav.closeMenu' | transloco"
+    ></button>
+  }
+
+  <!-- Popover scrim (closes profile/notif when clicking outside) -->
+  @if (profileMenuOpen() || notifMenuOpen()) {
+    <button
+      class="admin-popover-scrim"
+      tabindex="-1"
+      aria-hidden="true"
+      (click)="closeAllPopovers()"
+    ></button>
+  }
+</div>

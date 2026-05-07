@@ -1,0 +1,138 @@
+<section class="page kds-page">
+  <!-- Page header -->
+  <header class="page-header kds-page-header">
+    <div>
+      <h1 class="kds-page-title">{{ 'admissions.title' | transloco }}</h1>
+      <p class="kds-page-subtitle">{{ 'admissions.lead' | transloco }}</p>
+    </div>
+    <a class="k-btn k-btn--primary" routerLink="/a/admissions/new">
+      <lucide-icon [img]="Plus" />
+      {{ 'admissions.new' | transloco }}
+    </a>
+  </header>
+
+  <!-- KPI status cards -->
+  <div class="status-kpis">
+    @for (opt of statusOptions.slice(1); track opt.value) {
+      <button
+        type="button"
+        class="status-kpi"
+        [class.status-kpi--active]="statusControl.value === opt.value"
+        (click)="statusControl.setValue(statusControl.value === opt.value ? '' : opt.value)"
+      >
+        <span class="status-kpi__count">{{ countByStatus(opt.value) }}</span>
+        <span class="status-kpi__label">{{ opt.label }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="filter">
+      <lucide-icon [img]="Filter" />
+      <select class="k-select" [formControl]="statusControl" [attr.aria-label]="'admissions.filterLabel' | transloco">
+        @for (opt of statusOptions; track opt.value) {
+          <option [value]="opt.value">{{ opt.label }}</option>
+        }
+      </select>
+    </div>
+    <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="fetch()" [disabled]="loading()">
+      <lucide-icon [img]="RefreshCw" />
+      {{ 'admissions.refresh' | transloco }}
+    </button>
+  </div>
+
+  <!-- Error -->
+  @if (error(); as msg) {
+    <div class="k-alert k-alert--danger"><span>{{ msg }}</span></div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="skeletons" aria-hidden="true">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="skeleton-card"></div>
+      }
+    </div>
+  } @else if (items().length === 0) {
+    <!-- Empty -->
+    <div class="empty">
+      <h2>{{ 'admissions.emptyTitle' | transloco }}</h2>
+      <p>{{ 'admissions.emptyLead' | transloco }}</p>
+      <a class="k-btn k-btn--accent" routerLink="/a/admissions/new">
+        <lucide-icon [img]="Plus" />
+        {{ 'admissions.startFirst' | transloco }}
+      </a>
+    </div>
+  } @else {
+    <!-- Desktop table -->
+    <div class="table-wrap kds-table-wrap" role="region" [attr.aria-label]="'admissions.listLabel' | transloco">
+      <table class="kds-table">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'admissions.colStudent' | transloco }}</th>
+            <th scope="col">{{ 'admissions.colYear' | transloco }}</th>
+            <th scope="col">{{ 'admissions.colLevel' | transloco }}</th>
+            <th scope="col">{{ 'admissions.colStatus' | transloco }}</th>
+            <th scope="col">{{ 'admissions.colUpdated' | transloco }}</th>
+            <th scope="col" class="col-actions">{{ 'admissions.colActions' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (a of items(); track trackById($index, a)) {
+            <tr>
+              <td>
+                <div class="cell-student">
+                  <span class="k-avatar k-avatar--sm">{{ studentInitials(a) }}</span>
+                  <span class="cell-student__name">{{ a.alumno_nombre || ('admissions.pendingStudent' | transloco) }}</span>
+                </div>
+              </td>
+              <td>{{ a.anio_escolar || '—' }}</td>
+              <td>{{ a.nivel_solicitado || '—' }}</td>
+              <td><kipa-status-badge [status]="a.status" /></td>
+              <td>{{ a.updated_at ? (a.updated_at | date:'dd/MM/yy') : '—' }}</td>
+              <td class="col-actions">
+                <div class="row-actions">
+                  <a class="k-btn k-btn--ghost k-btn--sm" [routerLink]="['/a/admissions', a.id]">
+                    {{ 'admissions.view' | transloco }}
+                  </a>
+                  <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="generatePdf(a)">
+                    <lucide-icon [img]="FileText" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile cards -->
+    <ul class="cards-list">
+      @for (a of items(); track trackById($index, a)) {
+        <li class="row">
+          <a class="row__main" [routerLink]="['/a/admissions', a.id]">
+            <div class="row__top">
+              <span class="row__name">{{ a.alumno_nombre || ('admissions.pendingStudent' | transloco) }}</span>
+              <kipa-status-badge [status]="a.status" />
+            </div>
+            <div class="row__meta">
+              <span>{{ a.anio_escolar }}</span>
+              <span class="row__sep">·</span>
+              <span>{{ a.nivel_solicitado }}</span>
+              @if (a.updated_at) {
+                <span class="row__sep">·</span>
+                <span>{{ a.updated_at | date: 'dd/MM/yy' }}</span>
+              }
+            </div>
+          </a>
+          <div class="row__actions">
+            <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="generatePdf(a)">
+              <lucide-icon [img]="FileText" />
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

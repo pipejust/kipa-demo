@@ -1,0 +1,70 @@
+<section class="page kds-page">
+
+  <!-- ── Header ──────────────────────────────────────────────────────── -->
+  <header class="page-header kds-page-header">
+    <div>
+      <h1 class="kds-page-title">Remeses SEPA</h1>
+      <p class="kds-page-subtitle">Les remeses es generen des del servidor seleccionant les cuotes pendents.</p>
+    </div>
+    <button class="k-btn k-btn--ghost k-btn--icon" (click)="load()" [disabled]="loading()">
+      <lucide-icon [img]="RefreshCw" />
+    </button>
+  </header>
+
+  <!-- ── Table / states ──────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="loading-rows">
+      @for (n of [1,2,3]; track n) {
+        <div class="loading-row-skeleton"></div>
+      }
+    </div>
+  } @else if (remesas().length === 0) {
+    <div class="k-empty-state">
+      <lucide-icon [img]="FileText" class="k-empty-state__icon" />
+      <p>No hi ha remeses generades.</p>
+    </div>
+  } @else {
+    <div class="table-wrap kds-table-wrap">
+      <table class="kds-table">
+        <thead>
+          <tr>
+            <th>Referència</th>
+            <th>Període</th>
+            <th>Data cobro</th>
+            <th>Cuotes</th>
+            <th>Import</th>
+            <th>Estat</th>
+            <th>Accions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of remesas(); track r.id) {
+            <tr>
+              <td class="td--ref">{{ r.referencia }}</td>
+              <td>{{ r.periodo }}</td>
+              <td>{{ r.fecha_cobro | date:'dd/MM/yyyy' }}</td>
+              <td>{{ r.num_cuotas }}</td>
+              <td class="td--amount">{{ r.importe_total | currency:'EUR':'symbol':'1.2-2' }}</td>
+              <td>
+                <span [class]="'k-tag ' + statusClass(r.status)">{{ statusLabel(r.status) }}</span>
+              </td>
+              <td class="td--actions">
+                @if (r.xml_url) {
+                  <a class="k-btn k-btn--ghost k-btn--sm" [href]="r.xml_url" target="_blank" download>
+                    <lucide-icon [img]="Download" /> XML
+                  </a>
+                }
+                @if (r.status === 'enviada') {
+                  <button class="k-btn k-btn--ghost k-btn--sm" (click)="confirm(r)" [disabled]="confirming() === r.id">
+                    <lucide-icon [img]="CheckCircle" /> Confirmar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</section>

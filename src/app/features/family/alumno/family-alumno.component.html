@@ -1,0 +1,172 @@
+<section class="page">
+
+  <a class="back-link" routerLink="/f/inicio">
+    <lucide-icon [img]="ChevronLeftIcon" />
+    Tornar a l'inici
+  </a>
+
+  <!-- ── Tabs ─────────────────────────────────────────────────────────── -->
+  <nav class="tabs" role="tablist">
+    <button
+      class="tab"
+      role="tab"
+      [class.tab--active]="activeTab() === 'asistencia'"
+      (click)="setTab('asistencia')"
+      [attr.aria-selected]="activeTab() === 'asistencia'"
+    >
+      <lucide-icon [img]="CalendarIcon" />
+      Assistència
+    </button>
+    <button
+      class="tab"
+      role="tab"
+      [class.tab--active]="activeTab() === 'informes'"
+      (click)="setTab('informes')"
+      [attr.aria-selected]="activeTab() === 'informes'"
+    >
+      <lucide-icon [img]="FileTextIcon" />
+      Informes
+    </button>
+    <button
+      class="tab"
+      role="tab"
+      [class.tab--active]="activeTab() === 'fotos'"
+      (click)="setTab('fotos')"
+      [attr.aria-selected]="activeTab() === 'fotos'"
+    >
+      <lucide-icon [img]="ImageIcon" />
+      Fotos
+    </button>
+  </nav>
+
+  <!-- ── Assistència ───────────────────────────────────────────────────── -->
+  @if (activeTab() === 'asistencia') {
+    <div class="panel">
+      <header class="panel__header">
+        <h2 class="panel__title">Assistència — últims 30 dies</h2>
+        @if (asistenciaLoading()) {
+          <span class="badge badge--loading">Carregant…</span>
+        } @else {
+          <span class="badge">{{ presencePct() }}% present</span>
+        }
+      </header>
+
+      @if (asistenciaLoading()) {
+        <div class="skeleton-list">
+          @for (n of [1,2,3,4,5]; track n) {
+            <div class="skeleton-row"></div>
+          }
+        </div>
+      } @else if (asistencia().length === 0) {
+        <p class="empty">Sense registres en els últims 30 dies.</p>
+      } @else {
+        <div class="attendance-list">
+          @for (item of asistencia(); track item.id) {
+            <article class="attendance-row" [class]="'attendance-row--' + item.estado">
+              <span class="attendance-row__date">{{ item.fecha | date:'EEE d/M':'':'ca' }}</span>
+              <div class="attendance-row__estado">
+                @switch (item.estado) {
+                  @case ('presente') {
+                    <lucide-icon [img]="CheckIcon" class="icon--present" />
+                    <span>Present</span>
+                  }
+                  @case ('ausente') {
+                    <lucide-icon [img]="XIcon" class="icon--absent" />
+                    <span>Absent</span>
+                  }
+                  @case ('tarde') {
+                    <lucide-icon [img]="ClockIcon" class="icon--late" />
+                    <span>Tard</span>
+                  }
+                  @default {
+                    <lucide-icon [img]="AlertIcon" class="icon--excused" />
+                    <span>Justificat</span>
+                  }
+                }
+              </div>
+              @if (item.nota) {
+                <span class="attendance-row__note">{{ item.nota }}</span>
+              }
+            </article>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ── Informes ──────────────────────────────────────────────────────── -->
+  @if (activeTab() === 'informes') {
+    <div class="panel">
+      <header class="panel__header">
+        <h2 class="panel__title">Informes trimestrals</h2>
+      </header>
+
+      @if (informesLoading()) {
+        <div class="skeleton-list">
+          @for (n of [1,2]; track n) { <div class="skeleton-row"></div> }
+        </div>
+      } @else if (informes().length === 0) {
+        <p class="empty">Encara no hi ha cap informe disponible.</p>
+      } @else {
+        <div class="informes-list">
+          @for (inf of informes(); track inf.id) {
+            <article class="informe-card">
+              <lucide-icon [img]="FileTextIcon" class="informe-card__icon" />
+              <div class="informe-card__body">
+                <span class="informe-card__periode">{{ inf.periode }}</span>
+                <span class="informe-card__date">{{ inf.created_at | date:'d/M/yyyy' }}</span>
+              </div>
+              @if (inf.url) {
+                <a class="btn btn--ghost" [href]="inf.url" target="_blank" download>
+                  <lucide-icon [img]="DownloadIcon" />
+                  Descarregar
+                </a>
+              } @else {
+                <span class="badge badge--pending">En preparació</span>
+              }
+            </article>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ── Fotos ─────────────────────────────────────────────────────────── -->
+  @if (activeTab() === 'fotos') {
+    <div class="panel">
+      <header class="panel__header">
+        <h2 class="panel__title">Fotos diàries</h2>
+      </header>
+
+      @if (fotosLoading()) {
+        <div class="fotos-grid fotos-grid--loading">
+          @for (n of [1,2,3,4,5,6]; track n) {
+            <div class="skeleton-foto"></div>
+          }
+        </div>
+      } @else if (fotos().length === 0) {
+        <p class="empty">Sense fotos disponibles.</p>
+      } @else {
+        <div class="fotos-grid">
+          @for (foto of fotos(); track foto.id) {
+            <figure class="foto-card">
+              <img
+                class="foto-card__img"
+                [src]="foto.url"
+                [alt]="foto.caption || 'Foto ' + foto.fecha"
+                loading="lazy"
+                width="300"
+                height="300"
+              />
+              <figcaption class="foto-card__caption">
+                {{ foto.fecha | date:'d MMM':'':'ca' }}
+                @if (foto.caption) { — {{ foto.caption }} }
+              </figcaption>
+            </figure>
+          }
+        </div>
+      }
+    </div>
+  }
+
+</section>

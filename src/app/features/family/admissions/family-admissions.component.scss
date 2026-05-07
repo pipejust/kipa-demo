@@ -1,0 +1,109 @@
+// ── Family Admissions ─────────────────────────────────────────────────────────
+
+.fam-hero {
+  display: grid;
+  gap: var(--kids-space-1);
+
+  &__title {
+    font-family: var(--kids-font-display);
+    font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem);
+    color: var(--kids-navy);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+}
+
+.fam-eyebrow {
+  font-size: var(--kids-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--kids-coral);
+  font-weight: var(--kids-w-bold);
+}
+
+// Loading
+.loading-rows { display: grid; gap: var(--kids-space-2); }
+
+.loading-row-skeleton {
+  height: 72px;
+  border-radius: var(--kids-radius-lg);
+  background: linear-gradient(90deg, var(--kids-line) 25%, var(--kids-cream) 50%, var(--kids-line) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// Empty state
+.k-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kids-space-4);
+  padding: var(--kids-space-8) var(--kids-space-4);
+  text-align: center;
+  color: var(--kids-slate);
+  font-size: var(--kids-text-sm);
+
+  &__icon { width: 48px; height: 48px; opacity: 0.3; }
+}
+
+// Admission list
+.admission-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kids-space-3);
+}
+
+.admission-card {
+  display: flex;
+  align-items: center;
+  gap: var(--kids-space-4);
+  padding: var(--kids-space-4) var(--kids-space-5);
+  background: var(--kids-paper);
+  border: 1px solid var(--kids-line);
+  border-radius: var(--kids-radius-lg);
+  flex-wrap: wrap;
+  transition: border-color 0.15s var(--kids-ease);
+
+  &:hover { border-color: var(--kids-navy-400, #6b85cc); }
+
+  &__icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--kids-radius-md);
+    background: var(--kids-navy-100, #dde5f6);
+    color: var(--kids-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    lucide-icon { width: 18px; height: 18px; }
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__title {
+    font-weight: var(--kids-w-semi);
+    font-size: var(--kids-text-sm);
+    color: var(--kids-navy);
+  }
+
+  &__date {
+    font-size: var(--kids-text-xs);
+    color: var(--kids-slate);
+  }
+}

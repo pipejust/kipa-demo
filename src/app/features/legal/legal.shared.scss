@@ -1,0 +1,104 @@
+// Shared styles for legal pages (privacy + terms)
+:host { display: block; }
+
+.legal-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 60% 40% at 0% 0%, #DCF1FB 0%, transparent 60%),
+    var(--kids-surface, #F7F8FC);
+}
+
+.legal-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.legal-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.legal-card {
+  background: var(--kids-paper, #fff);
+  border-radius: 28px;
+  box-shadow: 0 4px 24px rgba(31, 58, 122, 0.06);
+  padding: 48px;
+
+  h1 {
+    font-family: var(--kids-font-display);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--kids-ink, #17213A);
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-family: var(--kids-font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--kids-navy, #1F3A7A);
+    margin: 28px 0 12px;
+  }
+
+  p {
+    color: var(--kids-slate, #4C5773);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    margin: 0 0 12px;
+  }
+}
+
+.legal-logo {
+  height: 56px;
+  width: auto;
+  display: block;
+  margin-bottom: 24px;
+}
+
+.legal-lead {
+  font-size: 1rem !important;
+  color: var(--kids-ink, #17213A) !important;
+  font-weight: 500;
+}
+
+.legal-contact {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--kids-line, #E3E7F0);
+
+  a {
+    color: var(--kids-navy, #1F3A7A);
+    font-weight: 600;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--kids-navy, #1F3A7A);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  &:hover { text-decoration: underline; }
+  lucide-icon { width: 16px; height: 16px; }
+}
+
+.auth-footer {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--kids-slate, #4C5773);
+  padding: 24px 0;
+}
+
+@media (max-width: 600px) {
+  .legal-card { padding: 28px 24px; border-radius: 20px; }
+  .legal-card h1 { font-size: 1.5rem; }
+}

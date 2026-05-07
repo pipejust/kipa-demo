@@ -1,0 +1,196 @@
+<section class="account-page">
+
+  <nav class="account-breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/a/dashboard">{{ 'nav.home' | transloco }}</a>
+    <lucide-icon [img]="ChevronRightIcon" />
+    <span>{{ 'account.notifications.title' | transloco }}</span>
+  </nav>
+
+  <header class="notif-header">
+    <div>
+      <h1 class="notif-header__title">{{ 'account.notifications.title' | transloco }}</h1>
+      <p class="notif-header__lead">
+        {{ 'account.notifications.lead' | transloco: { unread: counts().unread, total: counts().total } }}
+      </p>
+    </div>
+    <div class="notif-header__actions">
+      <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="markAllRead()" [disabled]="counts().unread === 0">
+        <lucide-icon [img]="CheckCheckIcon" />
+        {{ 'account.notifications.markAllRead' | transloco }}
+      </button>
+      <button type="button" class="k-btn k-btn--primary k-btn--sm" (click)="openBroadcast()">
+        <lucide-icon [img]="PlusIcon" />
+        {{ 'account.notifications.newBroadcast' | transloco }}
+      </button>
+    </div>
+  </header>
+
+  <!-- Toast -->
+  @if (toast(); as t) {
+    @if (t.kind === 'success') {
+      <div class="k-alert k-alert--success">{{ t.msg }}</div>
+    } @else {
+      <div class="k-alert k-alert--danger">{{ t.msg }}</div>
+    }
+  }
+
+  <!-- Filters -->
+  <div class="notif-filters">
+    <button type="button" class="notif-pill" [class.notif-pill--active]="filter() === 'all'" (click)="setFilter('all')">
+      {{ 'account.notifications.filters.all' | transloco }} <span class="notif-pill__count">{{ counts().total }}</span>
+    </button>
+    <button type="button" class="notif-pill" [class.notif-pill--active]="filter() === 'unread'" (click)="setFilter('unread')">
+      {{ 'account.notifications.filters.unread' | transloco }} <span class="notif-pill__count">{{ counts().unread }}</span>
+    </button>
+    <button type="button" class="notif-pill" [class.notif-pill--active]="filter() === 'admission'" (click)="setFilter('admission')">
+      {{ 'account.notifications.filters.admissions' | transloco }} <span class="notif-pill__count">{{ counts().admission }}</span>
+    </button>
+    <button type="button" class="notif-pill" [class.notif-pill--active]="filter() === 'message'" (click)="setFilter('message')">
+      {{ 'account.notifications.filters.messages' | transloco }} <span class="notif-pill__count">{{ counts().message }}</span>
+    </button>
+    <button type="button" class="notif-pill" [class.notif-pill--active]="filter() === 'payment'" (click)="setFilter('payment')">
+      {{ 'account.notifications.filters.payments' | transloco }} <span class="notif-pill__count">{{ counts().payment }}</span>
+    </button>
+  </div>
+
+  <!-- List -->
+  @if (store.items().length === 0 && !store.loading()) {
+    <article class="kds-card kds-card--padded notif-empty">
+      <lucide-icon [img]="InboxIcon" class="notif-empty__icon" />
+      <h3 class="notif-empty__title">{{ 'account.notifications.empty.title' | transloco }}</h3>
+      <p class="notif-empty__body">{{ 'account.notifications.empty.body' | transloco }}</p>
+    </article>
+  } @else if (filtered().length === 0) {
+    <article class="kds-card kds-card--padded notif-empty">
+      <lucide-icon [img]="InboxIcon" class="notif-empty__icon" />
+      <h3 class="notif-empty__title">{{ 'account.notifications.empty.title' | transloco }}</h3>
+      <p class="notif-empty__body">{{ 'account.notifications.empty.body' | transloco }}</p>
+    </article>
+  } @else {
+    @for (group of [
+      { key: 'today',     label: 'common.today',     items: groupedToday() },
+      { key: 'yesterday', label: 'common.yesterday', items: groupedYesterday() },
+      { key: 'week',      label: 'common.thisWeek',  items: groupedWeek() },
+      { key: 'older',     label: 'common.older',     items: groupedOlder() }
+    ]; track group.key) {
+      @if (group.items.length) {
+        <section class="notif-group">
+          <h2 class="notif-group__title">{{ group.label | transloco }}</h2>
+          <ul class="notif-list">
+            @for (n of group.items; track n.id) {
+              <li
+                class="notif-row"
+                [class.notif-row--unread]="!n.read_at"
+                [class.notif-row--clickable]="n.link"
+                (click)="onItemClick(n)"
+              >
+                <span class="notif-row__icon"
+                  [class.notif-row__icon--green]="n.kind === 'attendance'"
+                  [class.notif-row__icon--pink]="n.kind === 'message'"
+                  [class.notif-row__icon--mustard]="n.kind === 'payment' || n.kind === 'announcement'"
+                  [class.notif-row__icon--purple]="n.kind === 'admission'"
+                  [class.notif-row__icon--navy]="n.kind === 'system'">
+                  @switch (n.kind) {
+                    @case ('attendance')  { <lucide-icon [img]="CheckCircleIcon" /> }
+                    @case ('message')     { <lucide-icon [img]="MessageIcon" /> }
+                    @case ('payment')     { <lucide-icon [img]="WalletIcon" /> }
+                    @case ('admission')   { <lucide-icon [img]="CalendarPlusIcon" /> }
+                    @case ('announcement') { <lucide-icon [img]="BellIcon" /> }
+                    @default              { <lucide-icon [img]="BellIcon" /> }
+                  }
+                </span>
+                <div class="notif-row__body">
+                  <div class="notif-row__line">
+                    <span class="notif-row__title">{{ n.title }}</span>
+                    @if (!n.read_at) { <span class="notif-row__dot" aria-hidden="true"></span> }
+                  </div>
+                  @if (n.body) {
+                    <p class="notif-row__text">{{ n.body }}</p>
+                  }
+                  <span class="notif-row__time">{{ formatRelativeTime(n.created_at) }}</span>
+                </div>
+                <div class="notif-row__actions" (click)="$event.stopPropagation()">
+                  @if (!n.read_at) {
+                    <button type="button" class="notif-row__action" (click)="markRead(n, $event)" [title]="'account.notifications.markOneRead' | transloco">
+                      <lucide-icon [img]="CheckCheckIcon" />
+                    </button>
+                  }
+                  <button type="button" class="notif-row__action notif-row__action--danger" (click)="remove(n, $event)" [title]="'common.delete' | transloco">
+                    <lucide-icon [img]="TrashIcon" />
+                  </button>
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    }
+  }
+
+  <!-- ── Broadcast modal ──────────────────────────────────────────── -->
+  @if (broadcastOpen()) {
+    <div class="modal-scrim" (click)="closeBroadcast()"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <header class="modal__head">
+        <h2 class="modal__title">{{ 'account.notifications.newBroadcast' | transloco }}</h2>
+        <button type="button" class="modal__close" (click)="closeBroadcast()" [attr.aria-label]="'common.close' | transloco">
+          <lucide-icon [img]="XIcon" />
+        </button>
+      </header>
+
+      <form [formGroup]="broadcastForm" (ngSubmit)="submitBroadcast()" class="modal__body">
+
+        <div class="k-field">
+          <label class="k-label" for="bc-title">{{ 'account.notifications.broadcast.title' | transloco }}</label>
+          <input id="bc-title" class="k-input" type="text" formControlName="title" maxlength="200" />
+        </div>
+
+        <div class="k-field">
+          <label class="k-label" for="bc-body">{{ 'account.notifications.broadcast.body' | transloco }}</label>
+          <textarea id="bc-body" class="k-textarea" rows="3" formControlName="body" maxlength="2000"></textarea>
+        </div>
+
+        <div class="modal__row">
+          <div class="k-field">
+            <label class="k-label" for="bc-scope">{{ 'account.notifications.broadcast.scope' | transloco }}</label>
+            <select id="bc-scope" class="k-select" formControlName="scope">
+              <option value="all">{{ 'account.notifications.broadcast.scopeAll' | transloco }}</option>
+              <option value="admins">{{ 'account.notifications.broadcast.scopeAdmins' | transloco }}</option>
+              <option value="secretaries">{{ 'account.notifications.broadcast.scopeSecretaries' | transloco }}</option>
+              <option value="teachers">{{ 'account.notifications.broadcast.scopeTeachers' | transloco }}</option>
+              <option value="families">{{ 'account.notifications.broadcast.scopeFamilies' | transloco }}</option>
+            </select>
+          </div>
+
+          <div class="k-field">
+            <label class="k-label" for="bc-kind">{{ 'account.notifications.broadcast.kind' | transloco }}</label>
+            <select id="bc-kind" class="k-select" formControlName="kind">
+              <option value="announcement">{{ 'account.notifications.broadcast.kindAnnouncement' | transloco }}</option>
+              <option value="system">{{ 'account.notifications.broadcast.kindSystem' | transloco }}</option>
+              <option value="message">{{ 'account.notifications.broadcast.kindMessage' | transloco }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="k-field">
+          <label class="k-label" for="bc-link">{{ 'account.notifications.broadcast.link' | transloco }}</label>
+          <input id="bc-link" class="k-input" type="text" formControlName="link" placeholder="/a/comunicaciones" />
+          <p class="k-help">{{ 'account.notifications.broadcast.linkHelp' | transloco }}</p>
+        </div>
+
+        <footer class="modal__foot">
+          <button type="button" class="k-btn k-btn--ghost" (click)="closeBroadcast()">{{ 'common.cancel' | transloco }}</button>
+          <button type="submit" class="k-btn k-btn--primary" [disabled]="broadcasting()">
+            @if (broadcasting()) {
+              <span class="settings-spinner" aria-hidden="true"></span>
+              {{ 'common.saving' | transloco }}
+            } @else {
+              <lucide-icon [img]="SendIcon" />
+              {{ 'account.notifications.broadcast.send' | transloco }}
+            }
+          </button>
+        </footer>
+      </form>
+    </div>
+  }
+</section>

@@ -1,0 +1,83 @@
+<section class="page kds-page">
+
+  <!-- ── Page header ──────────────────────────────────────────────────── -->
+  <header class="cms-header">
+    <div class="cms-header__icon">
+      <lucide-icon [img]="FileTextIcon" />
+    </div>
+    <div>
+      <h1 class="cms-header__title">Continguts editables</h1>
+      <p class="cms-header__lead">
+        Edita els textos del portal sense necessitat de fer un nou desplegament.
+      </p>
+    </div>
+  </header>
+
+  <!-- ── Entries ───────────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="skeleton-list">
+      @for (n of [1,2,3,4]; track n) {
+        <div class="skeleton-row"></div>
+      }
+    </div>
+  } @else {
+    <div class="entries-list">
+      @for (row of rows(); track row.key) {
+        <article class="entry-card" [class.entry-card--editing]="row.editing">
+          <div class="entry-card__meta">
+            <span class="entry-card__key">{{ row.key }}</span>
+            <h3 class="entry-card__label">{{ row.label }}</h3>
+            <p class="entry-card__desc">{{ row.description }}</p>
+          </div>
+
+          <div class="entry-card__content">
+            @if (!row.editing) {
+              <div class="entry-card__preview">
+                @if (row.entry) {
+                  <p class="entry-card__value">{{ row.entry.value }}</p>
+                  <span class="entry-card__ts">
+                    Actualitzat {{ formatDate(row.entry.updated_at) }}
+                  </span>
+                } @else {
+                  <span class="entry-card__empty">No definit — utilitza el valor per defecte.</span>
+                }
+              </div>
+              <div class="entry-card__actions">
+                <button class="btn btn--ghost" (click)="startEdit(row)">
+                  <lucide-icon [img]="EditIcon" />
+                  Editar
+                </button>
+              </div>
+            } @else {
+              <div class="entry-card__edit">
+                <textarea
+                  class="entry-card__textarea"
+                  [(ngModel)]="row.draftValue"
+                  rows="4"
+                  [placeholder]="'Introdueix el contingut per ' + row.label"
+                ></textarea>
+                <div class="entry-card__edit-actions">
+                  <button class="btn btn--primary" [disabled]="row.saving" (click)="saveEntry(row)">
+                    <lucide-icon [img]="CheckIcon" />
+                    {{ row.saving ? 'Desant...' : 'Desar' }}
+                  </button>
+                  <button class="btn btn--ghost" (click)="cancelEdit(row)">
+                    <lucide-icon [img]="XIcon" />
+                    Cancel·lar
+                  </button>
+                  @if (row.entry) {
+                    <button class="btn btn--danger" [disabled]="row.saving" (click)="deleteEntry(row)">
+                      <lucide-icon [img]="TrashIcon" />
+                      Esborrar
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  }
+
+</section>
