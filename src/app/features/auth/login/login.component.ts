@@ -102,13 +102,15 @@ export class LoginComponent implements OnInit {
 
   submit(): void {
     this.errorMessage.set(null);
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
     this.submitting.set(true);
-    const { tenant_slug, email, password, remember_me } = this.form.getRawValue();
-    this.auth.loginAndLoad({ tenant_slug, email, password, remember_me }).subscribe({
+    // Demo build: the mock interceptor accepts anything. If the user clicks
+    // "Iniciar sessió" without filling the form, fall back to safe defaults
+    // so the click always lands on the dashboard.
+    const raw = this.form.getRawValue();
+    const tenant_slug = raw.tenant_slug || this.tenants()[0]?.slug || 'kids-andorra';
+    const email       = raw.email       || 'demo@kids.app';
+    const password    = raw.password    || 'demo1234';
+    this.auth.loginAndLoad({ tenant_slug, email, password, remember_me: raw.remember_me }).subscribe({
       next: () => {
         this.submitting.set(false);
         this.redirectAfterLogin();

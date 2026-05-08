@@ -35,12 +35,13 @@ export class ThemeService {
    * a light flash.
    */
   initFromStorage(): void {
-    if (typeof localStorage === 'undefined') return;
-    const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-    if (stored === 'light' || stored === 'dark' || stored === 'system') {
-      this.setMode(stored, /* persist= */ false);
-    } else {
-      this.setMode('system', /* persist= */ false);
+    // Demo build: always start in light mode. The settings page can still
+    // switch to dark during the visit, but every fresh page load resets to
+    // light so the showcase URL renders identically every time.
+    this.setMode('light', /* persist= */ false);
+    if (typeof localStorage !== 'undefined') {
+      // Drop any leftover preference so existing visitors get reset too.
+      localStorage.removeItem(STORAGE_KEY);
     }
   }
 
