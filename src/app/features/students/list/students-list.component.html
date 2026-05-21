@@ -157,7 +157,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (a of alumnos(); track trackById($index, a)) {
+            @for (a of visibleAlumnos(); track trackById($index, a)) {
               <tr>
                 <td class="students-table__name-cell">
                   <span class="students-avatar" [class]="'students-avatar--' + avatarTone(a)">
@@ -222,7 +222,7 @@
                           {{ 'students.menu.message' | transloco }}
                         </a>
                         <hr class="students-row-menu__divider" />
-                        <button type="button" class="students-row-menu__item students-row-menu__item--danger" (click)="closeMenus()">
+                        <button type="button" class="students-row-menu__item students-row-menu__item--danger" (click)="archive(a)">
                           {{ 'students.menu.archive' | transloco }}
                         </button>
                       </div>

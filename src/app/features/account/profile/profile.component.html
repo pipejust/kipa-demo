@@ -13,7 +13,7 @@
     <div class="profile-header__content">
       <div class="profile-header__avatar-wrap">
         <span class="profile-header__avatar">{{ initials() }}</span>
-        <button type="button" class="profile-header__avatar-edit" [attr.aria-label]="'account.profile.changePhoto' | transloco">
+        <button type="button" class="profile-header__avatar-edit" (click)="changePhoto()" [attr.aria-label]="'account.profile.changePhoto' | transloco">
           <lucide-icon [img]="CameraIcon" />
         </button>
       </div>

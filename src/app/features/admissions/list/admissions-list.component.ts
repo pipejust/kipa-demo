@@ -78,10 +78,32 @@ export class AdmissionsListComponent implements OnInit, OnDestroy {
       next: (res) => {
         if (res?.url) {
           window.open(res.url, '_blank', 'noopener');
+        } else {
+          // Demo path: the mock returns no URL — build a tiny text file so
+          // the user always sees a tangible download.
+          this._fallbackDownload(item);
         }
       },
-      error: () => undefined,
+      error: () => this._fallbackDownload(item),
     });
+  }
+
+  private _fallbackDownload(item: Admission): void {
+    const blob = new Blob(
+      [`KIPA · Sol·licitud d'admissió\n\n` +
+       `Alumne: ${item.alumno_nombre ?? '(sense nom)'}\n` +
+       `Curs: ${item.anio_escolar}\n` +
+       `Nivell sol·licitat: ${item.nivel_solicitado}\n` +
+       `Estat: ${item.status}\n\n` +
+       `(En la versió real, aquí baixaria el PDF complet generat amb pypdf.)`],
+      { type: 'text/plain' },
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `admissio-${item.id}.txt`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
   }
 
   countByStatus(status: string): number {

@@ -788,3 +788,52 @@
   .sd-table      { font-size: var(--kids-text-xs); th, td { padding: 8px 10px; } }
   .sd-tutor-card { flex-direction: column; align-items: flex-start; }
 }
+
+/* ── More actions dropdown ──────────────────────────────────────── */
+.sd-hero__more-wrap {
+  position: relative;
+}
+.sd-hero__more {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--kids-surface);
+  border: 1px solid var(--kids-line);
+  color: var(--kids-slate);
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: background var(--kids-dur) var(--kids-ease);
+  &:hover { background: var(--kids-navy-50); color: var(--kids-navy); }
+  lucide-icon { width: 18px; height: 18px; }
+}
+.sd-hero__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  background: var(--kids-paper);
+  border: 1px solid var(--kids-line);
+  border-radius: var(--kids-radius-md);
+  box-shadow: 0 12px 32px rgba(31, 58, 122, 0.16);
+  padding: 6px;
+  z-index: 30;
+  display: grid; gap: 2px;
+}
+.sd-hero__menu-item {
+  background: transparent;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  font-size: var(--kids-text-sm);
+  color: var(--kids-ink);
+  padding: 8px 12px;
+  border-radius: var(--kids-radius-sm);
+  cursor: pointer;
+  &:hover { background: var(--kids-navy-50); }
+  &--danger { color: var(--kids-danger); }
+  &--danger:hover { background: #FBDEDE; }
+}
+.sd-hero__menu-sep {
+  border: 0;
+  border-top: 1px solid var(--kids-line);
+  margin: 4px 6px;
+}

@@ -21,6 +21,9 @@
     "content": "Contingut",
     "payments": "Pagaments",
     "preferences": "Preferències",
+    "agenda": "Agenda",
+    "documents": "Documents",
+    "events": "Esdeveniments",
     "comingSoon": "Pròximament",
     "collapseSidebar": "Ocultar menú",
     "expandSidebar": "Mostrar menú",
@@ -31,8 +34,6 @@
     "familyPortalTitle": "K!dS en família",
     "settings": "Configuració",
     "schoolMeta": "International Preschool Andorra",
-    "agenda": "Agenda",
-    "documents": "Documents",
     "profile": "El meu perfil",
     "help": "Ajuda i suport",
     "markAllRead": "Marcar com a llegides",
@@ -312,6 +313,12 @@
     "contactFamily": "Contactar família",
     "viewHistory": "Veure historial",
     "moreActions": "Més accions",
+    "actions": {
+      "duplicate": "Duplicar fitxa",
+      "export": "Exportar JSON",
+      "print": "Imprimir",
+      "archive": "Arxivar alumne"
+    },
     "newAdmission": "Nova admissió",
     "cancel": "Cancel·lar",
     "saving": "Guardant…",
@@ -688,6 +695,16 @@
       "segGrade": "Per nivell",
       "levelsLabel": "Nivells (separats per comes)",
       "create": "Crear campanya"
+    },
+    "templateDialog": {
+      "title": "Nova plantilla",
+      "sub": "Crea una plantilla reutilitzable per a campanyes futures.",
+      "nameLabel": "Nom intern",
+      "channelLabel": "Canal",
+      "subjectLabel": "Assumpte (email)",
+      "htmlLabel": "Contingut HTML",
+      "textLabel": "Versió text plana",
+      "create": "Crear plantilla"
     }
   },
   "status": {
@@ -957,5 +974,175 @@
     "registerPaymentSub": "Afegir un nou pagament",
     "viewReports": "Veure informes",
     "viewReportsSub": "Mètriques del centre"
-  }
+  },
+  "familyAgenda": {
+    "title": "La meva agenda",
+    "subtitle": "Esdeveniments, sortides i avisos del centre.",
+    "empty": "No hi ha esdeveniments propers.",
+    "categories": {
+      "classroom": "Aula",
+      "family": "Família",
+      "school": "Centre",
+      "health": "Salut"
+    }
+  },
+  "familyDocuments": {
+    "title": "Els meus documents",
+    "subtitle": "Tots els documents oficials, consentiments i informes pujats al centre.",
+    "empty": "Encara no hi ha documents en aquesta categoria.",
+    "preview": "Vista prèvia",
+    "download": "Descarregar",
+    "cats": {
+      "all": "Tots",
+      "admission": "Admissió",
+      "health": "Salut",
+      "financial": "Financers",
+      "pedagogical": "Pedagògics",
+      "authorization": "Autoritzacions"
+    }
+  },
+  "familyAdmissionDetail": {
+    "back": "Tornar a les admissions",
+    "eyebrow": "Sol·licitud d'admissió",
+    "title": "Curs",
+    "requestedLevel": "Nivell sol·licitat",
+    "progress": "Progrés",
+    "matricula": "Matrícula",
+    "classroom": "Classe",
+    "schedule": "Horari",
+    "days": "Dies",
+    "observations": "Observacions",
+    "submittedAt": "Presentada el",
+    "downloadPdf": "Descarregar PDF",
+    "notFound": "No s'ha trobat l'admissió.",
+    "steps": {
+      "1": "Dades alumne",
+      "2": "Tutors",
+      "3": "Salut",
+      "4": "Emergència",
+      "5": "Documents",
+      "6": "Consentiments",
+      "7": "Revisió",
+      "8": "Confirmació"
+    },
+    "status": {
+      "draft": "Esborrany",
+      "submitted": "Presentada",
+      "in_review": "En revisió",
+      "reviewing": "En revisió",
+      "documents_pending": "Documents pendents",
+      "documents_complete": "Documents complets",
+      "approved": "Aprovada",
+      "admitted": "Admesa",
+      "enrolled": "Matriculada",
+      "rejected": "Rebutjada",
+      "withdrawn": "Retirada"
+    }
+  },
+  "events": {
+    "title": "Esdeveniments del centre",
+    "subtitle": "Crea, segueix i gestiona sortides, festes i activitats amb pagaments i recordatoris integrats.",
+    "new": "Nou esdeveniment",
+    "empty": "Cap esdeveniment en aquesta vista.",
+    "free": "Gratuït",
+    "confirmed": "confirmats",
+    "stats": {
+      "upcoming": "Propers",
+      "confirmedRate": "% confirmació",
+      "published": "Publicats",
+      "totalRevenue": "Ingressos confirmats"
+    },
+    "tabs": {
+      "all": "Tots",
+      "published": "Publicats",
+      "draft": "Esborranys",
+      "closed": "Tancats"
+    },
+    "categories": {
+      "classroom": "Aula",
+      "family": "Família",
+      "school": "Centre",
+      "health": "Salut"
+    }
+  },
+  "reports": {
+    "title": "Informes del centre",
+    "subtitle": "Tots els informes operatius, financers i pedagògics. Descarrega en CSV o PDF.",
+    "back": "Tornar al dashboard",
+    "preview": "Vista prèvia",
+    "period": "Període",
+    "rows": "files",
+    "cats": {
+      "all": "Tots",
+      "financial": "Financers",
+      "pedagogical": "Pedagògics",
+      "attendance": "Assistència",
+      "admission": "Admissions",
+      "nps": "Satisfacció"
+    }
+  },
+  "finance": {
+    "dashboard": { "title": "Finances" },
+    "recibos": {
+      "title": "Rebuts emesos",
+      "subtitle": "Rebuts numerats amb hash, descarregables en PDF.",
+      "searchPlaceholder": "Cerca per número, alumne o concepte…",
+      "empty": "No hi ha cap rebut encara.",
+      "col": {
+        "numero": "Número",
+        "alumno": "Alumne",
+        "concepto": "Concepte",
+        "fecha": "Data emissió",
+        "pago": "Pagament",
+        "importe": "Import"
+      },
+      "pagoTipo": {
+        "sepa": "SEPA",
+        "stripe": "Stripe",
+        "transferencia": "Transferència",
+        "efectivo": "Efectiu"
+      }
+    },
+    "devoluciones": {
+      "title": "Devolucions",
+      "subtitle": "Cobraments SEPA retornats per gestionar amb la família.",
+      "empty": "Sense devolucions registrades.",
+      "pending": "Pendents",
+      "resolved": "Resoltes",
+      "totalAmount": "Total pendent",
+      "resolve": "Resoldre",
+      "statusPending": "Pendent",
+      "statusResolved": "Resolta",
+      "col": {
+        "alumno": "Alumne",
+        "periodo": "Període",
+        "importe": "Import",
+        "motivo": "Motiu",
+        "fecha": "Data",
+        "estado": "Estat"
+      },
+      "motivo": {
+        "fondos_insuficientes": "Fons insuficients",
+        "cuenta_cancelada": "Compte cancel·lat",
+        "mandato_revocado": "Mandat revocat",
+        "datos_incorrectos": "Dades incorrectes",
+        "otro": "Altre"
+      }
+    },
+    "tarifas": {
+      "title": "Tarifes",
+      "subtitle": "Configura els preus mensuals per nivell i any escolar.",
+      "new": "Nova tarifa",
+      "edit": "Editar",
+      "archive": "Arxivar",
+      "restore": "Restaurar",
+      "active": "Activa",
+      "archived": "Arxivada",
+      "year": "Curs",
+      "perMonth": "mes",
+      "earlyPaymentDiscount": "Descompte pagament anticipat",
+      "empty": "Encara no hi ha cap tarifa creada."
+    }
+  },
+  "_unused_marker": ""
 }

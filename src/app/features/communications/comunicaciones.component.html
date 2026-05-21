@@ -122,7 +122,7 @@
 
           <!-- Actions -->
           <div class="composer__actions">
-            <button type="button" class="k-btn k-btn--ghost k-btn--sm">
+            <button type="button" class="k-btn k-btn--ghost k-btn--sm" (click)="scheduleSend()">
               <lucide-icon [img]="Clock" />
               {{ 'comms.composer.schedule' | transloco }}
             </button>
@@ -152,7 +152,11 @@
               <span>Email</span>
             </div>
             <label class="toggle" [attr.aria-label]="'Email channel'">
-              <input type="checkbox" checked />
+              <input
+                type="checkbox"
+                [checked]="enabledChannels().email"
+                (change)="toggleChannel('email')"
+              />
               <span class="toggle__track"></span>
             </label>
           </li>
@@ -164,7 +168,11 @@
               <span>WhatsApp</span>
             </div>
             <label class="toggle" [attr.aria-label]="'WhatsApp channel'">
-              <input type="checkbox" checked />
+              <input
+                type="checkbox"
+                [checked]="enabledChannels().whatsapp"
+                (change)="toggleChannel('whatsapp')"
+              />
               <span class="toggle__track"></span>
             </label>
           </li>
@@ -176,7 +184,11 @@
               <span>In-app</span>
             </div>
             <label class="toggle" [attr.aria-label]="'In-app channel'">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                [checked]="enabledChannels().inApp"
+                (change)="toggleChannel('inApp')"
+              />
               <span class="toggle__track"></span>
             </label>
           </li>
@@ -200,6 +212,53 @@
 
     </aside>
   </div>
+
+  <!-- ── Template creation dialog ─────────────────────────── -->
+  @if (showCreateDialog()) {
+    <div class="dialog-backdrop" (click)="closeDialog()">
+      <div class="dialog" (click)="$event.stopPropagation()">
+        <h2 class="dialog__title">{{ 'comms.templateDialog.title' | transloco }}</h2>
+        <p class="dialog__sub">{{ 'comms.templateDialog.sub' | transloco }}</p>
+        <form [formGroup]="templateForm" (ngSubmit)="submitTemplate()" class="dialog__form">
+          <div class="k-field">
+            <label class="k-label">{{ 'comms.templateDialog.nameLabel' | transloco }}</label>
+            <input class="k-input" formControlName="name" placeholder="Benvinguda nou trimestre…" />
+          </div>
+          <div class="k-field">
+            <label class="k-label">{{ 'comms.templateDialog.channelLabel' | transloco }}</label>
+            <select class="k-select" formControlName="channel">
+              <option value="email">Email</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="in_app">In-app</option>
+            </select>
+          </div>
+          @if (templateForm.get('channel')?.value === 'email') {
+            <div class="k-field">
+              <label class="k-label">{{ 'comms.templateDialog.subjectLabel' | transloco }}</label>
+              <input class="k-input" formControlName="subject" placeholder="Assumpte del missatge" />
+            </div>
+          }
+          <div class="k-field">
+            <label class="k-label">{{ 'comms.templateDialog.htmlLabel' | transloco }}</label>
+            <textarea class="k-textarea" formControlName="html_body" rows="6" placeholder="Hola {{ '{{' }}nom{{ '}}' }}, …"></textarea>
+          </div>
+          <div class="k-field">
+            <label class="k-label">{{ 'comms.templateDialog.textLabel' | transloco }}</label>
+            <textarea class="k-textarea" formControlName="text_body" rows="3" placeholder="(opcional, versió text per a WhatsApp/SMS)"></textarea>
+          </div>
+          @if (formError()) {
+            <div class="k-alert k-alert--danger"><span>{{ formError() }}</span></div>
+          }
+          <div class="dialog__actions">
+            <button type="button" class="k-btn k-btn--ghost" (click)="closeDialog()">{{ 'comms.cancel' | transloco }}</button>
+            <button type="submit" class="k-btn k-btn--primary" [disabled]="templateForm.invalid || submitting()">
+              {{ submitting() ? ('comms.creating' | transloco) : ('comms.templateDialog.create' | transloco) }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
 
   <!-- ── Campaign creation dialog ──────────────────────────── -->
   @if (showCampaignDialog()) {

@@ -81,9 +81,33 @@
               <lucide-icon [img]="History" />
               <span>{{ 'studentDetail.viewHistory' | transloco }}</span>
             </button>
-            <button type="button" class="sd-hero__more" [attr.aria-label]="'studentDetail.moreActions' | transloco">
-              <lucide-icon [img]="EllipsisVertical" />
-            </button>
+            <div class="sd-hero__more-wrap">
+              <button
+                type="button"
+                class="sd-hero__more"
+                (click)="moreMenuOpen.set(!moreMenuOpen()); $event.stopPropagation()"
+                [attr.aria-label]="'studentDetail.moreActions' | transloco"
+              >
+                <lucide-icon [img]="EllipsisVertical" />
+              </button>
+              @if (moreMenuOpen()) {
+                <div class="sd-hero__menu" (click)="$event.stopPropagation()">
+                  <button type="button" class="sd-hero__menu-item" (click)="duplicateStudent()">
+                    {{ 'studentDetail.actions.duplicate' | transloco }}
+                  </button>
+                  <button type="button" class="sd-hero__menu-item" (click)="exportData()">
+                    {{ 'studentDetail.actions.export' | transloco }}
+                  </button>
+                  <button type="button" class="sd-hero__menu-item" (click)="printDetail()">
+                    {{ 'studentDetail.actions.print' | transloco }}
+                  </button>
+                  <hr class="sd-hero__menu-sep" />
+                  <button type="button" class="sd-hero__menu-item sd-hero__menu-item--danger" (click)="archiveStudent()">
+                    {{ 'studentDetail.actions.archive' | transloco }}
+                  </button>
+                </div>
+              }
+            </div>
           } @else {
             <button type="button" class="k-btn k-btn--ghost" (click)="cancelEdit()" [disabled]="saving()">
               <lucide-icon [img]="Close" />

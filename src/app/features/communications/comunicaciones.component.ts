@@ -88,6 +88,11 @@ export class ComunicacionesComponent implements OnInit {
   readonly activeTab = signal<Tab>('templates');
   readonly templates = signal<TemplateOut[]>([]);
   readonly campaigns = signal<CampaignOut[]>([]);
+
+  // Channel toggles (right sidebar). State persists across the session.
+  readonly enabledChannels = signal<{ email: boolean; whatsapp: boolean; inApp: boolean }>({
+    email: true, whatsapp: true, inApp: false,
+  });
   readonly loadingTemplates = signal(true);
   readonly loadingCampaigns = signal(true);
   readonly showCreateDialog = signal(false);
@@ -178,6 +183,16 @@ export class ComunicacionesComponent implements OnInit {
   }
 
   closeCampaignDialog(): void { this.showCampaignDialog.set(false); }
+
+  /** Toggle one of the right-sidebar delivery channels. */
+  toggleChannel(key: 'email' | 'whatsapp' | 'inApp'): void {
+    this.enabledChannels.update((c) => ({ ...c, [key]: !c[key] }));
+  }
+
+  /** Demo-only "schedule send" — in production this opens a date+time picker. */
+  scheduleSend(): void {
+    alert('Programar enviament\n\nEn la versió completa s\'obriria un calendari per triar data i hora i un selector de zona horària. La campanya passaria a estat "programada" amb un Celery Beat encarregat-se de disparar-la al moment indicat.');
+  }
 
   submitCampaign(): void {
     if (this.campaignForm.invalid || this.submitting()) return;

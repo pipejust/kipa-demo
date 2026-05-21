@@ -33,6 +33,7 @@
     "schoolMeta": "International Preschool Andorra",
     "agenda": "Agenda",
     "documents": "Documents",
+    "events": "Events",
     "profile": "My profile",
     "help": "Help & support",
     "markAllRead": "Mark all read",
@@ -312,6 +313,12 @@
     "contactFamily": "Contact family",
     "viewHistory": "View history",
     "moreActions": "More actions",
+    "actions": {
+      "duplicate": "Duplicate record",
+      "export": "Export JSON",
+      "print": "Print",
+      "archive": "Archive student"
+    },
     "newAdmission": "New admission",
     "cancel": "Cancel",
     "saving": "Saving…",
@@ -688,6 +695,16 @@
       "segGrade": "By level",
       "levelsLabel": "Levels (comma-separated)",
       "create": "Create campaign"
+    },
+    "templateDialog": {
+      "title": "New template",
+      "sub": "Create a reusable template for future campaigns.",
+      "nameLabel": "Internal name",
+      "channelLabel": "Channel",
+      "subjectLabel": "Subject (email)",
+      "htmlLabel": "HTML body",
+      "textLabel": "Plain text version",
+      "create": "Create template"
     }
   },
   "status": {
@@ -957,5 +974,94 @@
     "registerPaymentSub": "Add a new payment",
     "viewReports": "View reports",
     "viewReportsSub": "School metrics"
+  },
+  "familyAgenda": {
+    "title": "My agenda",
+    "subtitle": "Events, trips and school notices.",
+    "empty": "No upcoming events.",
+    "categories": { "classroom": "Classroom", "family": "Family", "school": "School", "health": "Health" }
+  },
+  "familyDocuments": {
+    "title": "My documents",
+    "subtitle": "All official documents, consents and reports uploaded to the school.",
+    "empty": "No documents in this category yet.",
+    "preview": "Preview",
+    "download": "Download",
+    "cats": { "all": "All", "admission": "Admission", "health": "Health", "financial": "Financial", "pedagogical": "Pedagogical", "authorization": "Authorizations" }
+  },
+  "familyAdmissionDetail": {
+    "back": "Back to admissions",
+    "eyebrow": "Admission application",
+    "title": "Year",
+    "requestedLevel": "Requested level",
+    "progress": "Progress",
+    "matricula": "Enrollment",
+    "classroom": "Class",
+    "schedule": "Schedule",
+    "days": "Days",
+    "observations": "Notes",
+    "submittedAt": "Submitted on",
+    "downloadPdf": "Download PDF",
+    "notFound": "Admission not found.",
+    "steps": { "1": "Student data", "2": "Guardians", "3": "Health", "4": "Emergency", "5": "Documents", "6": "Consents", "7": "Review", "8": "Confirmation" },
+    "status": { "draft": "Draft", "submitted": "Submitted", "in_review": "In review", "reviewing": "In review", "documents_pending": "Documents pending", "documents_complete": "Documents complete", "approved": "Approved", "admitted": "Admitted", "enrolled": "Enrolled", "rejected": "Rejected", "withdrawn": "Withdrawn" }
+  },
+  "events": {
+    "title": "School events",
+    "subtitle": "Create, follow and manage trips, parties and activities with integrated payments and reminders.",
+    "new": "New event",
+    "empty": "No events in this view.",
+    "free": "Free",
+    "confirmed": "confirmed",
+    "stats": { "upcoming": "Upcoming", "confirmedRate": "Confirmation rate", "published": "Published", "totalRevenue": "Confirmed revenue" },
+    "tabs": { "all": "All", "published": "Published", "draft": "Drafts", "closed": "Closed" },
+    "categories": { "classroom": "Classroom", "family": "Family", "school": "School", "health": "Health" }
+  },
+  "reports": {
+    "title": "School reports",
+    "subtitle": "All operational, financial and pedagogical reports. Download as CSV or PDF.",
+    "back": "Back to dashboard",
+    "preview": "Preview",
+    "period": "Period",
+    "rows": "rows",
+    "cats": { "all": "All", "financial": "Financial", "pedagogical": "Pedagogical", "attendance": "Attendance", "admission": "Admissions", "nps": "Satisfaction" }
+  },
+  "finance": {
+    "dashboard": { "title": "Finance" },
+    "recibos": {
+      "title": "Issued receipts",
+      "subtitle": "Numbered receipts with hash, downloadable as PDF.",
+      "searchPlaceholder": "Search by number, student or concept…",
+      "empty": "No receipts yet.",
+      "col": { "numero": "Number", "alumno": "Student", "concepto": "Concept", "fecha": "Issue date", "pago": "Payment", "importe": "Amount" },
+      "pagoTipo": { "sepa": "SEPA", "stripe": "Stripe", "transferencia": "Transfer", "efectivo": "Cash" }
+    },
+    "devoluciones": {
+      "title": "Returns",
+      "subtitle": "Returned SEPA charges to resolve with the family.",
+      "empty": "No returns recorded.",
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "totalAmount": "Total pending",
+      "resolve": "Resolve",
+      "statusPending": "Pending",
+      "statusResolved": "Resolved",
+      "col": { "alumno": "Student", "periodo": "Period", "importe": "Amount", "motivo": "Reason", "fecha": "Date", "estado": "Status" },
+      "motivo": { "fondos_insuficientes": "Insufficient funds", "cuenta_cancelada": "Account closed", "mandato_revocado": "Mandate revoked", "datos_incorrectos": "Wrong data", "otro": "Other" }
+    },
+    "tarifas": {
+      "title": "Tariffs",
+      "subtitle": "Configure monthly prices per level and school year.",
+      "new": "New tariff",
+      "edit": "Edit",
+      "archive": "Archive",
+      "restore": "Restore",
+      "active": "Active",
+      "archived": "Archived",
+      "year": "Year",
+      "perMonth": "month",
+      "earlyPaymentDiscount": "Early payment discount",
+      "empty": "No tariffs created yet."
+    }
   }
 }

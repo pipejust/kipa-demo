@@ -154,7 +154,7 @@
       </header>
       <ul class="upcoming">
         @for (it of upcomingInterviews; track it.title) {
-          <li class="upcoming__row">
+          <li class="upcoming__row upcoming__row--clickable" routerLink="/a/admissions">
             <span class="upcoming__date">
               <span class="upcoming__day">{{ it.day }}</span>
               <span class="upcoming__month">{{ it.month }}</span>
@@ -183,10 +183,10 @@
       <article class="panel panel--finance">
         <header class="panel__head">
           <h2 class="panel__title">{{ 'dashPanels.financeTitle' | transloco }}</h2>
-          <button type="button" class="panel__select">
+          <a class="panel__select" routerLink="/a/dashboard/reports">
             {{ 'dashPanels.thisMonth' | transloco }}
             <lucide-icon [img]="ChevronDownIcon" />
-          </button>
+          </a>
         </header>
 
         <div class="finance-stats">

@@ -41,6 +41,24 @@ export const FAMILY_SHELL_ROUTES: Routes = [
           import('../../features/family/alumno/family-alumno.component').then((m) => m.FamilyAlumnoComponent),
         title: 'Seguiment · KIPA',
       },
+      {
+        path: 'agenda',
+        loadComponent: () =>
+          import('../../features/family/agenda/family-agenda.component').then((m) => m.FamilyAgendaComponent),
+        title: 'Agenda · KIPA',
+      },
+      {
+        path: 'documents',
+        loadComponent: () =>
+          import('../../features/family/documents/family-documents.component').then((m) => m.FamilyDocumentsComponent),
+        title: 'Documents · KIPA',
+      },
+      {
+        path: 'admisions/:id',
+        loadComponent: () =>
+          import('../../features/family/admissions/family-admission-detail.component').then((m) => m.FamilyAdmissionDetailComponent),
+        title: 'Detall admissió · KIPA',
+      },
     ],
   },
 ];

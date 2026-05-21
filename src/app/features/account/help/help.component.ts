@@ -51,18 +51,21 @@ export class HelpComponent {
       descKey:  'account.help.resources.guideDesc',
       icon: BookOpen,
       color: 'sky',
+      href:  'https://github.com/pipejust/kipa#readme',
     },
     {
       titleKey: 'account.help.resources.videosTitle',
       descKey:  'account.help.resources.videosDesc',
       icon: Video,
       color: 'pink',
+      href:  'https://kipa-demo.vercel.app',
     },
     {
       titleKey: 'account.help.resources.supportTitle',
       descKey:  'account.help.resources.supportDesc',
       icon: MessageSquare,
       color: 'green',
+      href:  'mailto:hola@kipa.app',
     },
   ];
 

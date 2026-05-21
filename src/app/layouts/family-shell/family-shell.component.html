@@ -60,7 +60,12 @@
 
       <div class="family-topbar__spacer"></div>
 
-      <button type="button" class="kds-icon-btn" [attr.aria-label]="'nav.notifications' | transloco">
+      <button
+        type="button"
+        class="kds-icon-btn"
+        [attr.aria-label]="'nav.notifications' | transloco"
+        routerLink="/f/preferencias"
+      >
         <lucide-icon [img]="Bell" />
         <span class="kds-dot" aria-hidden="true"></span>
       </button>

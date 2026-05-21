@@ -33,6 +33,7 @@
     "schoolMeta": "International Preschool Andorra",
     "agenda": "Agenda",
     "documents": "Documentos",
+    "events": "Eventos",
     "profile": "Mi perfil",
     "help": "Ayuda y soporte",
     "markAllRead": "Marcar como leídas",
@@ -312,6 +313,12 @@
     "contactFamily": "Contactar familia",
     "viewHistory": "Ver historial",
     "moreActions": "Más acciones",
+    "actions": {
+      "duplicate": "Duplicar ficha",
+      "export": "Exportar JSON",
+      "print": "Imprimir",
+      "archive": "Archivar alumno"
+    },
     "newAdmission": "Nueva admisión",
     "cancel": "Cancelar",
     "saving": "Guardando…",
@@ -688,6 +695,16 @@
       "segGrade": "Por nivel",
       "levelsLabel": "Niveles (separados por coma)",
       "create": "Crear campaña"
+    },
+    "templateDialog": {
+      "title": "Nueva plantilla",
+      "sub": "Crea una plantilla reutilizable para campañas futuras.",
+      "nameLabel": "Nombre interno",
+      "channelLabel": "Canal",
+      "subjectLabel": "Asunto (email)",
+      "htmlLabel": "Contenido HTML",
+      "textLabel": "Versión texto plano",
+      "create": "Crear plantilla"
     }
   },
   "status": {
@@ -957,5 +974,94 @@
     "registerPaymentSub": "Añadir un nuevo pago",
     "viewReports": "Ver informes",
     "viewReportsSub": "Métricas del centro"
+  },
+  "familyAgenda": {
+    "title": "Mi agenda",
+    "subtitle": "Eventos, salidas y avisos del centro.",
+    "empty": "No hay eventos próximos.",
+    "categories": { "classroom": "Aula", "family": "Familia", "school": "Centro", "health": "Salud" }
+  },
+  "familyDocuments": {
+    "title": "Mis documentos",
+    "subtitle": "Todos los documentos oficiales, consentimientos e informes subidos al centro.",
+    "empty": "Todavía no hay documentos en esta categoría.",
+    "preview": "Vista previa",
+    "download": "Descargar",
+    "cats": { "all": "Todos", "admission": "Admisión", "health": "Salud", "financial": "Financieros", "pedagogical": "Pedagógicos", "authorization": "Autorizaciones" }
+  },
+  "familyAdmissionDetail": {
+    "back": "Volver a las admisiones",
+    "eyebrow": "Solicitud de admisión",
+    "title": "Curso",
+    "requestedLevel": "Nivel solicitado",
+    "progress": "Progreso",
+    "matricula": "Matrícula",
+    "classroom": "Clase",
+    "schedule": "Horario",
+    "days": "Días",
+    "observations": "Observaciones",
+    "submittedAt": "Presentada el",
+    "downloadPdf": "Descargar PDF",
+    "notFound": "No se ha encontrado la admisión.",
+    "steps": { "1": "Datos alumno", "2": "Tutores", "3": "Salud", "4": "Emergencia", "5": "Documentos", "6": "Consentimientos", "7": "Revisión", "8": "Confirmación" },
+    "status": { "draft": "Borrador", "submitted": "Presentada", "in_review": "En revisión", "reviewing": "En revisión", "documents_pending": "Documentos pendientes", "documents_complete": "Documentos completos", "approved": "Aprobada", "admitted": "Admitida", "enrolled": "Matriculada", "rejected": "Rechazada", "withdrawn": "Retirada" }
+  },
+  "events": {
+    "title": "Eventos del centro",
+    "subtitle": "Crea, sigue y gestiona salidas, fiestas y actividades con pagos y recordatorios integrados.",
+    "new": "Nuevo evento",
+    "empty": "Sin eventos en esta vista.",
+    "free": "Gratis",
+    "confirmed": "confirmados",
+    "stats": { "upcoming": "Próximos", "confirmedRate": "% confirmación", "published": "Publicados", "totalRevenue": "Ingresos confirmados" },
+    "tabs": { "all": "Todos", "published": "Publicados", "draft": "Borradores", "closed": "Cerrados" },
+    "categories": { "classroom": "Aula", "family": "Familia", "school": "Centro", "health": "Salud" }
+  },
+  "reports": {
+    "title": "Informes del centro",
+    "subtitle": "Todos los informes operativos, financieros y pedagógicos. Descarga en CSV o PDF.",
+    "back": "Volver al dashboard",
+    "preview": "Vista previa",
+    "period": "Periodo",
+    "rows": "filas",
+    "cats": { "all": "Todos", "financial": "Financieros", "pedagogical": "Pedagógicos", "attendance": "Asistencia", "admission": "Admisiones", "nps": "Satisfacción" }
+  },
+  "finance": {
+    "dashboard": { "title": "Finanzas" },
+    "recibos": {
+      "title": "Recibos emitidos",
+      "subtitle": "Recibos numerados con hash, descargables en PDF.",
+      "searchPlaceholder": "Busca por número, alumno o concepto…",
+      "empty": "Aún no hay recibos.",
+      "col": { "numero": "Número", "alumno": "Alumno", "concepto": "Concepto", "fecha": "Fecha emisión", "pago": "Pago", "importe": "Importe" },
+      "pagoTipo": { "sepa": "SEPA", "stripe": "Stripe", "transferencia": "Transferencia", "efectivo": "Efectivo" }
+    },
+    "devoluciones": {
+      "title": "Devoluciones",
+      "subtitle": "Cobros SEPA devueltos para gestionar con la familia.",
+      "empty": "Sin devoluciones registradas.",
+      "pending": "Pendientes",
+      "resolved": "Resueltas",
+      "totalAmount": "Total pendiente",
+      "resolve": "Resolver",
+      "statusPending": "Pendiente",
+      "statusResolved": "Resuelta",
+      "col": { "alumno": "Alumno", "periodo": "Periodo", "importe": "Importe", "motivo": "Motivo", "fecha": "Fecha", "estado": "Estado" },
+      "motivo": { "fondos_insuficientes": "Fondos insuficientes", "cuenta_cancelada": "Cuenta cancelada", "mandato_revocado": "Mandato revocado", "datos_incorrectos": "Datos incorrectos", "otro": "Otro" }
+    },
+    "tarifas": {
+      "title": "Tarifas",
+      "subtitle": "Configura los precios mensuales por nivel y año escolar.",
+      "new": "Nueva tarifa",
+      "edit": "Editar",
+      "archive": "Archivar",
+      "restore": "Restaurar",
+      "active": "Activa",
+      "archived": "Archivada",
+      "year": "Curso",
+      "perMonth": "mes",
+      "earlyPaymentDiscount": "Descuento pago anticipado",
+      "empty": "Todavía no hay tarifas creadas."
+    }
   }
 }

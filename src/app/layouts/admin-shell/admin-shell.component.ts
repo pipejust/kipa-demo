@@ -25,6 +25,7 @@ import {
   CheckCircle2,
   Wallet,
   CalendarPlus,
+  CalendarDays,
 } from 'lucide-angular';
 import { TranslocoModule } from '@jsverse/transloco';
 
@@ -72,6 +73,7 @@ export class AdminShellComponent {
     { path: '/a/dashboard',      labelKey: 'nav.home',           icon: Home },
     { path: '/a/alumnos',        labelKey: 'nav.students',       icon: Users },
     { path: '/a/admissions',     labelKey: 'nav.admissions',     icon: FileText },
+    { path: '/a/eventos',        labelKey: 'nav.events',         icon: CalendarDays },
     { path: '/a/finanzas',       labelKey: 'nav.finances',       icon: DollarSign },
     { path: '/a/asistencia',     labelKey: 'nav.attendance',     icon: ClipboardCheck },
     { path: '/a/comunicaciones', labelKey: 'nav.communications', icon: MessageCircle },
@@ -177,5 +179,12 @@ export class AdminShellComponent {
     this.notif.reset();
     this.auth.logout();
     this.router.navigateByUrl('/login', { replaceUrl: true });
+  }
+
+  /** Global search → navigate to the students list with the query pre-filled. */
+  globalSearch(q: string): void {
+    const query = (q ?? '').trim();
+    if (!query) return;
+    this.router.navigate(['/a/alumnos'], { queryParams: { q: query } });
   }
 }

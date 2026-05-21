@@ -118,10 +118,12 @@
       <div class="admin-topbar__search">
         <lucide-icon [img]="Search" class="admin-topbar__search-icon" />
         <input
+          #searchInput
           type="search"
           class="admin-topbar__search-input"
           [placeholder]="'nav.search' | transloco"
           aria-label="Cerca"
+          (keydown.enter)="globalSearch(searchInput.value)"
         />
         <kbd class="admin-topbar__search-kbd" aria-hidden="true">⌘ K</kbd>
       </div>

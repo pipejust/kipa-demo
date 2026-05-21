@@ -149,6 +149,7 @@ export class StudentDetailComponent implements OnInit {
   readonly attendance = signal<AttendanceSummary | null>(null);
   readonly payments = signal<PaymentSummary | null>(null);
   readonly admissions = signal<Admission[]>([]);
+  readonly moreMenuOpen = signal(false);
 
   readonly tabs: ReadonlyArray<{ key: TabKey; labelKey: string }> = [
     { key: 'summary',    labelKey: 'studentDetail.tabs.summary' },
@@ -556,6 +557,43 @@ export class StudentDetailComponent implements OnInit {
   enterEdit(): void {
     this.editMode.set(true);
     this.currentTab.set('personal');
+    this.moreMenuOpen.set(false);
+  }
+
+  // ── "More actions" dropdown handlers ─────────────────────────────────
+  duplicateStudent(): void {
+    this.moreMenuOpen.set(false);
+    const a = this.alumno();
+    if (!a) return;
+    alert(`Duplicar "${a.nombre_completo ?? `${a.nombre} ${a.apellidos}`}"\n\nEn la versió real obriria el formulari de creació amb tots els camps prerellenats excepte el nom.`);
+  }
+
+  exportData(): void {
+    this.moreMenuOpen.set(false);
+    const a = this.alumno();
+    if (!a) return;
+    const payload = JSON.stringify(a, null, 2);
+    const blob = new Blob([payload], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `alumne-${a.id}.json`;
+    document.body.appendChild(link); link.click(); link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  printDetail(): void {
+    this.moreMenuOpen.set(false);
+    window.print();
+  }
+
+  archiveStudent(): void {
+    this.moreMenuOpen.set(false);
+    const a = this.alumno();
+    if (!a) return;
+    const ok = window.confirm(`Vols arxivar "${a.nombre_completo ?? `${a.nombre} ${a.apellidos}`}"?\n\nL'alumne quedarà fora del llistat actiu però recuperable des de l'historial.`);
+    if (!ok) return;
+    this.router.navigate(['/a/alumnos']);
   }
 
   cancelEdit(): void {

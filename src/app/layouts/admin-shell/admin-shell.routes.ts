@@ -86,6 +86,38 @@ export const ADMIN_SHELL_ROUTES: Routes = [
           import('../../features/billing/admin/remesas-list.component').then((m) => m.RemesasListComponent),
         title: 'Remeses SEPA · KIPA',
       },
+      {
+        path: 'finanzas/recibos',
+        loadComponent: () =>
+          import('../../features/billing/admin/recibos/recibos-list.component').then((m) => m.RecibosListComponent),
+        title: 'Rebuts · KIPA',
+      },
+      {
+        path: 'finanzas/devoluciones',
+        loadComponent: () =>
+          import('../../features/billing/admin/devoluciones/devoluciones-list.component').then((m) => m.DevolucionesListComponent),
+        title: 'Devolucions · KIPA',
+      },
+      {
+        path: 'finanzas/tarifas',
+        loadComponent: () =>
+          import('../../features/billing/admin/tarifas/tarifas-list.component').then((m) => m.TarifasListComponent),
+        title: 'Tarifes · KIPA',
+      },
+      // F5 — Eventos
+      {
+        path: 'eventos',
+        loadComponent: () =>
+          import('../../features/events/events-list.component').then((m) => m.EventsListComponent),
+        title: 'Esdeveniments · KIPA',
+      },
+      // F5 — Reports
+      {
+        path: 'dashboard/reports',
+        loadComponent: () =>
+          import('../../features/dashboard/reports/reports.component').then((m) => m.ReportsComponent),
+        title: 'Informes · KIPA',
+      },
       // Account / topbar dropdown
       {
         path: 'profile',

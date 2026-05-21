@@ -70,9 +70,32 @@ export class ProfileComponent {
       this.form.markAllAsTouched();
       return;
     }
-    // No real backend endpoint yet — save locally for now.
+    // Demo: persist the new display name to localStorage so it survives a
+    // page reload and the topbar/avatar pick it up via the auth signal.
+    const raw = this.form.getRawValue();
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('kipa-demo-profile', JSON.stringify({
+        full_name: raw.full_name,
+        savedAt: new Date().toISOString(),
+      }));
+    }
     this.savedAt.set(new Date());
     this.editing.set(false);
     setTimeout(() => this.savedAt.set(null), 4000);
+  }
+
+  changePhoto(): void {
+    // Demo: open a file picker but only echo the chosen file name. The real
+    // app would upload to MinIO via a presigned URL.
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+      const f = input.files?.[0];
+      if (f) {
+        alert(`Foto seleccionada: ${f.name}\n\n(En la versió real es pujaria a MinIO i s'actualitzaria l'avatar.)`);
+      }
+    };
+    input.click();
   }
 }

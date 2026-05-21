@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import {
   LucideAngularModule,
@@ -44,6 +44,7 @@ type PaymentStatus   = 'paid' | 'pending' | 'overdue' | 'unknown';
 })
 export class StudentsListComponent implements OnInit, OnDestroy {
   private readonly studentsService = inject(StudentsService);
+  private readonly route = inject(ActivatedRoute);
   private readonly destroy$ = new Subject<void>();
 
   // Icons
@@ -66,6 +67,12 @@ export class StudentsListComponent implements OnInit, OnDestroy {
   readonly attendanceControl = new FormControl<string>('', { nonNullable: true });
   readonly paymentControl    = new FormControl<string>('', { nonNullable: true });
 
+  // Signal mirrors of the form controls so `computed()` can react.
+  readonly searchSig     = signal<string>('');
+  readonly classSig      = signal<string>('');
+  readonly attendanceSig = signal<string>('');
+  readonly paymentSig    = signal<string>('');
+
   // State
   readonly loading = signal(false);
   readonly error   = signal<string | null>(null);
@@ -75,8 +82,31 @@ export class StudentsListComponent implements OnInit, OnDestroy {
   readonly limit   = signal(20);
 
   readonly totalPages  = computed(() => Math.max(1, Math.ceil(this.total() / this.limit())));
-  readonly hasResults  = computed(() => this.alumnos().length > 0);
+  readonly hasResults  = computed(() => this.visibleAlumnos().length > 0);
   readonly openMenuFor = signal<string | null>(null);
+
+  /** Client-side filtered list — reacts to search + class + attendance + payment. */
+  readonly visibleAlumnos = computed<Alumno[]>(() => {
+    const q   = this.searchSig().trim().toLowerCase();
+    const cls = this.classSig();
+    const att = this.attendanceSig();
+    const pay = this.paymentSig();
+
+    return this.alumnos().filter((a) => {
+      if (q) {
+        const hay = (a.nombre_completo ?? `${a.nombre} ${a.apellidos}`).toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      if (cls) {
+        const lvl = (a.nivel ?? '').toLowerCase();
+        const aula = (a.aula ?? '').toLowerCase();
+        if (!lvl.includes(cls.toLowerCase()) && !aula.includes(cls.toLowerCase())) return false;
+      }
+      if (att && this.attendanceFor(a).level !== att) return false;
+      if (pay && this.paymentFor(a).status !== pay) return false;
+      return true;
+    });
+  });
 
   // Create-student modal
   readonly createOpen = signal(false);
@@ -114,14 +144,25 @@ export class StudentsListComponent implements OnInit, OnDestroy {
 
   // ─── Lifecycle ────────────────────────────────────────────────────────────
   ngOnInit(): void {
+    // Mirror form-control values into signals so `visibleAlumnos` can react.
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(() => { this.page.set(1); this.fetch(); });
+      .pipe(debounceTime(150), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((v) => { this.searchSig.set(v ?? ''); this.page.set(1); });
+    this.classControl.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((v) => { this.classSig.set(v ?? ''); this.page.set(1); });
+    this.attendanceControl.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((v) => { this.attendanceSig.set(v ?? ''); this.page.set(1); });
+    this.paymentControl.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((v) => { this.paymentSig.set(v ?? ''); this.page.set(1); });
 
-    for (const ctrl of [this.classControl, this.attendanceControl, this.paymentControl]) {
-      ctrl.valueChanges
-        .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-        .subscribe(() => { this.page.set(1); this.fetch(); });
+    // Pre-fill search from `?q=` (admin topbar search forwards here).
+    const q = this.route.snapshot.queryParamMap.get('q');
+    if (q) {
+      this.searchControl.setValue(q);
+      this.searchSig.set(q);
     }
 
     this.fetch();
@@ -286,6 +327,17 @@ export class StudentsListComponent implements OnInit, OnDestroy {
   }
 
   closeMenus(): void { this.openMenuFor.set(null); }
+
+  /** Archive an alumno from the row menu (with confirmation). */
+  archive(a: Alumno): void {
+    this.closeMenus();
+    const ok = window.confirm(`Vols arxivar "${this.fullName(a)}"?\n\nNo s'eliminarà — quedarà fora del llistat actiu però recuperable des de l'historial.`);
+    if (!ok) return;
+    // Optimistic local removal — in production the backend would soft-delete.
+    this.alumnos.update((list) => list.filter((x) => x.id !== a.id));
+    this.total.update((t) => Math.max(0, t - 1));
+    this._notify('success', `${this.fullName(a)} arxivat.`);
+  }
 
   trackById(_i: number, a: Alumno): string { return a.id; }
 

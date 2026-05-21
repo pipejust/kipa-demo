@@ -102,4 +102,92 @@
     }
   </div>
 
+  <!-- Stripe-style payment modal ─────────────────────────────────── -->
+  @if (payDialog(); as d) {
+    <div class="pay-overlay" (click)="closePayDialog()">
+      <div class="pay-dialog" (click)="$event.stopPropagation()">
+
+        @if (d.step === 'form') {
+          <header class="pay-dialog__head">
+            <h2 class="pay-dialog__title">Confirma el pagament</h2>
+            <button type="button" class="pay-dialog__close" (click)="closePayDialog()" aria-label="Tanca">✕</button>
+          </header>
+
+          <p class="pay-dialog__amount">
+            {{ d.cuota.importe_final | currency:'EUR':'symbol':'1.2-2' }}
+          </p>
+          <p class="pay-dialog__meta">
+            Quota {{ d.cuota.periodo }} · {{ d.cuota.concepto }}
+          </p>
+
+          <form class="pay-form" (submit)="$event.preventDefault(); confirmPayment()">
+            <label class="pay-field">
+              <span>Nom de la persona titular</span>
+              <input
+                type="text"
+                placeholder="Com apareix a la targeta"
+                [value]="payForm().name"
+                (input)="updatePayForm('name', $any($event.target).value)"
+                required
+              />
+            </label>
+            <label class="pay-field">
+              <span>Número de targeta</span>
+              <input
+                type="text"
+                inputmode="numeric"
+                [value]="payForm().card"
+                (input)="updatePayForm('card', $any($event.target).value)"
+              />
+            </label>
+            <div class="pay-row">
+              <label class="pay-field">
+                <span>Caducitat</span>
+                <input
+                  type="text"
+                  placeholder="MM/AA"
+                  [value]="payForm().expiry"
+                  (input)="updatePayForm('expiry', $any($event.target).value)"
+                />
+              </label>
+              <label class="pay-field">
+                <span>CVC</span>
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  [value]="payForm().cvc"
+                  (input)="updatePayForm('cvc', $any($event.target).value)"
+                />
+              </label>
+            </div>
+
+            <button type="submit" class="k-btn k-btn--primary k-btn--block">
+              Pagar {{ d.cuota.importe_final | currency:'EUR':'symbol':'1.2-2' }}
+            </button>
+            <p class="pay-disclaimer">
+              Pagament segur amb xifrat extrem a extrem. KIPA mai veu el teu número de targeta.
+            </p>
+          </form>
+        }
+
+        @if (d.step === 'processing') {
+          <div class="pay-state">
+            <span class="pay-spinner"></span>
+            <p>Processant pagament…</p>
+          </div>
+        }
+
+        @if (d.step === 'done') {
+          <div class="pay-state">
+            <div class="pay-check">✓</div>
+            <h3>Pagament confirmat</h3>
+            <p>Quota {{ d.cuota.periodo }} · {{ d.cuota.importe_final | currency:'EUR':'symbol':'1.2-2' }}</p>
+            <p class="pay-note">El rebut estarà disponible en uns minuts a la teva bústia i a la pestanya "Rebuts".</p>
+            <button type="button" class="k-btn k-btn--primary k-btn--block" (click)="closePayDialog()">Tancar</button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
 </section>

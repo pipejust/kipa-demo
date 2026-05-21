@@ -32,7 +32,7 @@
   <!-- Resource cards -->
   <section class="help-resources">
     @for (r of resources; track r.titleKey) {
-      <article class="help-resource" [class]="'help-resource--' + r.color">
+      <a class="help-resource" [class]="'help-resource--' + r.color" [href]="r.href" target="_blank" rel="noopener">
         <span class="help-resource__icon">
           <lucide-icon [img]="r.icon" />
         </span>
@@ -41,7 +41,7 @@
           <p class="help-resource__desc">{{ r.descKey | transloco }}</p>
         </div>
         <lucide-icon [img]="ExternalLinkIcon" class="help-resource__arrow" />
-      </article>
+      </a>
     }
   </section>
 

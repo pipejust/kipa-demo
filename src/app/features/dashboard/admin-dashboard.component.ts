@@ -115,7 +115,7 @@ export class AdminDashboardComponent implements OnInit {
     { titleKey: 'dashActions.sendMessage',        subtitleKey: 'dashActions.sendMessageSub',        link: '/a/comunicaciones', color: 'sky-soft',  icon: Send          },
     { titleKey: 'dashActions.attendanceReport',   subtitleKey: 'dashActions.attendanceReportSub',   link: '/a/asistencia',     color: 'mustard',   icon: FileText      },
     { titleKey: 'dashActions.registerPayment',    subtitleKey: 'dashActions.registerPaymentSub',    link: '/a/finanzas',       color: 'pink',      icon: CreditCard    },
-    { titleKey: 'dashActions.viewReports',        subtitleKey: 'dashActions.viewReportsSub',        link: '/a/dashboard',      color: 'purple',    icon: BarChart3     },
+    { titleKey: 'dashActions.viewReports',        subtitleKey: 'dashActions.viewReportsSub',        link: '/a/dashboard/reports', color: 'purple',   icon: BarChart3     },
   ];
 
   // ── Derived ────────────────────────────────────────────────────────────────

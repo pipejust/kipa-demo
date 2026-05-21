@@ -47,6 +47,12 @@ export class FamilyPaymentsComponent implements OnInit {
   readonly cuotas = signal<Cuota[]>([]);
   readonly recibos = signal<Recibo[]>([]);
 
+  // Stripe-style payment modal state
+  readonly payDialog = signal<{ cuota: Cuota; step: 'form' | 'processing' | 'done' } | null>(null);
+  readonly payForm = signal<{ card: string; expiry: string; cvc: string; name: string }>({
+    card: '4242 4242 4242 4242', expiry: '12/28', cvc: '123', name: '',
+  });
+
   readonly pendienteTotal = computed(() =>
     this.cuotas().filter(c => c.status === 'pendiente').reduce((s, c) => s + c.importe_final, 0)
   );
@@ -66,17 +72,34 @@ export class FamilyPaymentsComponent implements OnInit {
   }
 
   payStripe(c: Cuota): void {
-    this.paying.set(c.id);
-    this.billing.createPaymentIntent(c.id).subscribe({
-      next: (intent) => {
-        this.paying.set(null);
-        // In a full implementation, open Stripe Elements with intent.client_secret
-        alert(`Stripe intent creat. client_secret: ${intent.client_secret.slice(0, 20)}…\n(Integració Stripe Elements pendent de F2 final)`);
-      },
-      error: () => this.paying.set(null),
-    });
+    // Open the payment dialog. In production this would mount Stripe Elements
+    // bound to the client_secret returned by createPaymentIntent. For the
+    // demo we show a faithful Stripe-style modal with a confirm flow.
+    this.payDialog.set({ cuota: c, step: 'form' });
+  }
+
+  closePayDialog(): void {
+    this.payDialog.set(null);
+  }
+
+  confirmPayment(): void {
+    const d = this.payDialog();
+    if (!d) return;
+    this.payDialog.set({ ...d, step: 'processing' });
+    // Simulate Stripe round-trip latency.
+    setTimeout(() => {
+      // Optimistically mark the cuota as paid in the local list so the UI
+      // updates instantly. Server side would handle this via the webhook.
+      this.cuotas.update((list) =>
+        list.map((c) => c.id === d.cuota.id ? { ...c, status: 'cobrada' as CuotaStatus } : c));
+      this.payDialog.update((cur) => cur ? { ...cur, step: 'done' } : cur);
+    }, 1400);
   }
 
   statusLabel(s: CuotaStatus): string { return STATUS_LABEL[s] ?? s; }
   statusClass(s: CuotaStatus): string { return STATUS_CLASS[s] ?? ''; }
+
+  updatePayForm<K extends 'card' | 'expiry' | 'cvc' | 'name'>(key: K, value: string): void {
+    this.payForm.update((f) => ({ ...f, [key]: value }));
+  }
 }
